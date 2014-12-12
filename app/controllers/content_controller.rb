@@ -4,6 +4,7 @@ class ContentController < ApplicationController
 
 	def create
 		if(Content.find_by(api_id: params[:api_id]).blank?)
+			Rails.logger.info("HERE 1 <-----------------------------------------------------")
 			message = strip_tags(params[:message])[58...300]
 			message = "#{message}..."
 			if params[:client] == "undefined"
@@ -24,8 +25,8 @@ class ContentController < ApplicationController
 			c.post = p
 			if c.valid? && p.valid?
 				c.save
-				check_tags(c, params[:tags])
 				p.save
+				check_tags(c, params[:tags])
 				response = { status: 1 }
 			else
 				response = { status: 0, error: "Content: #{c.errors.full_messages}, Post: #{p.errors.full_messages}" }
@@ -66,6 +67,7 @@ class ContentController < ApplicationController
 	private
 
 		def check_tags(content, tags)
+			Rails.logger.info("HERE 2 <-----------------------------------------------------")
 			if !params[:tags].blank?
 				tags.split(",").each do |tag|
 					s = Specialty.find_by(name: tag.downcase)
@@ -87,7 +89,6 @@ class ContentController < ApplicationController
 		end
 
 		def set_feature
-			Rails.logger.info("TAGS: #{params[:tags]}")
 			c = Content.find_by(api_id: params[:api_id])
 			c.post.touch
 			check_tags(c, params[:tags])
