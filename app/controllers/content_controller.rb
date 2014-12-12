@@ -4,7 +4,6 @@ class ContentController < ApplicationController
 
 	def create
 		if(Content.find_by(api_id: params[:api_id]).blank?)
-			Rails.logger.info("HERE 1 <-----------------------------------------------------")
 			message = strip_tags(params[:message])[58...300]
 			message = "#{message}..."
 			if params[:client] == "undefined"
@@ -67,7 +66,6 @@ class ContentController < ApplicationController
 	private
 
 		def check_tags(content, tags)
-			Rails.logger.info("HERE 2 <-----------------------------------------------------")
 			if !params[:tags].blank?
 				tags.split(",").each do |tag|
 					s = Specialty.find_by(name: tag.downcase)
@@ -75,7 +73,7 @@ class ContentController < ApplicationController
 					if !s.blank?
 						if !s.contents.include?(content)
 							s.contents << content
-							content.specialties << s
+						#	content.specialties << s
 							if s.valid? && content.valid?
 								s.save
 								content.save
