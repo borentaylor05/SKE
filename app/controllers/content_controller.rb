@@ -71,13 +71,15 @@ class ContentController < ApplicationController
 					s = Specialty.find_by(name: tag.downcase)
 					# if tag has matching specialty
 					if !s.blank?
-						s.contents << content
-						content.specialties << s
-						if s.valid? && content.valid?
-							s.save
-							content.save
-						else
-							respond({error: "Spec: #{s.errors.full_messages}, Content: #{content.errors.full_messages}"})
+						if !s.contents.include?(content)
+							s.contents << content
+							content.specialties << s
+							if s.valid? && content.valid?
+								s.save
+								content.save
+							else
+								respond({error: "Spec: #{s.errors.full_messages}, Content: #{content.errors.full_messages}"})
+							end
 						end
 					end
 				end
