@@ -1,7 +1,7 @@
 class PostController < ApplicationController
 	include ActionView::Helpers::DateHelper
 	def all
-		if !params.has_key?("client")
+		if !params.has_key?("client") && Post.any?
 			posts = []
 			Post.all.each do |p|
 				resp = {
