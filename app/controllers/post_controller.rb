@@ -4,7 +4,7 @@ class PostController < ApplicationController
 		if !params.has_key?("client") && Post.any?
 			posts = []
 			Post.all.each do |p|
-				Rails.logger.info(p)
+				Rails.logger.info(p.inspect)
 				resp = {
 						title: p.action.title,
 						updated: "#{time_ago_in_words(p.updated_at)} ago"
@@ -24,7 +24,11 @@ class PostController < ApplicationController
 				end	
 			end
 		else
-			posts = client_posts(params[:client])
+			if posts.any?
+				posts = client_posts(params[:client])
+			else
+				posts = { status: 0, message: "No posts" }
+			end
 		end
 		respond(posts)
 	end
