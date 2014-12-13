@@ -4,7 +4,7 @@ class PostController < ApplicationController
 		if !params.has_key?("client") && Post.any?
 			posts = []
 			Post.all.each do |p|
-				Rails.logger.info(p.action.inspect)
+				Rails.logger.info(p)
 				resp = {
 						title: p.action.title,
 						updated: "#{time_ago_in_words(p.updated_at)} ago"
