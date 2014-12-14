@@ -12,17 +12,28 @@ class UserController < ApplicationController
 				response = { status: "Error: #{u.errors.full_messages}" }
 			end
 		else
+			if !params[:client].blank?
+				update_user_client(params)
+			end
 			response = { status: "User Exists" }
 		end
-		respond_to do |format|
-			format.any(:json, :html) { render json: response }
-		end
+		respond(response)
+	end
+
+	def update_client
+		respond(update_user_client(params))
 	end
 
 	private
 
+		def update_user_client(params)
+			u = User.find_by(jive_id: params[:jive_id])
+			u.update_attributes(client: Client.find_by(name: params[:client]))
+			return { status: 1, message: "Client Updated" }
+		end
+
 		def parse_user(params)
-			if params[:client] != "undefined"
+			if params[:client] != "undefined" && !params[:client].blank?
 				client_id = Client.find_by(name: params[:client]).id
 			else
 				client_id = 0

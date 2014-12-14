@@ -63,6 +63,12 @@ class ContentController < ApplicationController
 		respond({ status: 1 })
 	end
 
+	def webhooks
+		Rails.logger.info(params)
+		Rails.logger.debug(request.body)
+		respond({})
+	end
+
 	private
 
 		def check_tags(content, tags)

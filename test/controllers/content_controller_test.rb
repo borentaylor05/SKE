@@ -44,4 +44,8 @@ class ContentControllerTest < ActionController::TestCase
   	}
   	get :get_message, params
   end
+
+  test "post webhooks" do
+    post :webhooks
+  end
 end
