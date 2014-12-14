@@ -65,7 +65,7 @@ class ContentController < ApplicationController
 
 	def webhooks
 		Rails.logger.info("PARAMS: #{params.to_json}")
-		Rails.logger.debug(request.body)
+		Rails.logger.debug(request.inspect)
 		respond({params: params})
 	end
 
