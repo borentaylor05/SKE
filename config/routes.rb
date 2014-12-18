@@ -10,16 +10,19 @@ Rails.application.routes.draw do
   match "content/attach-message", to: "content#attach_message", via: :post
   match "content/update-client", to: "content#update_client", via: :post
   match "content/get-message", to: "content#get_message", via: :get
-  match "/webhooks", to: "content#webhooks", via: :post
+  match "webhooks/content", to: "content#webhooks_content", via: :post
+  match "test", to: "content#test", via: :get
+  match "contents", to: "content#all", via: :get
 
   # Post Routes
-  match "/posts", to: "post#all", via: :get
+  match "posts", to: "post#all", via: :get
 
   # User Routes
   match "user/update-client", to: "user#update_client", via: :post
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
+  match "user/add-specialties", to: "specialty#add_specialties", via: :post
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

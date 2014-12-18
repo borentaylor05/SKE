@@ -11,15 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141212194255) do
+ActiveRecord::Schema.define(version: 20141218194110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "clients", force: true do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "kb_space_id"
+    t.string   "kb_url"
   end
 
   create_table "contents", force: true do |t|
@@ -32,6 +34,7 @@ ActiveRecord::Schema.define(version: 20141212194255) do
     t.string   "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "cType"
   end
 
   create_table "contents_specialties", id: false, force: true do |t|
@@ -57,6 +60,8 @@ ActiveRecord::Schema.define(version: 20141212194255) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "specialties", ["name"], name: "index_specialties_on_name", using: :btree
 
   create_table "specialties_users", id: false, force: true do |t|
     t.integer "user_id",      null: false

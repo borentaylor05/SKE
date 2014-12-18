@@ -13,6 +13,7 @@ gem 'ruby'
 gem 'unicorn'
 gem 'pg',             '0.17.1'
 gem 'newrelic_rpm'
+gem 'httparty'
 
 
 

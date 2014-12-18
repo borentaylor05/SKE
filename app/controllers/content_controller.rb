@@ -1,11 +1,40 @@
 class ContentController < ApplicationController
-	include ActionView::Helpers::SanitizeHelper
 	skip_before_action :verify_authenticity_token
+
+	def all
+		start = 0;
+		count = 50;
+		contents = []
+		if params.has_key?("start")
+			start = params[:start]
+		end
+		if params.has_key?("count")
+			count = params[:count]
+		end
+		if !params.has_key?("client")
+			Content.find_each(start: start, batch_size: count) do |c|
+				content = {
+					api_id: c.api_id,
+					doc_id: c.doc_id,
+					title: c.title
+				}
+				contents.push(content)
+			end
+		else
+			Content.where(client: Client.find_by(name: params[:client])).limit(count).each do |c|
+				content = {
+					api_id: c.api_id,
+					doc_id: c.doc_id,
+					title: c.title
+				}
+				contents.push(content)
+			end
+		end
+		respond(contents)
+	end
 
 	def create
 		if(Content.find_by(api_id: params[:api_id]).blank?)
-			message = strip_tags(params[:message])[58...300]
-			message = "#{message}..."
 			if params[:client] == "undefined"
 				client_id = 0
 			else
@@ -17,8 +46,7 @@ class ContentController < ApplicationController
 				title: params[:title],
 				user_id: uid,
 				client_id: client_id,
-				featured: to_boolean(params[:featured]),
-				message: message
+				featured: to_boolean(params[:featured])
 			)
 			p = Post.new(user_id: uid, client_id: client_id, action: c)
 			c.post = p
@@ -37,11 +65,15 @@ class ContentController < ApplicationController
 	end
 
 	def get_message
-		message = Content.find_by(api_id: params[:api_id]).message
-		if !message.nil?
-			respond({ message: message })
+		if Content.any?
+			message = Content.find_by(api_id: params[:api_id]).message
+			if !message.nil?
+				respond({ message: message })
+			else
+				respond({message: ""})
+			end
 		else
-			respond({message: ""})
+			respond({ status: 0, error: "No Content" })
 		end
 	end
 		
@@ -50,29 +82,40 @@ class ContentController < ApplicationController
 	end
 
 	def attach_message
-		c = Content.find_by(api_id: params[:api_id])
-		c.post.touch
-		c.update_attributes(message: params[:message])
-		respond({ status: 1 })		
+		if Content.any?
+			c = Content.find_by(api_id: params[:api_id])
+			c.post.touch
+			c.update_attributes(message: params[:message])
+			respond({ status: 1 })	
+		else
+			respond({status: 0, error: "No Content"})
+		end	
 	end
 
 	def update_client
-		c = Content.find_by(api_id: params[:api_id])
-		c.post.touch
-		c.update_attributes(client_id: Client.find_by(name: params[:client]).id)
-		respond({ status: 1 })
+		if Content.any?
+			c = Content.find_by(api_id: params[:api_id])
+			c.post.touch
+			c.update_attributes(client_id: Client.find_by(name: params[:client]).id)
+			respond({ status: 1 })
+		else
+			respond({status: 0, error: "No Content"})
+		end
 	end
 
-	def webhooks
-		Rails.logger.info("PARAMS: #{params.to_json}")
-		Rails.logger.debug(request.inspect)
-		respond({params: params})
+	def webhooks_content
+		wh_content_create(params)
+	end
+
+	def test
+		u = get_user(2004, Client.first)
+		respond({user: u})
 	end
 
 	private
 
 		def check_tags(content, tags)
-			if !params[:tags].blank?
+			if !tags.blank?
 				tags.split(",").each do |tag|
 					s = Specialty.find_by(name: tag.downcase)
 					# if tag has matching specialty
@@ -93,11 +136,45 @@ class ContentController < ApplicationController
 		end
 
 		def set_feature
-			c = Content.find_by(api_id: params[:api_id])
-			c.post.touch
-			check_tags(c, params[:tags])
-			c.update_attributes(featured: to_boolean(params[:featured]))
-			return { status: 1 }
+			if Content.any?
+				c = Content.find_by(api_id: params[:api_id])
+				c.post.touch
+				check_tags(c, params[:tags])
+				c.update_attributes(featured: to_boolean(params[:featured]))
+				return { status: 1 }
+			else
+				return { status: 0, error: "No content" }
+			end
 		end
 
+		def wh_content_create(params)
+			c = Content.find_by(api_id: params[:api_id])
+			if c.nil?
+				client = Client.find_by(kb_space_id: params[:client_kb_id].to_i)
+				c = Content.new(
+					api_id: params[:api_id],
+					doc_id: params[:doc_id],
+					title: params[:title],
+					user: get_user(params[:jive_user_id], client), #creates the user if doesn't exist
+					client: client,
+					message: params[:message],
+					cType: params[:type],
+					featured: false
+				)
+				p = Post.new(user_id: c.user.id, client_id: c.client.id, action: c)
+				if c.valid? && p.valid?
+					c.save
+					p.save
+					check_tags(c, Jive.getTags("#{$current_url}/contents/#{c.api_id}", $current_auth))
+					response = { status: 1, message: "Content created" }
+				else
+					response = { status: 0, error: "Content: #{c.errors.full_messages}, Post: #{p.errors.full_messages}" }
+				end
+			else
+				c.post.touch
+				c.update_attributes(message: params[:message])
+				response = { status: 1, message: "Message updated" }
+			end
+			respond(response)
+		end
 end
