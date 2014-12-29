@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
 
+  get 'sessions/new'
+
   resources :user, only: [:create]
 
   resources :update, only: [:create]
 
+  
   # Content Routes
   resources :content, only: [:create]
   match "content/feature", to: "content#feature", via: :post
@@ -23,6 +26,11 @@ Rails.application.routes.draw do
   # Specialty Routes
   get "specialties/", to: "specialty#get"
   match "user/add-specialties", to: "specialty#add_specialties", via: :post
+
+  # Issue Routes
+  match "issue/unresolve", to: "issue#unresolve", via: :post
+  match "issue/resolve", to: "issue#resolve", via: :post
+  match "webhooks/issue", to: "issue#webhook_create_issue", via: :post
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

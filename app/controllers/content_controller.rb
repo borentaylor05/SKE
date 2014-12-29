@@ -122,7 +122,6 @@ class ContentController < ApplicationController
 					if !s.blank?
 						if !s.contents.include?(content)
 							s.contents << content
-						#	content.specialties << s
 							if s.valid? && content.valid?
 								s.save
 								content.save

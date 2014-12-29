@@ -1,4 +1,5 @@
 class SpecialtyController < ApplicationController
+	skip_before_action :verify_authenticity_token
 
 	def get
 		if !params.has_key?("client")
@@ -32,8 +33,20 @@ class SpecialtyController < ApplicationController
 		respond(response)
 	end
 
-	def add_specialty
-		# add this tomorrow
+	def add_specialties
+		user = User.find_by(jive_id: params[:user].to_i)
+		specialties = JSON.parse(params[:specialties])
+		specialties.each do |s|
+			spec = Specialty.find_by(name: s["name"])
+			# if not already a specialty and attached == true
+			if !user.specialties.include?(spec) && s["attached"] 
+				user.specialties << spec # add specialty
+			# if prev specialty and not attached now, delete association
+			elsif user.specialties.include?(spec) && !s["attached"] 
+				user.specialties.delete(spec) # delete association
+			end
+		end
+		respond({specs: user.specialties})
 	end
 
 end

@@ -1,9 +1,12 @@
 class PostController < ApplicationController
 	include ActionView::Helpers::DateHelper
+	after_filter :cors_set_access_control_headers
+	
 	def all
-		if !params.has_key?("client") && Post.any?
+		if params[:client] == "all" && Post.any?
 			posts = []
 			Post.all.each do |p|
+				Rails.logger.info(p.action.inspect);
 				resp = {
 						title: p.action.title,
 						updated: "#{time_ago_in_words(p.updated_at)} ago"
@@ -20,6 +23,13 @@ class PostController < ApplicationController
 						resp[:id] = p.action.doc_id
 						posts.push(resp)
 					end
+				elsif p.action_type == "Issue" and !p.action.resolved
+					resp[:body] = p.action.summary
+					resp[:type] = "issue"
+					resp[:id] = p.action.content.doc_id
+					resp[:resolved] = p.action.resolved
+					resp[:post_id] = p.action.id
+					posts.push(resp)
 				end	
 			end
 		else
@@ -53,6 +63,13 @@ class PostController < ApplicationController
 						resp[:type] = "content"
 						posts.push(resp)
 					end
+				elsif p.action_type == "Issue" and !p.action.resolved
+					resp[:body] = p.action.summary
+					resp[:type] = "issue"
+					resp[:id] = p.action.content.doc_id
+					resp[:resolved] = p.action.resolved
+					resp[:post_id] = p.action.id
+					posts.push(resp)
 				end	
 			end
 		end

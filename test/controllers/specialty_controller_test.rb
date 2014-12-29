@@ -11,8 +11,9 @@ class SpecialtyControllerTest < ActionController::TestCase
 	end
 
 	test "add specialties" do
+		t = [{n: "billing"}, {n2:"blah"}]
 		params = {
-			specialties: ["billing"],
+			specialties: t.to_json,
 			user: User.first.jive_id
 		}
 		post :add_specialties

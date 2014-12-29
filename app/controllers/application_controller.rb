@@ -6,6 +6,22 @@ class ApplicationController < ActionController::Base
   $current_url = "http://localhost:8080/api/core/v3"
   $current_auth = Jive.dev_auth
 
+  def cors_set_access_control_headers
+    headers['Access-Control-Allow-Origin'] = check_origin
+    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+    headers['Access-Control-Request-Method'] = '*'
+    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  end
+
+  def check_origin 
+    whitelist = ['http://localhost:8080', 'http:localhost:3000']
+    if whitelist.include?(request.headers['origin'])
+      return request.headers['origin']
+    else
+      return 'http://localhost:8080'
+    end
+  end
+
   def get_user(jive_user_id, client = nil)
     jive_user_id = jive_user_id.to_s
     u = User.find_by(jive_id: jive_user_id)

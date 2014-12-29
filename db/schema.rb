@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141218194110) do
+ActiveRecord::Schema.define(version: 20141222181505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,21 @@ ActiveRecord::Schema.define(version: 20141218194110) do
 
   add_index "contents_specialties", ["content_id", "specialty_id"], name: "index_contents_specialties_on_content_id_and_specialty_id", using: :btree
   add_index "contents_specialties", ["specialty_id", "content_id"], name: "index_contents_specialties_on_specialty_id_and_content_id", using: :btree
+
+  create_table "issues", force: true do |t|
+    t.string   "summary"
+    t.integer  "created_by"
+    t.integer  "content_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.boolean  "resolved"
+    t.integer  "resolved_by"
+    t.datetime "resolved_at"
+    t.integer  "api_id"
+    t.string   "issue_type"
+    t.string   "url"
+    t.string   "title"
+  end
 
   create_table "posts", force: true do |t|
     t.integer  "user_id"

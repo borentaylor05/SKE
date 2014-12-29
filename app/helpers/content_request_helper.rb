@@ -1,0 +1,2 @@
+module ContentRequestHelper
+end
