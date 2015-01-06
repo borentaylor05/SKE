@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
-  require 'Jive'
+  require 'Jive' # needed for production despite being autoloaded
 
   $current_url = "http://localhost:8080/api/core/v3"
   $current_auth = Jive.dev_auth
@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   def check_origin
   Rails.logger.info(request.headers['origin']) 
-    whitelist = ['http://localhost:8080', 'http://localhost:3000', 'https://social.teletech.com']
+    whitelist = ['http://localhost:8080', 'http://localhost:3000', 'https://social.teletech.com', "https://lit-inlet-2632.herokuapp.com"]
     if whitelist.include?(request.headers['origin'])
       return request.headers['origin']
     end
