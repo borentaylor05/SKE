@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
-  require 'jive'
+  require 'lib/Jive'
 
   $current_url = "http://localhost:8080/api/core/v3"
   $current_auth = Jive.dev_auth
