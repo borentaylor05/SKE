@@ -13,8 +13,9 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
-  def check_origin 
-    whitelist = ['http://localhost:8080', 'http://localhost:3000']
+  def check_origin
+  Rails.logger.info(request.headers['origin']) 
+    whitelist = ['http://localhost:8080', 'http://localhost:3000', 'https://social.teletech.com']
     if whitelist.include?(request.headers['origin'])
       return request.headers['origin']
     end
