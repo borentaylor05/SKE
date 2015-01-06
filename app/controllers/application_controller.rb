@@ -16,7 +16,13 @@ class ApplicationController < ActionController::Base
 
   def check_origin
   Rails.logger.info(request.headers['origin']) 
-    whitelist = ['http://localhost:8080', 'http://localhost:3000', 'https://social.teletech.com', "https://lit-inlet-2632.herokuapp.com"]
+    whitelist = [
+      'http://localhost:8080', 
+      'http://localhost:3000', 
+      'https://social.teletech.com', 
+      "https://lit-inlet-2632.herokuapp.com",
+      "170.65.128.6"
+    ]
     if whitelist.include?(request.headers['origin'])
       return request.headers['origin']
     end
