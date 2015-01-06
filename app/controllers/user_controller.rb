@@ -1,6 +1,10 @@
 class UserController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
+	def new
+		@user = User.new
+	end
+
 	def create
 		user = parse_user(params)
 		if(User.find_by(jive_id: user[:jive_id]).blank?)

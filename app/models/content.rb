@@ -6,4 +6,5 @@ class Content < ActiveRecord::Base
 	has_one :post, as: :action
 	has_and_belongs_to_many :specialties
 	has_many :issues
+	has_many :content_requests
 end

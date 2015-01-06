@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20141222181505) do
-=======
-ActiveRecord::Schema.define(version: 20141229215545) do
->>>>>>> add_password
+ActiveRecord::Schema.define(version: 20150102194550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +22,16 @@ ActiveRecord::Schema.define(version: 20141229215545) do
     t.datetime "updated_at",  null: false
     t.integer  "kb_space_id"
     t.string   "kb_url"
+  end
+
+  create_table "content_requests", force: true do |t|
+    t.string   "request_type"
+    t.integer  "content_id"
+    t.string   "title"
+    t.string   "description"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "client_id"
   end
 
   create_table "contents", force: true do |t|

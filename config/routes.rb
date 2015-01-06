@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   get 'sessions/new'
 
-  resources :user, only: [:create]
+  resources :user, only: [:new, :create]
 
   resources :update, only: [:create]
 
@@ -31,6 +31,11 @@ Rails.application.routes.draw do
   match "issue/unresolve", to: "issue#unresolve", via: :post
   match "issue/resolve", to: "issue#resolve", via: :post
   match "webhooks/issue", to: "issue#webhook_create_issue", via: :post
+
+  # Request Routes
+  match "request/new-content", to: "content_request#new_content", via: [:post, :options]
+  match "request/revision", to: "content_request#revision", via: :post
+  match "requests", to: "content_request#all", via: :get
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

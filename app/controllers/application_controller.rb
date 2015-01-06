@@ -14,11 +14,9 @@ class ApplicationController < ActionController::Base
   end
 
   def check_origin 
-    whitelist = ['http://localhost:8080', 'http:localhost:3000']
+    whitelist = ['http://localhost:8080', 'http://localhost:3000']
     if whitelist.include?(request.headers['origin'])
       return request.headers['origin']
-    else
-      return 'http://localhost:8080'
     end
   end
 

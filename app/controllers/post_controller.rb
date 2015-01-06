@@ -3,7 +3,7 @@ class PostController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	
 	def all
-		if params[:client] == "all" && Post.any?
+		if !params.has_key?("client") or params[:client] == "all" and Post.any?
 			posts = []
 			Post.all.each do |p|
 				Rails.logger.info(p.action.inspect);
