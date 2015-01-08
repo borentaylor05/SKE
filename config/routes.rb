@@ -37,6 +37,9 @@ Rails.application.routes.draw do
   match "request/revision", to: "content_request#revision", via: :post
   match "requests", to: "content_request#all", via: :get
 
+  #FFX Comments Routes
+  match "ske/old/content", to: "old_content#test", via: [:post, :options]
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
