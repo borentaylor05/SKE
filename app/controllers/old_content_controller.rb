@@ -26,7 +26,8 @@ class OldContentController < ApplicationController
 						api_id: d["api"], 
 						comments: d["commentCount"].to_i, 
 						link: d["doc"],
-						commentsUrl: d["commentsUrl"]
+						commentsUrl: d["commentsUrl"],
+						title: d["title"]
 					)
 					if c.valid?
 						c.save
