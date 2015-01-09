@@ -27,7 +27,7 @@ class OldCommentController < ApplicationController
 				end
 				hash = c.attributes
 				hash[:index] = com["index"]
-				if hash[:resolved]
+				if hash[:resolved] == true
 					hash[:resolved_time_ago] = "#{time_ago_in_words(hash[:resolved_at])} ago"
 				end
 				resp.push(hash)
@@ -45,8 +45,10 @@ class OldCommentController < ApplicationController
 			if OldComment.exists?(api_id: params[:api])
 				c = OldComment.find_by(api_id: params[:api])
 				if c.resolved?
+					c.old_content.update_attributes(comments: c.old_content.comments+1)
 					c.update_attributes(resolved: false)
 				else
+					c.old_content.update_attributes(comments: c.old_content.comments-1)
 					c.update_attributes(resolved: true, resolved_at: Time.now)
 				end
 				respond({status: 1})
