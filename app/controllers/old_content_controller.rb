@@ -20,6 +20,9 @@ class OldContentController < ApplicationController
 						hash = c.attributes
 						hash[:dif] = d["commentCount"].to_i - c.comments
 						resp.push(hash)
+					elsif d["commentCount"].to_i < c.comments
+						# means someone deleted something
+						c.update_attributes(comments: d["commentCount"].to_i)
 					end
 				else
 					c = OldContent.new(

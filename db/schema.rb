@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150108192333) do
+ActiveRecord::Schema.define(version: 20150109170056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,17 @@ ActiveRecord::Schema.define(version: 20150108192333) do
     t.string   "title"
   end
 
+  create_table "old_comments", force: true do |t|
+    t.integer  "old_content_id"
+    t.integer  "api_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.boolean  "resolved"
+    t.datetime "resolved_at"
+  end
+
+  add_index "old_comments", ["api_id"], name: "index_old_comments_on_api_id", using: :btree
+
   create_table "old_contents", force: true do |t|
     t.integer  "api_id"
     t.integer  "comments"
@@ -79,6 +90,8 @@ ActiveRecord::Schema.define(version: 20150108192333) do
     t.string   "commentsUrl"
     t.string   "title"
   end
+
+  add_index "old_contents", ["api_id"], name: "index_old_contents_on_api_id", using: :btree
 
   create_table "posts", force: true do |t|
     t.integer  "user_id"
