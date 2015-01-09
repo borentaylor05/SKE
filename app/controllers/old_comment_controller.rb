@@ -45,10 +45,10 @@ class OldCommentController < ApplicationController
 			if OldComment.exists?(api_id: params[:api])
 				c = OldComment.find_by(api_id: params[:api])
 				if c.resolved?
-					c.old_content.update_attributes(comments: c.old_content.comments+1)
+					c.old_content.update_attributes(comments: c.old_content.comments-1)
 					c.update_attributes(resolved: false)
 				else
-					c.old_content.update_attributes(comments: c.old_content.comments-1)
+					c.old_content.update_attributes(comments: c.old_content.comments+1)
 					c.update_attributes(resolved: true, resolved_at: Time.now)
 				end
 				respond({status: 1})
