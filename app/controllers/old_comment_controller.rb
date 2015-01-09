@@ -10,12 +10,12 @@ class OldCommentController < ApplicationController
 			coms = JSON.parse(params[:data])
 			coms.each do |com|
 				Rails.logger.info(com)
-				if OldComment.find_by(api_id: com["api"])
-					c = OldComment.find_by(api_id: com["api"])
+				if OldComment.find_by(api_id: com["api"].to_i)
+					c = OldComment.find_by(api_id: com["api"].to_i)
 				else
 					c = OldComment.new(
 						api_id: com["api"],
-						old_content: OldContent.find_by(api_id: com["content"]),
+						old_content: OldContent.find_by(api_id: com["content"].to_i),
 						resolved: false
 					)
 					if c.valid?
@@ -24,7 +24,9 @@ class OldCommentController < ApplicationController
 						Rails.logger.info("Unable to save comment: #{c.errors.full_messages}")
 					end
 				end
-				resp.push(c)
+				hash = c.attributes
+				hash[:index] = com["index"]
+				resp.push(hash)
 			end
 			respond(resp)
 		else
