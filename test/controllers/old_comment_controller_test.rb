@@ -6,4 +6,10 @@ class OldCommentControllerTest < ActionController::TestCase
 		get :check
 	end
 
+	test "toggle comment" do
+		param = {
+			api: OldComment.first.api_id
+		}
+		post :toggle
+	end
 end

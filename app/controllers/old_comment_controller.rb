@@ -10,7 +10,7 @@ class OldCommentController < ApplicationController
 			coms = JSON.parse(params[:data])
 			coms.each do |com|
 				Rails.logger.info(com)
-				if OldComment.find_by(api_id: com["api"].to_i)
+				if OldComment.exists?(api_id: com["api"].to_i)
 					c = OldComment.find_by(api_id: com["api"].to_i)
 				else
 					c = OldComment.new(
@@ -29,6 +29,26 @@ class OldCommentController < ApplicationController
 				resp.push(hash)
 			end
 			respond(resp)
+		else
+			respond({})
+		end
+	end
+
+	def toggle
+		if(request.method == "OPTIONS")
+			respond({status: 1})
+		elsif request.method == "POST"
+			if OldComment.exists?(api_id: params[:api])
+				c = OldComment.find_by(api_id: params[:api])
+				if c.resolved?
+					c.update_attributes(resolved: false)
+				else
+					c.update_attributes(resolved: true)
+				end
+				respond({status: 1})
+			else
+				Rails.logger.info("Comment #{params[:api]} does not exist");
+			end
 		else
 			respond({})
 		end
