@@ -27,7 +27,7 @@ class OldCommentController < ApplicationController
 				end
 				hash = c.attributes
 				hash[:index] = com["index"]
-				if hash[:resolved]?
+				if hash[:resolved]
 					hash[:resolved_time_ago] = "#{time_ago_in_words(hash[:resolved_at])} ago"
 				end
 				resp.push(hash)
