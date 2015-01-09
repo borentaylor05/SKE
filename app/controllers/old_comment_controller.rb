@@ -1,4 +1,5 @@
 class OldCommentController < ApplicationController
+	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 
@@ -26,6 +27,9 @@ class OldCommentController < ApplicationController
 				end
 				hash = c.attributes
 				hash[:index] = com["index"]
+				if hash[:resolved]?
+					hash[:resolved_time_ago] = "#{time_ago_in_words(hash[:resolved_at])} ago"
+				end
 				resp.push(hash)
 			end
 			respond(resp)
@@ -43,7 +47,7 @@ class OldCommentController < ApplicationController
 				if c.resolved?
 					c.update_attributes(resolved: false)
 				else
-					c.update_attributes(resolved: true)
+					c.update_attributes(resolved: true, resolved_at: Time.now)
 				end
 				respond({status: 1})
 			else
