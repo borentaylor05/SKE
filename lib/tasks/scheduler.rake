@@ -10,6 +10,6 @@ task :move_doc => :environment do
 end
 
 task :get_doc => :environment do
-	resp = Jive.grab("https://weightwatchers.jiveon.com/api/core/v3/contents/6648", Jive.dev_auth)
+	resp = Jive.grab("https://weightwatchers.jiveon.com/api/core/v3/contents/6648", Jive.auth)
 	puts resp
 end
