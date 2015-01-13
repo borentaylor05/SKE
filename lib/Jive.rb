@@ -21,9 +21,9 @@ class Jive
    Auth.social
   end
 
-  def self.grab(relative_url, auth)
+  def self.grab(url, auth)
     puts url
-    json = self.get(relative_url, :basic_auth => auth).body
+    json = self.get(url, :basic_auth => auth).body
     self.clean(json)
   end
 
