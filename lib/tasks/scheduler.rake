@@ -11,6 +11,6 @@ end
 
 task :get_doc => :environment do
 	puts Jive.auth
-	resp = Jive.grab("https://social.teletech.com/api/core/v3/contents/938729", Jive.auth)
+	resp = Jive.grab("https://social.teletech.com/api/core/v3/contents/", Jive.auth)
 	puts resp
 end
