@@ -7,7 +7,7 @@ class OldContentController < ApplicationController
 
 	end
 
-	def test
+	def check
 		if(request.method == "OPTIONS")
 			respond({status: 1})
 		elsif request.method == "POST"

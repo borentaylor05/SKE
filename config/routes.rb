@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   match "requests", to: "content_request#all", via: :get
 
   #FFX Comments Routes
-  match "old/content", to: "old_content#test", via: [:post, :options]
+  match "old/content", to: "old_content#check", via: [:post, :options]
   match "old/comments", to: "old_comment#check", via: [:post, :options]
   match "old/comment/toggle", to: "old_comment#toggle", via: [:post, :options]
 

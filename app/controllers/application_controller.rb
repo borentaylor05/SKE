@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   require 'Jive' # needed for production despite being autoloaded
 
   $current_url = "http://localhost:8080/api/core/v3"
-  $current_auth = Jive.dev_auth
+  $current_auth = Jive.auth
 
   def cors_set_access_control_headers
     headers['Access-Control-Allow-Origin'] = check_origin
