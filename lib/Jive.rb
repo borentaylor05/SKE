@@ -22,9 +22,8 @@ class Jive
   end
 
   def self.grab(url, auth)
-    puts url
-    json = self.get(url, :basic_auth => auth).inspect
-  #  self.clean(json)
+    json = self.get(url, :basic_auth => auth).body
+    self.clean(json)
   end
 
   def self.update(url, params, auth)
