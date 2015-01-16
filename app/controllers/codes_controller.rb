@@ -55,22 +55,21 @@ class CodesController < ApplicationController
 		elsif request.method == "POST"
 			if WwCodeInfo.find_by(token: params[:token])
 				info = WwCodeInfo.find_by(token: params[:token])
-				code = get_unused_code(params[:type])
-				if code[:status] == 0
-					code.update_attributes(
+				c = get_unused_code(params[:type])
+				if c[:status] == 0
+					c[:code].update_attributes(
 						date_assigned: Time.now,
 						assigned_by: params[:agent_id],
 						used: true
 					)
-					if code.valid?
-						code.save
+					if c[:code].valid?
+						c[:code].save
 					else
 						respond({ status: 1, message: "#{code.errors.full_messages}" })
 					end
-					info.update_attributes(ww_code_id: code.id)
-				else
-					respond({ status: 0, content: code })
+					info.update_attributes(ww_code_id: c[:code].id)
 				end
+				respond(c)
 			else
 				respond({status: 1, error: "Token does not exist."})
 			end
@@ -94,7 +93,7 @@ class CodesController < ApplicationController
 				Rails.logger.info("NUMBER: #{get_number_unused(type)}")
 				return { status: 1, content: { message: "There are no more codes of this type:", type: type } }
 			else
-				return WwCode.where(code_type: type, used: false).first 
+				return { status: 0, code: WwCode.where(code_type: type, used: false).first }
 			end
 		end
 
