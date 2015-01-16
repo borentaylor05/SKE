@@ -94,13 +94,12 @@ class CodesController < ApplicationController
 				Rails.logger.info("NUMBER: #{get_number_unused(type)}")
 				return { status: 1, content: { message: "There are no more codes of this type:", type: type } }
 			else
-				return { status: 0, message: WwCode.where(code_type: type, used: false).first }
+				return WwCode.where(code_type: type, used: false).first 
 			end
 		end
 
 		def get_number_unused(type)
 			num = WwCode.where(code_type: type, used: false).count
-			
 			return num
 		end
 
