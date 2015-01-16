@@ -42,6 +42,11 @@ Rails.application.routes.draw do
   match "old/comments", to: "old_comment#check", via: [:post, :options]
   match "old/comment/toggle", to: "old_comment#toggle", via: [:post, :options]
 
+  # CODE ROUTES
+  match "code/request", to: "codes#new", via: [:options, :post]
+  match "code/info", to: "codes#get_info", via: [:options, :post]
+  match "code", to: "codes#get_code", via: [:options, :post]
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

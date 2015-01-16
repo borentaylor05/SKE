@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150109170056) do
+ActiveRecord::Schema.define(version: 20150115222226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,33 @@ ActiveRecord::Schema.define(version: 20150109170056) do
     t.datetime "updated_at",  null: false
     t.string   "password"
     t.string   "name"
+  end
+
+  create_table "ww_code_infos", force: true do |t|
+    t.string   "agent_id"
+    t.string   "agent_name"
+    t.integer  "sub_num"
+    t.string   "member_first_name"
+    t.string   "member_last_name"
+    t.integer  "member_zip"
+    t.integer  "ww_code_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "token"
+    t.text     "description"
+    t.string   "requesting_type"
+  end
+
+  add_index "ww_code_infos", ["token"], name: "index_ww_code_infos_on_token", unique: true, using: :btree
+
+  create_table "ww_codes", force: true do |t|
+    t.string   "code_type"
+    t.string   "code_num"
+    t.datetime "date_assigned"
+    t.string   "assigned_by"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.boolean  "used",          default: false
   end
 
 end

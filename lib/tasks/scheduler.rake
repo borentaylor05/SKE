@@ -9,7 +9,17 @@ task :move_doc => :environment do
   puts "done."
 end
 
+# BELOW = TESTS
+
 task :get_doc => :environment do
 	resp = Jive.grab("https://social.teletech.com/api/core/v3/contents/938729", Jive.auth)
 	puts resp
+end
+
+task :generate_token => :environment do
+	token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...10]
+	while WwCodeInfo.exists?(token: token)
+		token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...10]
+	end
+	puts token
 end

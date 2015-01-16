@@ -54,6 +54,7 @@ class OldCommentController < ApplicationController
 				respond({status: 1})
 			else
 				Rails.logger.info("Comment #{params[:api]} does not exist");
+				respond({ status: 0 })
 			end
 		else
 			respond({})
