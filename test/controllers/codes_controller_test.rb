@@ -31,4 +31,8 @@ class CodesControllerTest < ActionController::TestCase
 		post :get_code, params
 	end
 
+	test "get proxy" do 
+		get :proxy
+	end
+
 end

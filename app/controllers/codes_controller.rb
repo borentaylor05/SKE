@@ -78,6 +78,9 @@ class CodesController < ApplicationController
 		end
 	end
 
+	def proxy
+	end
+
 	private
 
 		def generate_token
