@@ -2,7 +2,7 @@ class CodesController < ApplicationController
 	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
-	
+	after_action :allow_iframe
 	#NOTE: here is where I started using status numbers correctly, i.e. 0 = success, 1 = error
 
 	def new
@@ -103,6 +103,10 @@ class CodesController < ApplicationController
 		def get_number_unused(type)
 			num = WwCode.where(code_type: type, used: false).count
 			return num
+		end
+
+		def allow_iframe
+			response.headers.except! 'X-Frame-Options'
 		end
 
 end
