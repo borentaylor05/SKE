@@ -69,7 +69,7 @@ class CodesController < ApplicationController
 					end
 					info.update_attributes(ww_code_id: code.id)
 				else
-					respond(code)
+					respond({ status: 0, content: code)
 				end
 			else
 				respond({status: 1, error: "Token does not exist."})
