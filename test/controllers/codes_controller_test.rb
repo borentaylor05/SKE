@@ -35,4 +35,12 @@ class CodesControllerTest < ActionController::TestCase
 		get :proxy
 	end
 
+	test "get all codes" do 
+		get :get_all
+	end
+
+	test "get_people" do 
+		get :get_people
+	end
+
 end

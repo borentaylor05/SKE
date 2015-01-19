@@ -47,6 +47,8 @@ Rails.application.routes.draw do
   match "code/info", to: "codes#get_info", via: [:options, :post]
   match "code", to: "codes#get_code", via: [:options, :post]
   match "web/IE9/proxy.html", to: "codes#proxy", via: :get
+  match "codes", to: "codes#get_all", via: :get
+  match "codes/people", to: "codes#get_people", via: :get
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

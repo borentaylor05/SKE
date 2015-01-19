@@ -23,3 +23,11 @@ task :generate_token => :environment do
 	end
 	puts token
 end
+
+task :reset_codes => :environment do 
+	WwCode.all.each do |w| 
+		w.used = false
+		w.save
+	end
+	WwCodeInfo.destroy_all
+end
