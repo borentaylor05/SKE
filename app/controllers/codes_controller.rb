@@ -11,11 +11,11 @@ class CodesController < ApplicationController
 		elsif request.method == "POST"
 			i = WwCodeInfo.new(
 				sub_num: params[:sub],
-				member_first_name: params[:member_first],
-				member_last_name: params[:member_last],
+				member_first_name: params[:member_first].downcase,
+				member_last_name: params[:member_last].downcase,
 				member_zip: params[:zip],
 				agent_id: params[:agent_id], #this is there Jive API ID
-				agent_name: params[:agent_name],
+				agent_name: params[:agent_name].downcase,
 				token: generate_token,
 				description: params[:desc],
 				requesting_type: params[:type]
@@ -65,7 +65,7 @@ class CodesController < ApplicationController
 					c[:code].update_attributes(
 						date_assigned: Time.now,
 						assigned_by: params[:agent_id],
-						assigned_by_name: params[:agent_name],
+						assigned_by_name: params[:agent_name].downcase,
 						used: true
 					)
 					if c[:code].valid?
@@ -73,14 +73,14 @@ class CodesController < ApplicationController
 					else
 						respond({ status: 1, message: "#{code.errors.full_messages}" })
 					end
-					info.update_attributes(ww_code_id: c[:code].id)
+					info.update_attributes(ww_code_id: c[:code].id, reviewed_by: params[:agent_name].downcase)
 				end
 				respond(c)
 			else
 				respond({status: 1, error: "Token does not exist."})
 			end
 		else
-			respond({})
+			respond(params)
 		end
 	end
 
@@ -91,10 +91,10 @@ class CodesController < ApplicationController
 		elsif params.has_key?("key")
 			case params[:key]
 				when "assigning"
-					codes = get_results(WwCode.where(assigned_by_name: params[:value]))
+					codes = get_results(WwCode.where(assigned_by_name: params[:value].downcase))
 				when "requesting"
 					c = []
-					WwCodeInfo.where(agent_name: params[:value]).where.not(ww_code_id: nil).each do |w|
+					WwCodeInfo.where(agent_name: params[:value].downcase).where.not(ww_code_id: nil).each do |w|
 						c.push(w.ww_code)
 					end
 					codes = get_results(c)
@@ -119,13 +119,43 @@ class CodesController < ApplicationController
 
 	def get_people
 		respond({ 
-			assigning_agents: WwCode.uniq.pluck(:assigned_by_name), 
+			# Both get unique values, first way didn't interfere with my model order, second way did
+			assigning_agents: WwCode.select(:assigned_by_name).map(&:assigned_by_name).uniq,
 			requesting_agents: WwCodeInfo.uniq.pluck(:agent_name),
 			amounts: get_unused_amounts
 		})
 	end
 
 	def proxy
+	end
+
+	def load
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			amounts = []
+			errors = []
+			valid = ["42.95", "39.95", "lifetime"]
+			params.each do |key, array|
+				if valid.include?(key)
+					hash = { name: key, amount: 0 }
+					array.each do |code|
+						w = WwCode.new(
+							code_num: code,
+							code_type: key
+						)
+						if w.valid?
+							w.save
+							hash[:amount] = hash[:amount] + 1
+						else
+							errors.push({ code: code, error: w.errors.full_messages });
+						end
+					end
+					amounts.push(hash)
+				end
+			end
+			respond({ status: 0, amounts: amounts, errors: errors })
+		end
 	end
 
 	private

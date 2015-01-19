@@ -5,8 +5,8 @@ class CodesControllerTest < ActionController::TestCase
 	test "new code request" do 
 		params = {
 			sub_num: 123,
-			member_first_name: "test",
-			member_last_name: "test",
+			member_first: "test",
+			member_last: "test",
 			member_zip: 11111,
 			agent_id: 1234567,
 			agent_name: "Agent Test"
@@ -41,6 +41,15 @@ class CodesControllerTest < ActionController::TestCase
 
 	test "get_people" do 
 		get :get_people
+	end
+
+	test "load codes" do 
+		params = {
+			"42.95" => ["one", "two"],
+			"39.95" => ["one", "two"],
+			"lifetime" => ["one", "two"]
+		}
+		post :load, params
 	end
 
 end
