@@ -31,3 +31,8 @@ task :reset_codes => :environment do
 	end
 	WwCodeInfo.destroy_all
 end
+
+task :empty_codes => :environment do
+	WwCodeInfo.destroy_all
+	WwCode.destroy_all
+end
