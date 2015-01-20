@@ -41,7 +41,7 @@ class CodesController < ApplicationController
 			if WwCodeInfo.exists?(token: params[:token])
 				info = WwCodeInfo.find_by(token: params[:token])
 				if info.used
-					respond({ status: 1, error: "Token has already been used. Ask agent to generate another." })
+					respond({ status: 1, error: "This token has already been through the approval process." })
 				else
 					info.update_attributes(used: true)
 					respond({status: 0, content: info})
