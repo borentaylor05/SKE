@@ -50,6 +50,7 @@ Rails.application.routes.draw do
   match "codes", to: "codes#get_all", via: :get
   match "codes/people", to: "codes#get_people", via: :get
   match "codes/load", to: "codes#load", via: [:post, :options]
+  match "codes/toggle", to: "codes#toggle", via: [:post, :options]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

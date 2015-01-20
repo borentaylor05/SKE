@@ -158,6 +158,20 @@ class CodesController < ApplicationController
 		end
 	end
 
+	def toggle
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			if WwCode.exists?(code_num: params[:code])
+				code = WwCode.find_by(code_num: params[:code])
+				code.update_attributes(used: params[:to_status])
+				respond({ status: 0, message: "Changed Status" })
+			else
+				respond({ status: 1, error: "Code does not exist" })
+			end
+		end
+	end
+
 	private
 
 		def generate_token

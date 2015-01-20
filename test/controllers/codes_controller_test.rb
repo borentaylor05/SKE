@@ -52,4 +52,12 @@ class CodesControllerTest < ActionController::TestCase
 		post :load, params
 	end
 
+	test "toggle" do 
+		params = {
+			code: WwCode.first.code_num,
+			status: true
+		}
+		post :toggle, params
+	end
+
 end
