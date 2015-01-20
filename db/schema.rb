@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150118001546) do
+ActiveRecord::Schema.define(version: 20150120174332) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 20150118001546) do
     t.string   "reviewed_by"
   end
 
+  add_index "ww_code_infos", ["agent_name"], name: "index_ww_code_infos_on_agent_name", using: :btree
   add_index "ww_code_infos", ["token"], name: "index_ww_code_infos_on_token", unique: true, using: :btree
 
   create_table "ww_codes", force: true do |t|
@@ -167,5 +168,8 @@ ActiveRecord::Schema.define(version: 20150118001546) do
     t.boolean  "used",             default: false
     t.string   "assigned_by_name"
   end
+
+  add_index "ww_codes", ["assigned_by_name"], name: "index_ww_codes_on_assigned_by_name", using: :btree
+  add_index "ww_codes", ["code_num"], name: "index_ww_codes_on_code_num", using: :btree
 
 end
