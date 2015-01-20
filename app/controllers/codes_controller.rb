@@ -187,7 +187,7 @@ class CodesController < ApplicationController
 				Rails.logger.info("NUMBER: #{get_number_unused(type)}")
 				return { status: 1, content: { message: "There are no more codes of this type:", type: type } }
 			else
-				return { status: 0, code: WwCode.where(code_type: type, used: false).first }
+				return { status: 0, code: WwCode.where(code_type: type, used: false).first, amounts: get_unused_amounts }
 			end
 		end
 

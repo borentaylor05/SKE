@@ -7,7 +7,7 @@ class UserController < ApplicationController
 
 	def create
 		user = parse_user(params)
-		if(User.find_by(jive_id: user[:jive_id]).blank?)
+		if !User.exists?(jive_id: user[:jive_id])
 			u = User.new(jive_id: user[:jive_id], employee_id: user[:employee_id], client_id: user[:client_id])
 			if u.valid?
 				u.save
