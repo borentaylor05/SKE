@@ -1,0 +1,7 @@
+<div ng-app="Accessible" ng-controller="Acc as acc" class="container text-center">
+	<h2>You must enter a password to access this page:</h2>
+	<input type="password" ng-model="data.password" class="form-control">
+	<div ng-show="acc.status > 0" class="alert alert-danger"> {{ acc.error }} </div>
+	<p ng-hide="acc.status > 0"> {{ acc.token }} </p>
+	<button class="btn btn-lg btn-success" ng-click="acc.verify(data.password)">GO</button>
+</div>

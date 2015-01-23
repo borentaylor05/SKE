@@ -1,0 +1,8 @@
+<div class="container">
+	<h2>Import Address Book</h2>
+
+	<%= form_tag "/cdc/process/address-book", multipart: true do %>
+	  <%= file_field_tag :file %>
+	  <%= submit_tag "Import", class: "btn btn-md btn-success" %>
+	<% end %>
+</div>

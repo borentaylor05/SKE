@@ -3,6 +3,7 @@ class CodesController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
+	
 	#NOTE: here is where I started using status numbers correctly, i.e. 0 = success, 1 = error
 
 	def new
@@ -16,7 +17,7 @@ class CodesController < ApplicationController
 				member_zip: params[:zip],
 				agent_id: params[:agent_id], #this is there Jive API ID
 				agent_name: params[:agent_name].downcase,
-				token: generate_token,
+				token: generate_token(10),
 				description: params[:desc],
 				requesting_type: params[:type]
 			)
@@ -174,14 +175,6 @@ class CodesController < ApplicationController
 
 	private
 
-		def generate_token
-			token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...10]
-			while WwCodeInfo.exists?(token: token)
-				token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...10]
-			end
-			return token
-		end
-
 		def get_unused_code(type)
 			if get_number_unused(type) == 0
 				Rails.logger.info("NUMBER: #{get_number_unused(type)}")
@@ -194,10 +187,6 @@ class CodesController < ApplicationController
 		def get_number_unused(type)
 			num = WwCode.where(code_type: type, used: false).count
 			return num
-		end
-
-		def allow_iframe
-			response.headers.except! 'X-Frame-Options'
 		end
 
 		def get_unused_amounts

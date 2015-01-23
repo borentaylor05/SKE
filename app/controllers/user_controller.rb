@@ -1,8 +1,17 @@
 class UserController < ApplicationController
+	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
+	after_filter :cors_set_access_control_headers
+	after_action :allow_iframe # part of IE fix
 
-	def new
-		@user = User.new
+	# see if user is in db
+	def check_init
+		if User.exists?(jive_id: params[:user])
+			u = User.find_by(jive_id: params[:user])
+			respond({ status: 0, message: "User exists", user: u, client: u.client })
+		else
+			respond({ status: 1, error: "User is not in DB." })
+		end
 	end
 
 	def create
@@ -33,7 +42,7 @@ class UserController < ApplicationController
 		def update_user_client(params)
 			u = User.find_by(jive_id: params[:jive_id])
 			u.update_attributes(client: Client.find_by(name: params[:client]))
-			return { status: 1, message: "Client Updated" }
+			return { status: 0, message: "Client Updated" }
 		end
 
 		def parse_user(params)

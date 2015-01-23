@@ -60,6 +60,18 @@ class ApplicationController < ActionController::Base
   	end
   end
 
+  def allow_iframe
+    response.headers.except! 'X-Frame-Options'
+  end
+
+  def generate_token(length)
+    token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...length]
+    while WwCodeInfo.exists?(token: token)
+      token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...length]
+    end
+    return token
+  end
+
 end
 
 

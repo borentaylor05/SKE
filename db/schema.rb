@@ -11,10 +11,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150120174332) do
+ActiveRecord::Schema.define(version: 20150123173555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "a_to_z_entries", force: true do |t|
+    t.string   "topic"
+    t.string   "aka"
+    t.string   "owner"
+    t.string   "scope"
+    t.string   "notes"
+    t.string   "program_flow"
+    t.string   "cdc_link"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.boolean  "pr"
+    t.boolean  "spanish"
+  end
+
+  create_table "address_book_entries", force: true do |t|
+    t.string   "ProgramDescription"
+    t.string   "AlternateTopicName"
+    t.string   "Owner"
+    t.string   "LastName"
+    t.string   "FirstName"
+    t.string   "EmailAddress"
+    t.string   "WorkPhone"
+    t.string   "CommentText"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
 
   create_table "clients", force: true do |t|
     t.string   "name"
@@ -68,6 +95,26 @@ ActiveRecord::Schema.define(version: 20150120174332) do
     t.string   "issue_type"
     t.string   "url"
     t.string   "title"
+  end
+
+  create_table "message_trackers", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "message_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "acknowledged", default: false
+  end
+
+  add_index "message_trackers", ["user_id"], name: "index_message_trackers_on_user_id", using: :btree
+
+  create_table "messages", force: true do |t|
+    t.text     "text"
+    t.integer  "client_id"
+    t.integer  "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean  "sent"
+    t.integer  "user_id"
   end
 
   create_table "old_comments", force: true do |t|

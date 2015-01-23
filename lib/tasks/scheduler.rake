@@ -36,3 +36,18 @@ task :empty_codes => :environment do
 	WwCodeInfo.destroy_all
 	WwCode.destroy_all
 end
+
+task :pr_string_to_bool => :environment do 
+	AToZEntry.all.each do |e|
+		 bool = e.PRs == "YES" ? true : false
+		 e.update_attributes(PR_bool: bool)
+	end
+end
+
+task :spanish_string_to_bool => :environment do 
+	AToZEntry.all.each do |e|
+		 bool = e.Spanish == "Y" ? true : false
+		 e.update_attributes(Spanish_bool: bool)
+	end
+end
+

@@ -19,4 +19,11 @@ class UserControllerTest < ActionController::TestCase
   	post :update_client, params
   end
 
+  test "check user init" do  
+    params = {
+      user: User.first.jive_id
+    }
+    get :check_init, params
+  end
+
 end

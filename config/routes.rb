@@ -22,6 +22,7 @@ Rails.application.routes.draw do
 
   # User Routes
   match "user/update-client", to: "user#update_client", via: :post
+  match "user/check", to: "user#check_init", via: :get
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
@@ -51,6 +52,24 @@ Rails.application.routes.draw do
   match "codes/people", to: "codes#get_people", via: :get
   match "codes/load", to: "codes#load", via: [:post, :options]
   match "codes/toggle", to: "codes#toggle", via: [:post, :options]
+
+  # MESSAGE ROUTES
+  match "messages", to: "message#get_unread_messages", via: :get
+  match "message/acknowledge", to: "message#acknowledge", via: [:post, :options]
+
+  # ACCESSIBLE ROUTES
+  match "cdc/verification", to: "accessible#cdc_verification", via: :get
+  match "cdc/verify", to: "accessible#verify", via: :post
+  match "cdc/upload/address-book", to: "accessible#upload_address_book", via: :get
+  match "cdc/process/address-book", to: "accessible#process_address_book_upload", via: :post
+  match "cdc/upload/a-to-z", to: "accessible#upload_a_to_z", via: :get
+  match "cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
+  match "cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
+  match "cdc/api/get-topics", to: "accessible#get_all_topics", via: :get
+  match "cdc/api/topic", to: "accessible#get_topic", via: :get
+  match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
+
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
