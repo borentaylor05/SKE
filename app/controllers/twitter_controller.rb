@@ -4,8 +4,11 @@ class TwitterController < ApplicationController
 	after_action :allow_iframe
 
 	def get_tweets_from_multiple
+
 		users = ["smh", "taranakinews", "DomPost"]
-		respond({ tweets: $twitter.get_tweets_from_users(users) })
+		tweets = $twitter.get_tweets_from_users(users)
+		Rails.logger.info("TWEETS: #{tweets}")
+		respond({ tweets: tweets })
 	end
 
 end
