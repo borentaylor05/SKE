@@ -15,14 +15,15 @@ class ApplicationController < ActionController::Base
   end
 
   def check_origin
-  Rails.logger.info("SDASDDASDASDADSAD #{request.remote_ip}") 
+  Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
     whitelist = [
       'http://localhost:8080', 
       'http://localhost:3000', 
       'https://social.teletech.com', 
-      "https://lit-inlet-2632.herokuapp.com",
-      "170.65.128.6",
-      "127.0.0.1"
+      'https://lit-inlet-2632.herokuapp.com',
+      'https://jivedemo-teletech-gtm-alliances.jiveon.com',
+      '170.65.128.6',
+      '127.0.0.1'
     ]
     if whitelist.include?(request.headers['origin'])
       return request.headers['origin']
