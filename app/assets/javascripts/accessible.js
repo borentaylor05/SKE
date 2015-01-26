@@ -3,7 +3,15 @@
 // You can use CoffeeScript in this file: http://coffeescript.org/
 
 
-var app = angular.module("AToZ", []);
+var app = angular.module("AToZ", ['ngSanitize']);
+
+app.directive('href', function() {
+  return {
+    compile: function(element) {
+      element.attr('target', '_blank');
+    }
+  };
+});
 
 app.controller("AZ", ['$http', '$scope', function($http, $scope){
 	var az = this;
@@ -15,6 +23,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 	az.getTopics = function(start, end){
 		az.loading = true;
 		az.narrowed = true;
+		$scope.data = null;
 		$http.get("/cdc/api/get-topics?start="+start+"&end="+end).success(function(resp){
 			console.log(resp);
 			az.topics = resp.topics
@@ -23,6 +32,18 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 			alert("Error!");
 			console.log(err);
 		});	
+	}
+	az.search = function(term){
+		az.loading = true;
+		az.narrowed = true;
+		$scope.data = null;
+		$http.get("/cdc/a-to-z/search?search="+term).success(function(resp){
+			az.topics = resp.topics
+			az.loading = false;
+		}).error(function(err){
+			alert("Error!");
+			console.log(err);
+		});
 	}
 	az.edit = function(topic){
 		if(az.currentlyEditing == topic){

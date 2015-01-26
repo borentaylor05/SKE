@@ -39,4 +39,8 @@ class AccessibleControllerTest < ActionController::TestCase
 		post :az_save_changes, params
 	end
 
+	test "search" do 
+		get :cdc_search
+	end
+
 end

@@ -1,5 +1,6 @@
 class AccessibleController < ApplicationController
 	skip_before_action :verify_authenticity_token
+	after_filter :cors_set_access_control_headers
 	#VIEWS
 
 	def upload_address_book
@@ -31,6 +32,20 @@ class AccessibleController < ApplicationController
 	def az_save_changes
 		if AToZEntry.exists?(id: params[:a_to_z_entry][:id])
 			entry = AToZEntry.find(params[:a_to_z_entry][:id])
+			if(params[:a_to_z_entry][:spanish])
+				if entry.spanish
+					entry.update_attributes!(spanish: false)
+				else
+					entry.update_attributes!(spanish: true)
+				end
+			end
+			if(params[:a_to_z_entry][:pr])
+				if entry.pr
+					entry.update_attributes!(pr: false)
+				else
+					entry.update_attributes!(pr: true)
+				end
+			end
 			entry = entry.update_attributes!(entry_params)
 			respond({ status: 0, entry: entry })
 		else
@@ -44,6 +59,11 @@ class AccessibleController < ApplicationController
 	def get_all_topics
 		respond({ topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
 	end
+
+	def cdc_search
+		respond({ topics: AToZEntry.select(:topic, :id).contains(params[:search].upcase) })
+	end
+
 	def get_topic
 		if AToZEntry.exists?(id: params[:id])
 			respond({ status: 0, topic: AToZEntry.find(params[:id]) })
@@ -63,7 +83,7 @@ class AccessibleController < ApplicationController
 	private
 
 		def entry_params
-			params.require(:a_to_z_entry).permit(:owner, :aka, :scope, :notes)
+			params.require(:a_to_z_entry).permit(:owner, :aka, :scope, :notes, :program_flow, :cdc_link)
 		end
 
 end

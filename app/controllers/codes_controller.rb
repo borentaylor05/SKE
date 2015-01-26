@@ -67,6 +67,7 @@ class CodesController < ApplicationController
 						date_assigned: Time.now,
 						assigned_by: params[:agent_id],
 						assigned_by_name: params[:agent_name].downcase,
+						ww_code_info: info,
 						used: true
 					)
 					if c[:code].valid?
@@ -165,7 +166,14 @@ class CodesController < ApplicationController
 		elsif request.method == "POST"
 			if WwCode.exists?(code_num: params[:code])
 				code = WwCode.find_by(code_num: params[:code])
-				code.update_attributes(used: params[:to_status])
+				info = code.ww_code_info
+				if params[:to_status] == false
+					code.update_attributes(used: params[:to_status])
+					info.update_attributes(agent_id: nil, agent_name: nil)
+				else
+					code.update_attributes(used: params[:to_status])
+					info.update_attributes(agent_name: "From Admin Console", agent_id: 0)
+				end
 				respond({ status: 0, message: "Changed Status" })
 			else
 				respond({ status: 1, error: "Code does not exist" })

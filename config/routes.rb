@@ -68,6 +68,11 @@ Rails.application.routes.draw do
   match "cdc/api/get-topics", to: "accessible#get_all_topics", via: :get
   match "cdc/api/topic", to: "accessible#get_topic", via: :get
   match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
+  match "cdc/a-to-z/search", to: "accessible#cdc_search", via: :get
+
+  # TWITTER ROUTES
+
+  match "tweets/multiple-users", to: "twitter#get_tweets_from_multiple", via: :get
 
 
 

@@ -2,6 +2,8 @@ class AToZEntry < ActiveRecord::Base
 
 	default_scope { order('topic ASC') }
 
+	scope :contains, -> (name) { where("topic like ?", "%#{name}%")}
+
 	def self.import(file)
 		CSV.foreach(file.path, headers: true, 
 			:header_converters => lambda {|f| f.delete(' ')},

@@ -1,3 +1,4 @@
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.min.js"></script>
 <div class="container" ng-app="AToZ" ng-controller="AZ as az">
 	<h1> Search For Topic To Edit </h1>
 	<div class="rangeContainer">
@@ -6,9 +7,16 @@
 		<span class="range btn btn-md btn-primary" ng-click="az.getTopics('E','K')">E-J</span>
 		<span class="range btn btn-md btn-primary" ng-click="az.getTopics('K','S')">K-R</span>
 		<span class="range btn btn-md btn-primary" ng-click="az.getTopics('S','Z')">S-Z</span>
-	</div>	
+	</div>
+	<form ng-submit="az.search(data.search)">
+		<div class="input-group searchGroup">
+			<span class="input-group-btn">
+				<button class="btn btn-md btn-success searchBtn" >Search</button>
+			</span>
+			<input type="text" class="form-control search" ng-model="data.search" placeholder="begin typing to filter results or click 'Search' to scan database">
+		</div>
+	</form>
 	<div ng-show="az.narrowed" class="topicContainer">
-		<input type="text" class="form-control search" ng-model="data.search">
 		<div ng-show="az.loading" class="text-center">
 			<div class="loader"></div>
 		</div>
@@ -16,45 +24,45 @@
 			<li class="result" ng-repeat="t in az.topics | filter:data.search">
 				<button ng-click="az.edit(t)" class="btn btn-xs btn-info edit">Edit</button>
 				<span>{{ t.topic }}</span>
-				<ul class="propertyList" ng-show="az.isBeingEdited(t) ">
+				<ul class="propertyList" ng-if="az.isBeingEdited(t) ">
 					<li>
 						AKA: {{ az.currentTopic.aka ? az.currentTopic.aka : "-" }} 
-						<span class="label label-warning" ng-show="change.aka.length > 0">
+						<span class="label label-warning" ng-if="change.aka.length > 0">
 							Changing to: {{ change.aka }} 
 						</span>
 					</li>
 					<ul><li><span>Edit AKA:</span><input ng-model="change.aka" type="text" class="form-control edit"></li></ul>
 					<li>
 						Owner: {{ az.currentTopic.owner ? az.currentTopic.owner : "-" }} 
-						<span class="label label-warning" ng-show="change.owner.length > 0">
+						<span class="label label-warning" ng-if="change.owner.length > 0">
 							Changing to: {{ change.owner }} 
 						</span>	
 					</li>
 					<ul><li><span>Edit Owner:</span><input ng-model="change.owner" type="text" class="form-control edit"></li></ul>
 					<li>
 						Scope: {{ az.currentTopic.scope ? az.currentTopic.scope : "-" }} 
-						<span class="label label-warning" ng-show="change.scope.length > 0">
+						<span class="label label-warning" ng-if="change.scope.length > 0">
 							Changing to: {{ change.scope }} 
 						</span>
 					</li>
 					<ul><li><span>Edit Scope:</span><input ng-model="change.scope" type="text" class="form-control edit"></li></ul>
 					<li>
 						Notes: {{ az.currentTopic.notes ? az.currentTopic.notes : "-" }} 
-						<span class="label label-warning" ng-show="change.notes.length > 0 && change.notes != az.currentTopic.notes">
+						<span class="label label-warning" ng-if="change.notes.length > 0 && change.notes != az.currentTopic.notes">
 							Changing to: {{ change.notes }} 
 						</span>
 					</li>
 					<ul><li><span>Edit Notes:</span><input ng-model="change.notes" type="text" class="form-control edit" ng-value="az.currentTopic.notes"></li></ul>
 					<li>
 						Program Flow: {{ az.currentTopic.program_flow ? az.currentTopic.program_flow : "-" }} 
-						<span class="label label-warning" ng-show="change.program_flow.length > 0">
+						<span class="label label-warning" ng-if="change.program_flow.length > 0">
 							Changing to: {{ change.program_flow }} 
 						</span>
 					</li>
 					<ul><li><span>Edit Program Flow:</span><input ng-model="change.program_flow" type="text" class="form-control edit"></li></ul>
 					<li>
 						PRs Available? {{ az.currentTopic.pr ? "YES" : "NO" }} 
-						<span class="label label-warning" ng-show="change.pr">
+						<span class="label label-warning" ng-if="change.pr">
 							Changing to: {{ az.currentTopic.pr ? "NO" : "YES" }} 
 						</span>
 					</li>
@@ -62,15 +70,16 @@
 						<li><span>Edit PR Present?</span><input ng-model="change.pr" type="checkbox"> {{ az.currentTopic.pr ? "NO" : "YES" }}</li>
 					</ul>
 					<li>
-						CDC Link: {{ az.currentTopic.cdc_link ? az.currentTopic.cdc_link : "-" }} 
-						<span class="label label-warning" ng-show="change.cdc_link.length > 0">
+						CDC Link: 
+						<span ng-bind-html="(az.currentTopic.cdc_link ? az.currentTopic.cdc_link : '-') | linky"></span>
+						<span class="label label-warning" ng-if="change.cdc_link.length > 0">
 							Changing to: {{ change.cdc_link }} 
 						</span>	
 					</li>
 					<ul><li><span>Edit CDC Link:</span><input ng-model="change.cdc_link" type="text" class="form-control edit"></li></ul>
 					<li>
 						Spanish Website: {{ az.currentTopic.spanish ? "YES" : "NO" }} 
-						<span class="label label-warning" ng-show="change.spanish">
+						<span class="label label-warning" ng-if="change.spanish">
 							Changing to: {{ az.currentTopic.spanish ? "NO" : "YES" }} 
 						</span>
 					</li>
