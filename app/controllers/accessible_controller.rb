@@ -55,22 +55,7 @@ class AccessibleController < ApplicationController
 
 	#UTILITY
 
-	# gets all topics within range, e.g. a..m, determined by params
-	def get_all_topics
-		respond({ topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
-	end
-
-	def cdc_search
-		respond({ topics: AToZEntry.select(:topic, :id).contains(params[:search].upcase) })
-	end
-
-	def get_topic
-		if AToZEntry.exists?(id: params[:id])
-			respond({ status: 0, topic: AToZEntry.find(params[:id]) })
-		else
-			respond({ status: 1, error: "Topic not found" })
-		end
-	end
+	# Moved to a_to_z controller
 
 	def verify
 		if(params[:password] == "password")

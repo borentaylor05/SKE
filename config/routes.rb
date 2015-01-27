@@ -65,10 +65,16 @@ Rails.application.routes.draw do
   match "cdc/upload/a-to-z", to: "accessible#upload_a_to_z", via: :get
   match "cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
   match "cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
-  match "cdc/api/get-topics", to: "accessible#get_all_topics", via: :get
-  match "cdc/api/topic", to: "accessible#get_topic", via: :get
   match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
-  match "cdc/a-to-z/search", to: "accessible#cdc_search", via: :get
+  
+  # A-Z
+  match "cdc/api/search", to: "a_to_z#cdc_search", via: :get
+  match "cdc/api/get-range", to: "a_to_z#get_range", via: :get
+  match "cdc/api/topic", to: "a_to_z#get_topic", via: :get
+
+  # ADDRESS BOOK
+  match "cdc/address-book", to: "address_book#get_all", via: :get
+  match "/cdc/address-book/entry", to: "address_book#get_entry", via: :get
 
   # TWITTER ROUTES
 

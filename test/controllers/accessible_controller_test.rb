@@ -18,14 +18,6 @@ class AccessibleControllerTest < ActionController::TestCase
 		get :edit_a_to_z
 	end
 
-	test "get all topics" do 
-		get :get_all_topics
-	end
-
-	test "get topic" do 
-		get :get_topic
-	end
-
 	test "save changes" do 
 		params = {
 			aka: "ASDASD",
@@ -37,10 +29,6 @@ class AccessibleControllerTest < ActionController::TestCase
 			spanish: true
 		}
 		post :az_save_changes, params
-	end
-
-	test "search" do 
-		get :cdc_search
 	end
 
 end

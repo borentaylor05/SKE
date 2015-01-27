@@ -24,7 +24,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 		az.loading = true;
 		az.narrowed = true;
 		$scope.data = null;
-		$http.get("/cdc/api/get-topics?start="+start+"&end="+end).success(function(resp){
+		$http.get("/cdc/api/get-range?start="+start+"&end="+end).success(function(resp){
 			console.log(resp);
 			az.topics = resp.topics
 			az.loading = false;
@@ -37,7 +37,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 		az.loading = true;
 		az.narrowed = true;
 		$scope.data = null;
-		$http.get("/cdc/a-to-z/search?search="+term).success(function(resp){
+		$http.get("/cdc/api/search?search="+term).success(function(resp){
 			az.topics = resp.topics
 			az.loading = false;
 		}).error(function(err){
