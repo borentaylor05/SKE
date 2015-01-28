@@ -14,29 +14,7 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
-  def cors_set_access_control_headers_local
-    headers['Access-Control-Allow-Origin'] = check_origin_local
-    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
-    headers['Access-Control-Request-Method'] = '*'
-    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  end
-
   def check_origin
-  Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
-    whitelist = [
-      'http://localhost:8080', 
-      'http://localhost:3000', 
-      'https://social.teletech.com', 
-      'https://lit-inlet-2632.herokuapp.com',
-      'https://jivedemo-teletech-gtm-alliances.jiveon.com',
-    ]
-    if whitelist.include?(request.headers['origin'])
-      return request.headers['origin']
-    end
-  end
-
-  # allows api / page to be accessible from any browser
-  def check_origin_local
   Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
     whitelist = [
       'http://localhost:8080', 

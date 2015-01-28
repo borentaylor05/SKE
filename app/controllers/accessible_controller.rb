@@ -1,6 +1,6 @@
 class AccessibleController < ApplicationController
 	skip_before_action :verify_authenticity_token
-	after_filter :cors_set_access_control_headers_local
+	after_filter :cors_set_access_control_headers
 	#VIEWS
 
 	def upload_address_book
