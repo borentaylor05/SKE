@@ -66,6 +66,7 @@ Rails.application.routes.draw do
   match "cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
   match "cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
   match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
+  match "/fairfax/process/deadlines", to: "accessible#upload_deadlines", via: :post
   
   # A-Z
   match "cdc/api/search", to: "a_to_z#cdc_search", via: :get
@@ -74,7 +75,10 @@ Rails.application.routes.draw do
 
   # ADDRESS BOOK
   match "cdc/address-book", to: "address_book#get_all", via: :get
-  match "/cdc/address-book/entry", to: "address_book#get_entry", via: :get
+  match "cdc/address-book/entry", to: "address_book#get_entry", via: :get
+
+  # FX DEADLINES
+
 
   # TWITTER ROUTES
 

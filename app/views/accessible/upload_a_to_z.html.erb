@@ -1,7 +1,7 @@
 <div class="container">
 	<h2>Import A-to-Z List</h2>
 
-	<%= form_tag "/cdc/process/a-to-z", multipart: true do %>
+	<%= form_tag "/fairfax/process/deadlines", multipart: true do %>
 	  <%= file_field_tag :file %>
 	  <%= submit_tag "Import", class: "btn btn-md btn-success" %>
 	<% end %>

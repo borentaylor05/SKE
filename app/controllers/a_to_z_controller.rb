@@ -5,6 +5,7 @@ class AToZController < ApplicationController
 
 	# gets all topics within range, e.g. a..m, determined by params
 	def get_range
+		Rails.logger.info("HOST ------> #{request.host}")
 		respond({ topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
 	end
 
