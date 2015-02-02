@@ -1,7 +1,7 @@
 class AccessibleController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	
-	before_action :verify, only: [:upload_deadlines, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
+	before_action :verify, only: [:upload_deadlines, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines, :verify_user]
 	#VIEWS
 
 	def upload_address_book	
