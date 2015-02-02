@@ -106,7 +106,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 }]);
 
 
-var dlApp = angular.module("DeadlinesApp", []);
+var dlApp = angular.module("DeadlinesApp", ['pubs']);
 
 dlApp.factory("pubs", function($http){
 	var pubs = {};
