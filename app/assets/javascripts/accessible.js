@@ -106,9 +106,9 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 }]);
 
 
-var dlApp = angular.module("DeadlinesApp", ['pubs']);
+var dlApp = angular.module("DeadlinesApp", []);
 
-dlApp.factory("pubs", function($http){
+dlApp.factory("pubs", ['$http', function($http){
 	var pubs = {};
 
 	pubs.getAll = function(){
@@ -122,7 +122,7 @@ dlApp.factory("pubs", function($http){
 	}
 
 	return pubs;
-});
+}]);
 
 
 dlApp.controller("Deadlines", ['$http', '$scope', 'pubs', function($http, $scope, pubs){
