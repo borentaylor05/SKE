@@ -72,6 +72,7 @@ class ApplicationController < ActionController::Base
   def verify
     Rails.logger.info("ORIGIN -- #{request.original_url}")
     if !$whitelist.include?(request.headers['origin']) && !token_valid(params[:token])
+      Rails.logger.info("URL SHOULD BE ----> #{request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')}")
       cookies[:url] = request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')
       cookies[:action] = params[:action]
       if !params.has_key?("token")

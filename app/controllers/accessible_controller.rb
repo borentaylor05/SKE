@@ -34,7 +34,6 @@ class AccessibleController < ApplicationController
 			end
 		else
 			if params[:password] == ENV['ACCESSIBLE_PASSWORD']
-				Rails.logger.info(cookies)
 				if cookies[:url].include?("?")
 					route =  "#{cookies[:url]}&token=#{generate_access_token}"
 				else
