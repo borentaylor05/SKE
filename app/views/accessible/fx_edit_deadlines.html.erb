@@ -1,0 +1,57 @@
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.min.js"></script>
+<div class="container" ng-app="DeadlinesApp" ng-controller="Deadlines as dl">
+	<h1>Search For Publication Deadline To Edit</h1>
+	<form ng-submit="dl.search(dl.filter.search)">
+		<div class="input-group searchGroup">
+			<span class="input-group-btn">
+				<button class="btn btn-md btn-success searchBtn" >Search</button>
+			</span>
+			<input placeholder="begin typing to filter" ng-model="dl.filter" type="text" class="form-control">
+		</div>
+	</form>
+	<ul ng-hide="dl.allDeadlines.length > 0">
+		<li class="result" ng-repeat="pub in dl.pubs | filter:dl.filter">
+			<button class="btn btn-xs btn-info edit" ng-click="dl.getDeadlines(pub)">Edit</button>
+			<span> {{ pub }} </span>
+		</li>
+	</ul>
+	<div ng-if="dl.allDeadlines.length > 0">
+		<div class="text-center">
+			<h4>Showing deadlines for: {{ dl.dlSelected }}</h4>
+			<button class="btn btn-xs btn-warning" ng-click="dl.clearDeadlines()">Clear and Show Publications</button>
+		</div>
+		<div class="row text-left headerRow">
+			<div class="col-xs-4"></div>
+			<div class="col-xs-2"><strong>NZ Time</strong></div>
+			<div class="col-xs-2"><strong>MLA Time</strong></div>
+			<div class="col-xs-2"><strong>Run Day</strong></div>
+		</div>
+		<div class="text-left day" ng-repeat="day in dl.allDeadlines" ng-if="day.deadlines.length > 0">
+			<h3> {{ day.day }} </h3>
+			<div ng-repeat="d in day.deadlines | filter:dl.filter">
+				<div class="row" >
+					<div class="col-xs-4"> {{ d.publication }} 
+						<label class="label label-warning" ng-if="dl.edit.publication.length > 0 && dl.isBeingEdited(d)">Changing to: {{ dl.edit.publication }}</label>
+					</div>
+					<div class="col-xs-2"> {{ d.nz_time }} 
+						<label class="label label-warning" ng-if="dl.edit.nz_time.length > 0 && dl.isBeingEdited(d)">Changing to: {{ dl.edit.nz_time }}</label>
+					</div>
+					<div class="col-xs-2"> {{ d.mla_time }} 
+						<label class="label label-warning" ng-if="dl.edit.mla_time.length > 0 && dl.isBeingEdited(d)">Changing to: {{ dl.edit.mla_time }}</label>
+					</div>
+					<div class="col-xs-2"> {{ d.run_day }} 
+						<label class="label label-warning" ng-if="dl.edit.run_day.length > 0 && dl.isBeingEdited(d)">Changing to: {{ dl.edit.run_day }}</label>
+					</div>
+					<div class="col-xs-2"><button ng-click="dl.editDeadline(d)" class="btn btn-xs btn-info">View</button></div>
+				</div>
+				<div class="editRow row" ng-if="dl.isBeingEdited(d)">
+					<input class="col-xs-4" type="text" placeholder="edit publication name" ng-model="$parent.dl.edit.publication">
+					<input class="col-xs-2" type="text" placeholder="edit NZ time" ng-model="$parent.dl.edit.nz_time">
+					<input class="col-xs-2" type="text" placeholder="edit MLA time" ng-model="$parent.dl.edit.mla_time">
+					<input class="col-xs-2" type="text" placeholder="edit Run Day" ng-model="$parent.dl.edit.run_day">
+					<button class=" btn btn-xs btn-success" ng-click="dl.save(d, $parent.dl.edit)">Save</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>

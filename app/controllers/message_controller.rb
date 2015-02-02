@@ -21,6 +21,26 @@ class MessageController < ApplicationController
 		end
 	end
 
+	def send_message
+		if User.exists?(jive_id: params[:sender])
+			u = User.find_by(jive_id: params[:sender])
+			m = Message.new(
+				user: u,
+				text: params[:body],
+				client: u.client
+			)
+			if m.valid?
+				m.save
+				m.send_message(params[:recipients])
+				respond({ status: 0, message: "Message Sent to #{params[:recipients].count} people." })
+			else
+				respond({ status: 1, error: "#{m.errors.full_messages}" })
+			end
+		else
+			respond({ status: 2, error: "Sender doesn't exist, creating now." })
+		end
+	end
+
 	private
 
 		def get_unread(user)

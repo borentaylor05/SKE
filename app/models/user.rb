@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 	belongs_to :client
+	validates :jive_id, presence: true
+	validates :employee_id, presence: true
 	has_many :contents
 	has_many :resolved_issues, class_name: "Issue", foreign_key: 'resolved_by'
 	has_many :created_issues, class_name: "Issue", foreign_key: 'created_by'

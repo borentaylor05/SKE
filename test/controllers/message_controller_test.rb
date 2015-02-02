@@ -18,4 +18,13 @@ class MessageControllerTest < ActionController::TestCase
 		post :acknowledge, params
 	end
 
+	test "send" do 
+		params = {
+			sender: User.first.jive_id,
+			recipients: [User.last.jive_id],
+			body: "BLAH"
+		}
+		post :send_message, params
+	end
+
 end

@@ -15,22 +15,30 @@ class UserController < ApplicationController
 	end
 
 	def create
-		user = parse_user(params)
-		if !User.exists?(jive_id: user[:jive_id])
-			u = User.new(jive_id: user[:jive_id], employee_id: user[:employee_id], client_id: user[:client_id])
-			if u.valid?
-				u.save
-				response = { status: "User Created" }
+		if(request.method == "OPTIONS")
+			respond({status: 1})
+		elsif request.method == "POST"
+			user = parse_user(params)
+			if !User.exists?(jive_id: user[:jive_id])
+				u = User.new(jive_id: user[:jive_id], 
+							 employee_id: user[:employee_id], 
+							 client_id: user[:client_id],
+							 name: user[:name]	
+							 )
+				if u.valid?
+					u.save
+					response = { status: 0, message: "User Created" }
+				else
+					response = { status: 1, error: "Error: #{u.errors.full_messages}" }
+				end
 			else
-				response = { status: "Error: #{u.errors.full_messages}" }
+				if !params[:client].blank?
+					update_user_client(params)
+				end
+				response = { status: "User Exists" }
 			end
-		else
-			if !params[:client].blank?
-				update_user_client(params)
-			end
-			response = { status: "User Exists" }
+			respond(response)
 		end
-		respond(response)
 	end
 
 	def update_client
@@ -51,7 +59,7 @@ class UserController < ApplicationController
 			else
 				client_id = 0
 			end
-			return {client_id: client_id, jive_id: params[:jive_id], employee_id: params[:employee_id]}	
+			return {client_id: client_id, jive_id: params[:jive_id], employee_id: params[:employee_id], name: params[:name]}	
 		end
 
 end

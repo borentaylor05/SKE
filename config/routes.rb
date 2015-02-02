@@ -2,8 +2,6 @@ Rails.application.routes.draw do
 
   get 'sessions/new'
 
-  resources :user, only: [:new, :create]
-
   resources :update, only: [:create]
 
   
@@ -23,6 +21,7 @@ Rails.application.routes.draw do
   # User Routes
   match "user/update-client", to: "user#update_client", via: :post
   match "user/check", to: "user#check_init", via: :get
+  match "user", to: "user#create", via: [:post, :options]
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
@@ -56,9 +55,9 @@ Rails.application.routes.draw do
   # MESSAGE ROUTES
   match "messages", to: "message#get_unread_messages", via: :get
   match "message/acknowledge", to: "message#acknowledge", via: [:post, :options]
+  match "message", to: "message#send_message", via: [:post, :options]
 
   # ACCESSIBLE ROUTES
-  match "cdc/verification", to: "accessible#cdc_verification", via: :get
   match "cdc/verify", to: "accessible#verify", via: :post
   match "cdc/upload/address-book", to: "accessible#upload_address_book", via: :get
   match "cdc/process/address-book", to: "accessible#process_address_book_upload", via: :post
@@ -66,8 +65,13 @@ Rails.application.routes.draw do
   match "cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
   match "cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
   match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
-  match "/fairfax/process/deadlines", to: "accessible#upload_deadlines", via: :post
-  
+  match "fairfax/upload/deadlines", to: "accessible#upload_deadlines", via: :get
+  match "fairfax/process/deadlines", to: "accessible#process_deadlines", via: :post
+  match "authenticate", to: "accessible#authenticate", via: :get
+  match "verify", to: "accessible#verify_user", via: :post
+  match "fx/deadlines/edit", to: "accessible#fx_edit_deadlines", via: :get
+  match "fx/deadline/save", to: "accessible#fx_save_deadline", via: :put
+
   # A-Z
   match "cdc/api/search", to: "a_to_z#cdc_search", via: :get
   match "cdc/api/get-range", to: "a_to_z#get_range", via: :get
@@ -78,8 +82,9 @@ Rails.application.routes.draw do
   match "cdc/address-book/entry", to: "address_book#get_entry", via: :get
 
   # FX DEADLINES
-
-
+  match "fairfax/deadlines/publication", to: "deadline#get_deadlines_by_pub", via: :get
+  match "fairfax/publications", to: "deadline#get_pubs", via: :get
+  
   # TWITTER ROUTES
 
   match "tweets/multiple-users", to: "twitter#get_tweets_from_multiple", via: :get

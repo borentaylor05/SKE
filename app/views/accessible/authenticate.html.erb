@@ -1,0 +1,9 @@
+<div ng-app="VerifyApp" ng-controller="Verify as ver" class="container text-center">
+	<% if flash[:error] %>
+		<div class="alert alert-danger"> <%= flash[:error] %> </div>
+	<% end %>
+	<h2>You must enter a password to access this page:</h2>
+	<input type="password" ng-model="data.password" class="form-control">
+	<div ng-show="ver.status > 0" class="alert alert-danger"> {{ ver.error }} </div>
+	<button class="btn btn-lg btn-success" ng-click="ver.verify(data.password)">GO</button>
+</div>

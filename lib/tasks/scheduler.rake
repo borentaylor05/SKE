@@ -37,17 +37,19 @@ task :empty_codes => :environment do
 	WwCode.destroy_all
 end
 
-task :pr_string_to_bool => :environment do 
-	AToZEntry.all.each do |e|
-		 bool = e.PRs == "YES" ? true : false
-		 e.update_attributes(PR_bool: bool)
+task :deadline_test => :environment do 
+	pubs = []
+	Deadline.uniq.pluck(:publication).each do |p|
+		name = p.match('^[^\(]*').to_s.strip
+		name = name.match('^[^\-]*').to_s.strip
+		if name[0] == "*"
+			name[0] = ''
+		end
+		if !pubs.include?(name)
+			pubs.push(name)
+			puts name
+		end
 	end
 end
 
-task :spanish_string_to_bool => :environment do 
-	AToZEntry.all.each do |e|
-		 bool = e.Spanish == "Y" ? true : false
-		 e.update_attributes(Spanish_bool: bool)
-	end
-end
 
