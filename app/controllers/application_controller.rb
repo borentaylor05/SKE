@@ -11,9 +11,7 @@ class ApplicationController < ActionController::Base
       'http://localhost:3000', 
       'https://social.teletech.com', 
       'https://lit-inlet-2632.herokuapp.com',
-      'https://jivedemo-teletech-gtm-alliances.jiveon.com',
-      '170.65.128.6',
-      '127.0.0.1'
+      'https://jivedemo-teletech-gtm-alliances.jiveon.com'
     ]
 
   def cors_set_access_control_headers
