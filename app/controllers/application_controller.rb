@@ -68,11 +68,9 @@ class ApplicationController < ActionController::Base
   end
 
   def verify
-    Rails.logger.info("ORIGIN -- #{request.original_url}")
-    Rails.logger.info("URL SHOULD BE ----> #{request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')}")
     if (request.headers['origin'].nil? or !$whitelist.include?(request.headers['origin'])) and !token_valid(params[:token])
       Rails.logger.info("URL SHOULD BE ----> #{request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')}")
-      cookies[:url] = request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')
+      cookies[:url] = request.original_url
       cookies[:action] = params[:action]
       if !params.has_key?("token")
         flash[:error] = "Access to this page requires a password." 
