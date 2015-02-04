@@ -4,6 +4,16 @@ class MessageController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
+	def all
+		user = User.find_by(jive_id: params[:user])
+		if user.nil?
+			respond({ status: 1, error: "User not found" })
+		else
+			msgs = get_all(user)
+			respond({ status: 0, messages: msgs })
+		end
+	end
+
 	def get_unread_messages
 		user = User.find_by(jive_id: params[:user])
 		msgs = get_unread(user)
@@ -14,7 +24,7 @@ class MessageController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			user = User.find_by(jive_id: params[:user])
+			user = User.find_by(jive_id: params[:jive_id])
 			m = MessageTracker.find_by(user: user, message_id: params[:message])
 			m.update_attributes(acknowledged: true)
 			respond({ status: 0, messages: get_unread(user) })
@@ -42,6 +52,18 @@ class MessageController < ApplicationController
 	end
 
 	private
+
+		def get_all(user)
+			msgs = []
+			user.message_trackers.limit(15).each do |t|
+				hash = t.message.attributes
+				hash[:sent_ago] = "#{time_ago_in_words(t.created_at)} ago"
+				hash[:sender] = t.message.user
+				hash[:acknowledged] = t.acknowledged
+				msgs.push(hash)
+			end
+			return msgs
+		end
 
 		def get_unread(user)
 			msgs = []

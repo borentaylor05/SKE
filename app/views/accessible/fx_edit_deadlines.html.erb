@@ -11,7 +11,7 @@
 	</form>
 	<ul ng-hide="dl.allDeadlines.length > 0">
 		<li class="result" ng-repeat="pub in dl.pubs | filter:dl.filter">
-			<button class="btn btn-xs btn-info edit" ng-click="dl.getDeadlines(pub)">Edit</button>
+			<button class="btn btn-xs btn-info edit" ng-click="dl.getDeadlines(pub)">View</button>
 			<span> {{ pub }} </span>
 		</li>
 	</ul>
@@ -42,7 +42,7 @@
 					<div class="col-xs-2"> {{ d.run_day }} 
 						<label class="label label-warning" ng-if="dl.edit.run_day.length > 0 && dl.isBeingEdited(d)">Changing to: {{ dl.edit.run_day }}</label>
 					</div>
-					<div class="col-xs-2"><button ng-click="dl.editDeadline(d)" class="btn btn-xs btn-info">View</button></div>
+					<div class="col-xs-2"><button ng-click="dl.editDeadline(d)" class="btn btn-xs btn-info">Edit</button></div>
 				</div>
 				<div class="editRow row" ng-if="dl.isBeingEdited(d)">
 					<input class="col-xs-4" type="text" placeholder="edit publication name" ng-model="$parent.dl.edit.publication">

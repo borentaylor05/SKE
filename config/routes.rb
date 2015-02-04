@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   match "messages", to: "message#get_unread_messages", via: :get
   match "message/acknowledge", to: "message#acknowledge", via: [:post, :options]
   match "message", to: "message#send_message", via: [:post, :options]
+  match "messages/all", to: "message#all", via: :get
 
   # ACCESSIBLE ROUTES
   match "cdc/verify", to: "accessible#verify", via: :post

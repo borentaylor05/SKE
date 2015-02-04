@@ -8,6 +8,8 @@ class Message < ActiveRecord::Base
 	has_many :users, through: :message_trackers	
 	has_many :clients, through: :message_trackers	
 
+	default_scope { order('created_at DESC') }
+
 	def send_message(recipients)
 		recipients.each do |r|
 			t = MessageTracker.new(

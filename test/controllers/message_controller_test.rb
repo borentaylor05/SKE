@@ -27,4 +27,12 @@ class MessageControllerTest < ActionController::TestCase
 		post :send_message, params
 	end
 
+	test "get all" do 
+		params = {
+			jive_id: User.first.jive_id
+		}
+		get :all, params
+		assert_response :success
+	end
+
 end
