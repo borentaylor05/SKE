@@ -52,4 +52,12 @@ task :deadline_test => :environment do
 	end
 end
 
+task :unacknowledge => :environment do
+	MessageTracker.all.each do |t|
+		t.acknowledged = false
+		t.save
+	end
+end
+
+
 

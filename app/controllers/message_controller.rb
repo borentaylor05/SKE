@@ -58,6 +58,7 @@ class MessageController < ApplicationController
 			user.message_trackers.limit(15).each do |t|
 				hash = t.message.attributes
 				hash[:sent_ago] = "#{time_ago_in_words(t.created_at)} ago"
+				hash[:milli] = t.updated_at.to_f * 1000
 				hash[:sender] = t.message.user
 				hash[:acknowledged] = t.acknowledged
 				msgs.push(hash)
