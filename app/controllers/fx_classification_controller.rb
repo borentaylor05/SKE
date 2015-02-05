@@ -6,7 +6,8 @@ class FxClassificationController < ApplicationController
 
 	def get_classifications
 		if params.has_key?("cat")
-			respond({ status: 0, c: [{ cat: params[:cat], all: FxClassification.where(category: params[:cat]) }] })
+			cur = FxClassCat.find(params[:cat])
+			respond({ status: 0, c: [{ cat: cur.name, all: FxClassification.where(fx_class_cat: cur) }] })
 		elsif params.has_key?("search")
 			respond({ status: 0, c: get_matches(params[:search]) })	
 		else
@@ -23,11 +24,11 @@ class FxClassificationController < ApplicationController
 		def get_matches(term)
 			cats = []
 			FxClassification.contains(term).each do |c|
-				cur = c.category
-				if !cats.index{ |item| item[:cat] == cur}
-					cats.push({ cat: cur, all: [c] })
+				cur = c.fx_class_cat
+				if !cats.index{ |item| item[:cat] == cur.name}
+					cats.push({ cat: cur.name, all: [c] })
 				else
-					i = cats.index{ |item| item[:cat] == cur}
+					i = cats.index{ |item| item[:cat] == cur.name}
 					cats[i][:all].push(c)
 				end
 			end
