@@ -1,0 +1,8 @@
+<div class="container">
+	<h2>Import Fairfax Classifications</h2>
+
+	<%= form_tag "/fx/process/classifications", multipart: true do %>
+	  <%= file_field_tag :file %>
+	  <%= submit_tag "Import", class: "btn btn-md btn-success" %>
+	<% end %>
+</div>

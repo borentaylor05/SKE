@@ -1,13 +1,16 @@
 class AccessibleController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers, except: :authenticate
-	before_action :verify, only: [:upload_deadlines, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
+	before_action :verify, only: [:upload_deadlines, :upload_fx_classifications, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
 	#VIEWS
 
 	def upload_address_book	
 	end
 
 	def upload_a_to_z
+	end
+
+	def upload_fx_classifications
 	end
 
 	def upload_deadlines
@@ -50,6 +53,11 @@ class AccessibleController < ApplicationController
 
 	def process_address_book_upload
 		AddressBookEntry.import(params[:file])
+		respond({ status: 0, message: "Upload Successful" })
+	end
+
+	def process_fx_classification_upload
+		FxClassification.import(params[:file])
 		respond({ status: 0, message: "Upload Successful" })
 	end
 

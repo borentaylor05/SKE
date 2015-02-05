@@ -66,12 +66,14 @@ Rails.application.routes.draw do
   match "cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
   match "cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
   match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
-  match "fairfax/upload/deadlines", to: "accessible#upload_deadlines", via: :get
-  match "fairfax/process/deadlines", to: "accessible#process_deadlines", via: :post
   match "authenticate", to: "accessible#authenticate", via: :get
   match "verify", to: "accessible#verify_user", via: :post
   match "fx/deadlines/edit", to: "accessible#fx_edit_deadlines", via: :get
   match "fx/deadline/save", to: "accessible#fx_save_deadline", via: :put
+  match "fx/upload/classifications", to: "accessible#upload_fx_classifications", via: :get
+  match "fx/process/classifications", to: "accessible#process_fx_classification_upload", via: :post
+  match "fx/upload/deadlines", to: "accessible#upload_deadlines", via: :get
+  match "fx/process/deadlines", to: "accessible#process_deadlines", via: :post
 
   # A-Z
   match "cdc/api/search", to: "a_to_z#cdc_search", via: :get
@@ -85,6 +87,10 @@ Rails.application.routes.draw do
   # FX DEADLINES
   match "fairfax/deadlines/publication", to: "deadline#get_deadlines_by_pub", via: :get
   match "fairfax/publications", to: "deadline#get_pubs", via: :get
+
+  # FX CLASSIFICATION ROUTES
+  match "fx/classifications", to: "fx_classification#get_classifications", via: :get  
+  match "fx/classifications/categories", to: "fx_classification#get_categories", via: :get  
   
   # TWITTER ROUTES
 

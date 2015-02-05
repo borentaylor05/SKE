@@ -6,6 +6,11 @@ class AccessibleControllerTest < ActionController::TestCase
 		get :upload_address_book
 	end
 
+	test "get fx classifications upload" do 
+		get :upload_fx_classifications
+		assert_response 302
+	end
+
 	test "get a to z upload" do 
 		get :upload_a_to_z
 	end
