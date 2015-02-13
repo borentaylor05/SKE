@@ -27,4 +27,18 @@ class UserControllerTest < ActionController::TestCase
     get :check_init, params
   end
 
+  test "get users" do
+    params = {
+      count: "",
+      start: ""
+    } 
+    get :get_all, params
+    assert_response :success
+  end
+
+  test "get search" do 
+    get :search
+    assert_response :success
+  end
+
 end

@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+	
+	scope :contains, -> (name) { where("lower(employee_id) like ? or lower(name) like ? or CAST(jive_id AS TEXT) like ?", "%#{name.downcase}%", "%#{name.downcase}%", "%#{name.downcase}%")}
+
 	belongs_to :client
 	validates :jive_id, presence: true
 	validates :employee_id, presence: true

@@ -14,6 +14,16 @@ class UserController < ApplicationController
 		end
 	end
 
+	def search
+		users = []
+		User.contains(params[:term]).each do |u|
+			hash = u.attributes 
+			hash[:client] = u.client ? u.client.name : nil
+			users.push(hash)
+		end
+		respond({ status: 0, users: users })
+	end
+
 	def create
 		if(request.method == "OPTIONS")
 			respond({status: 1})
@@ -43,6 +53,18 @@ class UserController < ApplicationController
 
 	def update_client
 		respond(update_user_client(params))
+	end
+
+	def get_all
+		params[:count] = params[:count].empty? ? 100 : params[:count]
+		params[:start] = params[:start].empty? ? 0 : params[:start]
+		users = []
+		User.all.limit(params[:count]).offset(params[:start]).each do |u|
+			hash = u.attributes 
+			hash[:client] = u.client ? u.client.name : nil
+			users.push(hash)
+		end
+		respond({ status: 0, users: users })
 	end
 
 	private

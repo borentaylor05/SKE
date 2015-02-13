@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   match "user/update-client", to: "user#update_client", via: :post
   match "user/check", to: "user#check_init", via: :get
   match "user", to: "user#create", via: [:post, :options]
+  match "users", to: "user#get_all", via: :get
+  match "users/search", to: "user#search", via: :get
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
