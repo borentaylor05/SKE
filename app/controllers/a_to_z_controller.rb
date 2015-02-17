@@ -2,7 +2,7 @@ class AToZController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
-	before_action :verify
+#	before_action :verify
 
 	# gets all topics within range, e.g. a..m, determined by params
 	def get_range

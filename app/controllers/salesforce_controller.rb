@@ -6,26 +6,15 @@ class SalesforceController < ApplicationController
 
 	def test
 		begin
-			sf_auth = User.find_by(jive_id: params[:user]).sf_o_auths.first
-			# only store latest oauth creds in db
-			if(User.find_by(jive_id: params[:user]).sf_o_auths.count > 1)
-				User.find_by(jive_id: params[:user]).sf_o_auths.last.destroy
-			end
-			if sf_auth.nil?
-				respond({ status: 1, type: "oauth", error: "No OAuth Entry." })
+			client = create_client(params[:user])
+			if client
+				respond({ accounts: client.query("select name from account") })
+				cleanup_oauth_creds(params[:user]) # last so response is quicker
 			else
-				client = Restforce.new :oauth_token => sf_auth.token,
-				  :refresh_token => sf_auth.refresh_token,
-				  :instance_url  => sf_auth.instance_url,
-				  :client_id     => ENV['SF_CLIENT_ID'],
-				  :client_secret => ENV['SF_CLIENT_SECRET']
-				
-				respond({ client: client.query("select name from user") })
+				respond({ status: 1, error: "Unable to create client." })
 			end
-
 		rescue Restforce::UnauthorizedError
 			respond({ status: 1, type: "oauth", error: "Session expired, reauthenticating." })
-		
 		end
 	end
 
@@ -36,7 +25,6 @@ class SalesforceController < ApplicationController
 	end
 
 	def callback
-		logger.info "#{session['user']} just authenticated"
 		logger.info "#{env["omniauth.auth"]["extra"]["display_name"]} just authenticated"
 		credentials = env["omniauth.auth"]["credentials"]
 		sf = SfOAuth.new(
@@ -62,5 +50,28 @@ class SalesforceController < ApplicationController
 	end
 
 
+	private 
+
+		def create_client(user)
+			sf_auth = User.find_by(jive_id: user).sf_o_auths.first
+			if sf_auth.nil?
+				respond({ status: 1, type: "oauth", error: "No OAuth Entry." })
+				return false
+			else
+				client = Restforce.new :oauth_token => sf_auth.token,
+					:refresh_token => sf_auth.refresh_token,
+					:instance_url  => sf_auth.instance_url,
+					:client_id     => ENV['SF_CLIENT_ID'],
+					:client_secret => ENV['SF_CLIENT_SECRET']
+				return client
+			end		
+		end
+
+		def cleanup_oauth_creds(user)
+			# only store latest oauth creds in db
+			if(User.find_by(jive_id: user).sf_o_auths.count > 1)
+				User.find_by(jive_id: user).sf_o_auths.last.destroy
+			end
+		end
 
 end
