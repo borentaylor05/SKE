@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150205205723) do
+ActiveRecord::Schema.define(version: 20150217190436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,6 +173,15 @@ ActiveRecord::Schema.define(version: 20150205205723) do
     t.integer  "action_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "sf_o_auths", force: true do |t|
+    t.string   "token"
+    t.string   "refresh_token"
+    t.string   "instance_url"
+    t.integer  "user_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "specialties", force: true do |t|

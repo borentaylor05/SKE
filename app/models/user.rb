@@ -13,4 +13,6 @@ class User < ActiveRecord::Base
 	has_many :message_trackers
 	has_many :messages, through: :message_trackers
 	accepts_nested_attributes_for :message_trackers
+
+	has_many :sf_o_auths
 end

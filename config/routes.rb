@@ -95,8 +95,14 @@ Rails.application.routes.draw do
   match "fx/classifications/categories", to: "fx_classification#get_categories", via: :get  
   
   # TWITTER ROUTES
-
   match "tweets/multiple-users", to: "twitter#get_tweets_from_multiple", via: :get
+
+  # SF Routes
+  match "salesforce", to: "salesforce#test", via: :get
+  match "salesforce/authenticate", to: "salesforce#authenticate", via: :get
+  match 'auth/salesforce/callback', to: "salesforce#callback", via: :get
+  match 'salesforce/auth/failure', to: "salesforce#failure", via: :get
+  match 'salesforce/unauthenticate', to: "salesforce#unauthenticate", via: :get
 
 
 

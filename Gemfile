@@ -16,11 +16,11 @@ gem 'newrelic_rpm'
 gem 'httparty'
 gem 'twitter'
 gem 'bootstrap-sass',       '3.2.0.0'
-gem 'restforce'
 gem "sinatra"
-gem "omniauth"
 gem "omniauth-salesforce"
 gem "thin"
+gem 'restforce'
+gem 'activerecord-session_store'
 
 group :development, :test do
   gem 'byebug',      '3.4.0'

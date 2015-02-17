@@ -1,9 +1,10 @@
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :null_session
   require 'Jive' # needed for production despite being autoloaded
 
+  $token = ""
+  $instance = ""
   $current_url = "http://localhost:8080/api/core/v3"
   $current_auth = Jive.auth
   $whitelist = [
@@ -68,6 +69,7 @@ class ApplicationController < ActionController::Base
   end
 
   def verify
+    logger.info("Origin -----> #{request.headers['origin']}")
     if (request.headers['origin'].nil? or !$whitelist.include?(request.headers['origin'])) and !token_valid(params[:token])
       Rails.logger.info("URL SHOULD BE ----> #{request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')}")
       cookies[:url] = request.original_url
@@ -117,6 +119,15 @@ class ApplicationController < ActionController::Base
     else
       return false
     end
+  end
+
+  def handle_expired_session
+    respond({ status: 1, type: "oauth", error: "Session expired, reauthenticating." })
+  end
+
+  def copy_session
+    Rails.logger.info("Session ----> #{session['token']}")
+    @session_copy = session
   end
 
 end
