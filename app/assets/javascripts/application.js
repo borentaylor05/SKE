@@ -13,9 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require angular.min.js
-//= require angular.min.js.map
 //= require angular-sanitize.min.js
-//= require angular-sanitize.min.js.map
 //= require bootstrap
 //= require turbolinks
 //= require_tree .
