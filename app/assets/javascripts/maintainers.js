@@ -20,7 +20,6 @@ app.directive("maintainer", function($http){
 app.filter('parseUrlFilter', function () {
     var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/gi;
     return function (text, target, limit) {
-    	alert(text);
     	if(limit == true){
     		if(text.indexOf("<body><!") > -1 && text.length > 200){
     			text = text.substring(0, 220);

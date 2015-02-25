@@ -141,4 +141,9 @@ task :migrate_users, [:fromTable, :client_name, :backwards_name] => :environment
 	end
 end
 
+desc "Delete Maintainers with do_delete == true"
+task :delete_maintainers => :environment do
+	Maintainer.where(do_delete: true).destroy_all
+end
+
 

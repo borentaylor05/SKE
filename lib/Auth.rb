@@ -1,5 +1,6 @@
 class Auth
 
+	# SKE is currently set to demo site!!!!
 	@@current = {:username => ENV['SKE_USER'], :password => ENV['SKE_PASSWORD']}
 	@@social = {:username => ENV['USERNAME'], :password => ENV['PASSWORD']}
 	@@fairpoint = { username: ENV['FP_USERNAME'], password: ENV['FP_PASSWORD'] }
