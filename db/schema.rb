@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150217190436) do
+ActiveRecord::Schema.define(version: 20150225174840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,33 @@ ActiveRecord::Schema.define(version: 20150217190436) do
     t.string   "CommentText"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+  end
+
+  create_table "admins", force: true do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet     "current_sign_in_ip"
+    t.inet     "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
+  add_index "admins", ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
+
+  create_table "article_requests", force: true do |t|
+    t.string   "title"
+    t.text     "summary"
+    t.string   "file_label"
+    t.string   "file_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "clients", force: true do |t|
@@ -108,6 +135,17 @@ ActiveRecord::Schema.define(version: 20150217190436) do
     t.integer  "fx_class_cat_id"
   end
 
+  create_table "hyundai_users", force: true do |t|
+    t.string   "name"
+    t.integer  "oracle_id"
+    t.string   "lob"
+    t.string   "location"
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "jive_id"
+  end
+
   create_table "issues", force: true do |t|
     t.string   "summary"
     t.integer  "created_by"
@@ -121,6 +159,22 @@ ActiveRecord::Schema.define(version: 20150217190436) do
     t.string   "issue_type"
     t.string   "url"
     t.string   "title"
+  end
+
+  create_table "maintainers", force: true do |t|
+    t.boolean  "pcf"
+    t.integer  "assigned_to"
+    t.text     "response"
+    t.string   "result"
+    t.string   "ticket_type"
+    t.integer  "ticket_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "user_id"
+    t.integer  "client_id"
+    t.boolean  "resolved"
+    t.string   "decision"
+    t.string   "training_impact"
   end
 
   create_table "message_trackers", force: true do |t|
@@ -201,6 +255,14 @@ ActiveRecord::Schema.define(version: 20150217190436) do
   add_index "specialties_users", ["specialty_id", "user_id"], name: "index_specialties_users_on_specialty_id_and_user_id", using: :btree
   add_index "specialties_users", ["user_id", "specialty_id"], name: "index_specialties_users_on_user_id_and_specialty_id", using: :btree
 
+  create_table "temp_users", force: true do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tokens", force: true do |t|
     t.string   "token"
     t.datetime "created_at", null: false
@@ -224,6 +286,9 @@ ActiveRecord::Schema.define(version: 20150217190436) do
     t.datetime "updated_at",  null: false
     t.string   "password"
     t.string   "name"
+    t.string   "title"
+    t.string   "location"
+    t.string   "lob"
   end
 
   add_index "users", ["jive_id"], name: "index_users_on_jive_id", using: :btree

@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   require 'Jive' # needed for production despite being autoloaded
 
   $token = ""
-  $instance = ""
+  $admin_user = User.find_by(jive_id: 99999999)
+  $instance = "http://localhost:8080"
   $current_url = "http://localhost:8080/api/core/v3"
   $current_auth = Jive.auth
   $whitelist = [
@@ -22,13 +23,20 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
+  def access_check
+    if !admin_signed_in? and !$whitelist.include?(request.headers['origin'])
+      return redirect_to "/admins/sign_in"
+    end
+  end  
+
   def check_origin
-  Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
-    
-    if $whitelist.include?(request.headers['origin'])
+    Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
+    if admin_signed_in?
       return request.headers['origin']
-    elsif request.remote_ip == "::1" or request.remote_ip == "127.0.0.1"
-        return 'http://localhost:8080'
+    elsif $whitelist.include?(request.headers['origin']) or request.remote_ip == "::1" 
+      return request.headers['origin']
+    else
+      return "noaccess-adssasadfdf"
     end
   end
 

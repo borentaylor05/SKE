@@ -26,3 +26,56 @@ textarea {
 .center h1 {
   margin-bottom: 10px;
 }
+
+.devise.formContainer{
+	max-width: 400px;
+	margin-right: auto;
+	margin-left: auto;
+}
+.devise .btn{
+	margin-top: 15px;
+}
+.myNav{
+	height: 30px;
+}
+.myNav .navbar-nav{
+}
+#logo{
+	font-size: 2em;
+	color: #09f;
+}
+.mRow{
+	margin: 15px;
+}
+.mBody{
+	margin-left: 30px;
+}
+.headerRow{
+	font-size: 1.4em;
+	font-weight: 200;
+	padding-bottom: 5px;
+	border-bottom: 2px solid #AAA;
+}
+.headerRow > div{
+	vertical-align: middle;
+}
+.headerRow .pad{
+	padding-top: 25px;
+}
+p.myLabel, span.myLabel{
+	margin-top: 20px;
+	font-size: 1.6em;
+	font-weight: 200;
+	letter-spacing: .6px;
+}
+.modal-dialog{
+	width: 60% !important;
+}
+.pad-modal{
+	padding-left: 50px !important;
+	padding-right: 50px !important;
+	padding-bottom: 50px !important;
+}
+.myLabel > span.tiny{
+	font-size: .7em;
+}

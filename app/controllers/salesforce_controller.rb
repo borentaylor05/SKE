@@ -4,11 +4,12 @@ class SalesforceController < ApplicationController
 	after_action :allow_iframe
 	rescue_from Restforce::UnauthorizedError, with: :handle_expired_session
 
-	def test
+	def search_for_contact
 		begin
 			client = create_client(params[:user])
+			searchTerm = params[:search]
 			if client
-				respond({ accounts: client.query("select name from account") })
+				respond({ status: 0, results: client.query("select contact.Account.Name, contact.Account.Website, contact.name, contact.phone from contact WHERE contact.name LIKE '%#{searchTerm}%'") })
 				cleanup_oauth_creds(params[:user]) # last so response is quicker
 			else
 				respond({ status: 1, error: "Unable to create client." })
@@ -53,18 +54,22 @@ class SalesforceController < ApplicationController
 	private 
 
 		def create_client(user)
-			sf_auth = User.find_by(jive_id: user).sf_o_auths.first
-			if sf_auth.nil?
-				respond({ status: 1, type: "oauth", error: "No OAuth Entry." })
-				return false
+			if User.find_by(jive_id: user).sf_o_auths.any?
+				sf_auth = User.find_by(jive_id: user).sf_o_auths.first
+				if sf_auth.nil?
+					respond({ status: 1, type: "oauth", error: "No OAuth Entry." })
+					return false
+				else
+					client = Restforce.new :oauth_token => sf_auth.token,
+						:refresh_token => sf_auth.refresh_token,
+						:instance_url  => sf_auth.instance_url,
+						:client_id     => ENV['SF_CLIENT_ID'],
+						:client_secret => ENV['SF_CLIENT_SECRET']
+					return client
+				end	
 			else
-				client = Restforce.new :oauth_token => sf_auth.token,
-					:refresh_token => sf_auth.refresh_token,
-					:instance_url  => sf_auth.instance_url,
-					:client_id     => ENV['SF_CLIENT_ID'],
-					:client_secret => ENV['SF_CLIENT_SECRET']
-				return client
-			end		
+				respond({ status: 1, type: "oauth", error: "No OAuth Entry." })
+			end	
 		end
 
 		def cleanup_oauth_creds(user)

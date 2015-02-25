@@ -59,4 +59,9 @@ class AccessibleControllerTest < ActionController::TestCase
 		put :fx_save_deadline, params
 	end
 
+	test "get article request" do 
+		get :fx_request_article
+		assert_response :success
+	end
+
 end

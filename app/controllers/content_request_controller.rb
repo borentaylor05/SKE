@@ -1,4 +1,5 @@
 class ContentRequestController < ApplicationController
+	before_action :access_check
 	after_filter :cors_set_access_control_headers
 	include ActionView::Helpers::DateHelper
 

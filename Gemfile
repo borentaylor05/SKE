@@ -21,6 +21,8 @@ gem "omniauth-salesforce"
 gem "thin"
 gem 'restforce'
 gem 'activerecord-session_store'
+gem 'devise'
+gem "font-awesome-rails"
 
 group :development, :test do
   gem 'byebug',      '3.4.0'

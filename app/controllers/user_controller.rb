@@ -55,6 +55,17 @@ class UserController < ApplicationController
 		respond(update_user_client(params))
 	end
 
+	def get
+		user = User.find_by(jive_id: params[:jive])
+		if user
+			hash = user.attributes
+			hash[:client] = user.client ? user.client.name : nil
+			respond({ status: 0, user: hash })
+		else
+			respond({ status: 1, error: "User #{params[:jive]} not found" })
+		end
+	end
+
 	def get_all
 		params[:count] = params[:count].empty? ? 100 : params[:count]
 		params[:start] = params[:start].empty? ? 0 : params[:start]

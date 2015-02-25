@@ -1,8 +1,9 @@
 class DeadlineController < ApplicationController
 	skip_before_action :verify_authenticity_token
+	before_action :access_check
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
-	before_action :verify
+#	before_action :verify
 
 	def get_deadlines_by_pub
 		deadlines = []

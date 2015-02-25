@@ -1,8 +1,13 @@
 class AccessibleController < ApplicationController
+	before_action :access_check
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers, except: :authenticate
-	before_action :verify, only: [:upload_deadlines, :upload_fx_classifications, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
+#	before_action :verify, only: [:upload_deadlines, :upload_fx_classifications, :fx_request_article, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
 	#VIEWS
+
+	def fx_request_article
+		
+	end
 
 	def upload_address_book	
 	end
@@ -11,6 +16,9 @@ class AccessibleController < ApplicationController
 	end
 
 	def upload_fx_classifications
+	end
+
+	def temp_upload
 	end
 
 	def upload_deadlines
@@ -50,6 +58,11 @@ class AccessibleController < ApplicationController
 	end
 
 	#PROCESSES
+
+	def temp_upload_process
+		HyundaiUser.import(params[:file])
+		respond({ status: 0, message: "Upload Successful" })
+	end
 
 	def process_address_book_upload
 		AddressBookEntry.import(params[:file])

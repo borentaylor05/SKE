@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  oracle_id: 1
+  lob: MyString
+  location: MyString
+  title: MyString
+
+two:
+  name: MyString
+  oracle_id: 1
+  lob: MyString
+  location: MyString
+  title: MyString

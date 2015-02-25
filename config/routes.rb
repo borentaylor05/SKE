@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
+  devise_for :admins
   get 'sessions/new'
+
 
   resources :update, only: [:create]
 
@@ -24,6 +26,7 @@ Rails.application.routes.draw do
   match "user", to: "user#create", via: [:post, :options]
   match "users", to: "user#get_all", via: :get
   match "users/search", to: "user#search", via: :get
+  match "users/:jive", to: "user#get", via: :get
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
@@ -76,6 +79,9 @@ Rails.application.routes.draw do
   match "fx/process/classifications", to: "accessible#process_fx_classification_upload", via: :post
   match "fx/upload/deadlines", to: "accessible#upload_deadlines", via: :get
   match "fx/process/deadlines", to: "accessible#process_deadlines", via: :post
+  match "fx/request-article", to: "accessible#fx_request_article", via: :get
+  match "temp/upload", to: "accessible#temp_upload", via: :get
+#  match "temp/upload/process", to: "accessible#temp_upload_process", via: :post
 
   # A-Z
   match "cdc/api/search", to: "a_to_z#cdc_search", via: :get
@@ -103,7 +109,18 @@ Rails.application.routes.draw do
   match 'auth/salesforce/callback', to: "salesforce#callback", via: :get
   match 'salesforce/auth/failure', to: "salesforce#failure", via: :get
   match 'salesforce/unauthenticate', to: "salesforce#unauthenticate", via: :get
+  match 'salesforce/search/contact', to: "salesforce#search_for_contact", via: :get
 
+
+  # S3 Upload Route
+  match "s3-upload", to: "content#generate_s3_json", via: :get
+
+  # Maintainer routes
+  match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:options, :post]
+  match "/maintainers/all", to: "maintainers#get_maintainers", via: :get
+  match "/maintainers/:id/update", to: "maintainers#update_maintainer", via: :post
+  match "/maintainers/:id/toggle", to: "maintainers#toggle_resolved", via: :post
+  root to: "maintainers#index", via: :get
 
 
   # The priority is based upon order of creation: first created -> highest priority.

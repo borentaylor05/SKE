@@ -112,13 +112,13 @@ dlApp.factory("pubs", ['$http', function($http){
 	var pubs = {};
 
 	pubs.getAll = function(){
-		return $http.get("/fairfax/publications?token="+getURLParameter("token"));
+		return $http.get("/fairfax/publications");
 	}
 	pubs.getDeadline = function(pub){
-		return $http.get("/fairfax/deadlines/publication?pub="+pub+"&token="+getURLParameter("token"));
+		return $http.get("/fairfax/deadlines/publication?pub="+pub);
 	}
 	pubs.edit = function(deadline){
-		return $http.put("/fx/deadline/save?"+tokenString, { deadline: deadline });
+		return $http.put("/fx/deadline/save", { deadline: deadline });
 	}
 
 	return pubs;
@@ -132,6 +132,7 @@ dlApp.controller("Deadlines", ['$http', '$scope', 'pubs', function($http, $scope
 
 	dl.getPubs = function(){
 		pubs.getAll().success(function(resp){
+			console.log(resp);
 			dl.pubs = resp.pubs;
 		});
 	}

@@ -1,0 +1,46 @@
+<div ng-app="MaintainersApp" ng-controller="Maintainer as main">
+	<h1> {{ main.welcome }} </h1>
+	<div class="row headerRow" >
+		<div class="col-xs-1">Admin Status</div>
+		<div class="col-xs-1">Request Details</div>
+		<div class="col-xs-2 pad">Type</div>
+		<div class="col-xs-2 pad">Title</div>
+		<div class="col-xs-1 pad">Link</div>
+		<div class="col-xs-2 pad" style="margin-left: 30px;">Body</div>
+		<div class="col-xs-2 pad">Updated</div>
+	</div>
+	<div ng-show="main.loading" class="loader"></div>
+	<div ng-hide="main.loading">
+		<div class="row mRow" ng-repeat="m in main.all">
+			<div class="col-xs-1">
+				<button ng-click="main.toggleResolved(m)" ng-class="m.resolved ? 'btn btn-xs btn-success' : 'btn btn-xs btn-danger' ">
+					<i ng-class="m.resolved ? 'fa fa-check-square-o' : 'fa fa-exclamation-circle' "></i>
+					{{ m.resolved ? "Resolved" : "Unresolved" }}
+				</button>
+			</div>
+			
+			<div class="col-xs-1">
+				<button ng-click="main.setCurrent(m)" data-toggle="modal" data-target="#myModal" style="width: 100%;" class="btn btn-xs btn-primary">
+					Details
+				</button>
+			</div>
+			<div class="col-xs-2">
+				{{ m.type }}
+			</div>
+			<div class="col-xs-2">
+				{{ m.title }}
+			</div>
+			<div class="col-xs-1">	
+				<a class="btn btn-xs btn-info" target="_blank" ng-href="{{ m.url }}">View/Download</a>
+			</div>
+			<div ng-bind-html="m.body | parseUrlFilter:'_blank':true" class="col-xs-2 mBody">	
+			</div>
+			<div class="col-xs-2">	
+				{{ m.updated_at }}
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+	<maintainer maintainer="main.current" on-save="main.submitChanges(data)"></maintainer>
+	
+</div>

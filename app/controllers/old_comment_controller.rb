@@ -1,5 +1,6 @@
 class OldCommentController < ApplicationController
 	include ActionView::Helpers::DateHelper
+	before_action :access_check
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 
@@ -8,7 +9,7 @@ class OldCommentController < ApplicationController
 			respond({status: 1})
 		elsif request.method == "POST"
 			resp = []
-			coms = JSON.parse(params[:data])
+			coms = params[:data]
 			coms.each do |com|
 				Rails.logger.info(com)
 				if OldComment.exists?(api_id: com["api"].to_i)
@@ -21,11 +22,19 @@ class OldCommentController < ApplicationController
 					)
 					if c.valid?
 						c.save
+						u = User.find_by(jive_id: params[:user])
+						m = Maintainer.new(ticket: c, user: u, client: u.client)
+						if m.valid?
+							m.save
+						else
+							Rails.logger.info("Maintainer Creation ERROR ---> #{m.errors.full_messages}")
+						end
 					else
 						Rails.logger.info("Unable to save comment: #{c.errors.full_messages}")
 					end
 				end
 				hash = c.attributes
+				hash[:created_time_ago] = "#{time_ago_in_words(c.created_at)} ago"
 				hash[:index] = com["index"]
 				if hash[:resolved] == true
 					hash[:resolved_time_ago] = "#{time_ago_in_words(hash[:resolved_at])} ago"

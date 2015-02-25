@@ -1,0 +1,45 @@
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"> {{ maintainer.type }} from {{ maintainer.user.name }} </h4>
+      </div>
+      	<div class="modal-body pad-modal">
+			<p class="myLabel"> 
+				Title: {{ maintainer.title }} 
+				<a target="_blank" class="btn btn-xs btn-info" ng-href="{{ maintainer.url }}">View/Download</a>
+			</p>
+			<p class="myLabel"> Body: </p>
+			<p class="mBody" ng-bind-html="maintainer.body | parseUrlFilter"></p>
+			<p class="myLabel" ng-if="maintainer.type == 'Comment'"> 
+				Champion Status:
+				<button ng-class="maintainer.ticket_status ? 'btn btn-xs btn-success' : 'btn btn-xs btn-danger' ">
+					{{ maintainer.ticket_status ? "Resolved" : "Unresolved" }}
+				</button>
+			</p>
+			<input style="font-size:2em;" type="checkbox" ng-model="maintainer.pcf"><span class="myLabel"> PCF Needed? {{ maintainer.pcf ? "Yes" : "No" }} </span>
+			<p class="myLabel">Select Resource</p>
+		   	<select>
+		   		<option disabled selected> -- select a user -- </option>
+		   		<option>User One</option>
+		   		<option>User Two</option>
+		   		<option>User Three</option>
+		   		<option>User Four</option>
+		   	</select>
+		   	<p class="myLabel">Training Impact</span></p>
+		   	<textarea rows="3" class="form-control mText" ng-model="maintainer.training_impact"></textarea>
+		   	<p class="myLabel">Respond To Requester <span class="tiny">(this will be sent back to requester)</span></p>
+		   	<textarea rows="3" class="form-control mText" ng-model="maintainer.response"></textarea>
+		   	<p class="myLabel">Decision <span class="tiny">(this will be sent back to requester)</span></p>
+		   	<textarea rows="3" class="form-control mText" ng-model="maintainer.decision"></textarea>
+		   	<input style="font-size:2em; margin-top:35px;" type="checkbox" ng-model="maintainer.resolved">
+		   	<span class="myLabel"> Issue Resolved? {{ maintainer.resolved ? "Yes" : "No (click checkbox to resolve)" }}  </span>
+		</div>
+	    <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="onSave({data: maintainer})">Save changes</button>
+	    </div>
+    </div>
+  </div>
+</div>

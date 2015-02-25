@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pcf: false
+  assigned_to: 1
+  response: MyText
+  result: MyString
+  ticket_type: MyString
+  ticket_id: 1
+
+two:
+  pcf: false
+  assigned_to: 1
+  response: MyText
+  result: MyString
+  ticket_type: MyString
+  ticket_id: 1

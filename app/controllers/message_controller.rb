@@ -1,6 +1,7 @@
 class MessageController < ApplicationController
 	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
+	before_action :access_check
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
@@ -31,6 +32,7 @@ class MessageController < ApplicationController
 		end
 	end
 
+	# needs Jive ID of sender and array of IDs for recipients
 	def send_message
 		if User.exists?(jive_id: params[:sender])
 			u = User.find_by(jive_id: params[:sender])

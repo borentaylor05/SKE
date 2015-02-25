@@ -1,13 +1,4 @@
-require 'Jive'
-desc "This task is called by the Heroku scheduler add-on"
-task :move_doc => :environment do
-  puts "Updating feed..."
-  resp = Jive.grab("#{Jive.dev_url}/contents/1048", Jive.dev_auth)
-  resp["parent"] = "http://localhost:8080/api/core/v3/places/1002"
-  updated = Jive.update("#{Jive.dev_url}/contents/1048", resp, Jive.dev_auth)
-  puts updated
-  puts "done."
-end
+
 
 # BELOW = TESTS
 
