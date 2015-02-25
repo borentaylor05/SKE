@@ -1,7 +1,7 @@
 class CodesController < ApplicationController
 	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
-	before_action :access_check
+#	before_action :access_check
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 	
@@ -206,7 +206,7 @@ class CodesController < ApplicationController
 			]
 		end
 
-		# returns max 500 results
+		# returns max 100 results
 		def get_results(search)
 			codes = []
 			count = 0
@@ -218,7 +218,7 @@ class CodesController < ApplicationController
 				end
 				codes.push(hash)
 				count = count + 1
-				if count == 500
+				if count == 100
 					break
 				end
 			end
