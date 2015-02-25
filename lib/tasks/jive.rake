@@ -40,7 +40,7 @@ task create_users: :environment do
 		if resp["error"]
 			puts "ERROR --------------> #{resp["error"]}"
 		elsif resp["id"]
-			puts "Created: #{resp["id"]}"
+			puts "Created:  #{resp["id"]}"
 		end
 	end
 end
