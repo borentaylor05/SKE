@@ -22,6 +22,7 @@ module SKE
     # config.i18n.default_locale = :de
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.serve_static_assets = true # Rails 4 serve assets
     config.autoload_paths += %W(#{config.root}/lib) # add this line
     config.active_record.raise_in_transactional_callbacks = true
   end
