@@ -24,7 +24,8 @@ class Maintainer < ActiveRecord::Base
 			}
 		when "OldComment"
 			com = Jive.grab("#{Jive.current}/comments/#{self.ticket.api_id}", Auth.current)
-			if com["error"]["status"] == 404 # comment was deleted
+			Rails.logger.info("COM ----------> #{com}")
+			if !com and com["error"]["status"] == 404 # comment was deleted
 				self.update_attributes(do_delete: true)
 				return hash = { title: "DELETED" } 
 			end
