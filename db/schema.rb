@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150225222818) do
+ActiveRecord::Schema.define(version: 20150227001608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20150225222818) do
     t.inet     "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "client_id"
   end
 
   add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
@@ -76,6 +77,12 @@ ActiveRecord::Schema.define(version: 20150225222818) do
     t.datetime "updated_at",  null: false
     t.integer  "kb_space_id"
     t.string   "kb_url"
+  end
+
+  create_table "comment_issues", force: true do |t|
+    t.integer  "old_comment_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "content_requests", force: true do |t|
@@ -176,6 +183,7 @@ ActiveRecord::Schema.define(version: 20150225222818) do
     t.string   "decision"
     t.string   "training_impact"
     t.boolean  "do_delete",       default: false
+    t.integer  "admin_id"
   end
 
   create_table "message_trackers", force: true do |t|
@@ -262,6 +270,7 @@ ActiveRecord::Schema.define(version: 20150225222818) do
     t.string   "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "username"
   end
 
   create_table "tokens", force: true do |t|

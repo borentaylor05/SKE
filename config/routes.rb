@@ -81,7 +81,7 @@ Rails.application.routes.draw do
   match "fx/process/deadlines", to: "accessible#process_deadlines", via: :post
   match "fx/request-article", to: "accessible#fx_request_article", via: :get
   match "temp/upload", to: "accessible#temp_upload", via: :get
-#  match "temp/upload/process", to: "accessible#temp_upload_process", via: :post
+  match "temp/upload/process", to: "accessible#temp_upload_process", via: :post
 
   # A-Z
   match "cdc/api/search", to: "a_to_z#cdc_search", via: :get
@@ -116,10 +116,11 @@ Rails.application.routes.draw do
   match "s3-upload", to: "content#generate_s3_json", via: :get
 
   # Maintainer routes
-  match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:options, :post]
+  match "/maintainers/comment/new", to: "maintainers#new_comment_maintainer", via: [:options, :post]
   match "/maintainers/all", to: "maintainers#get_maintainers", via: :get
   match "/maintainers/:id/update", to: "maintainers#update_maintainer", via: :post
   match "/maintainers/:id/toggle", to: "maintainers#toggle_resolved", via: :post
+  match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: :post
   root to: "maintainers#index", via: :get
 
 

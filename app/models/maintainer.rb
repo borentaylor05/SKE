@@ -3,8 +3,10 @@ class Maintainer < ActiveRecord::Base
 	require 'Jive'
 	belongs_to :user
 	belongs_to :client
+	belongs_to :admin
 	belongs_to :ticket, touch: true, polymorphic: true
-	validates :user, presence: true
+	validates :user, presence: true, unless: -> (maintainer){maintainer.admin.present?}
+	validates :admin, presence: true, unless: -> (maintainer){maintainer.user.present?}
 	validates :ticket, presence: true
 #	validates :client, presence: true
 	
@@ -12,6 +14,7 @@ class Maintainer < ActiveRecord::Base
 
 
 	def makeRelevant
+		Rails.logger.info("MAIN -----> #{self.inspect}")
 		case self.ticket_type
 		when "ArticleRequest"
 			hash = {
@@ -22,8 +25,8 @@ class Maintainer < ActiveRecord::Base
 				title: self.ticket.title,
 				body: self.ticket.summary 
 			}
-		when "OldComment"
-			com = Jive.grab("#{Jive.current}/comments/#{self.ticket.api_id}", Auth.current)
+		when "CommentIssue"
+			com = Jive.grab("#{Jive.current}/comments/#{self.ticket.old_comment.api_id}", Auth.dev)
 			Rails.logger.info("COM ----------> #{com["error"]}")
 			if com["error"] # comment was deleted
 				self.update_attributes(do_delete: true)
@@ -33,7 +36,7 @@ class Maintainer < ActiveRecord::Base
 				user: self.user,
 				type: "Comment",
 				resolved: self.resolved,
-				ticket_status: self.ticket.resolved,
+				ticket_status: self.ticket.old_comment.resolved,
 				url: com["resources"]["html"]["ref"],
 				title: com["subject"],
 				body: com["content"]["text"]

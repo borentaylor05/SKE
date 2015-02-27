@@ -3,7 +3,7 @@ class MaintainersController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	before_action :access_check
 	after_filter :cors_set_access_control_headers
-	before_action :authenticate_admin!, except: [:new_article_request]
+#	before_action :authenticate_admin!, except: [:new_article_request]
 
 	def index
 		@user = current_admin
@@ -60,7 +60,12 @@ class MaintainersController < ApplicationController
 	def get_maintainers
 		ms = []
 		Maintainer.limit(50).each do |m|
-			ms.push(m.makeRelevant)
+			if m.do_delete == true
+				m.destroy
+				m.ticket.destroy
+			else
+				ms.push(m.makeRelevant)
+			end
 		end
 		respond({ m: ms })
 	end
@@ -70,7 +75,11 @@ class MaintainersController < ApplicationController
 			respond({status: 1})
 		elsif request.method == "POST"
 			Rails.logger.info("PARAMS ----> #{params}")
-			user = User.find_by(jive_id: params[:user])
+			if params[:admin]
+				user = current_admin
+			else
+				user = User.find_by(jive_id: params[:user])
+			end
 			if user.nil?
 				respond({ status: 1, error: "User not found", type: "NoUser" })
 			elsif user.client.nil? && params[:client].blank?
@@ -93,7 +102,13 @@ class MaintainersController < ApplicationController
 				end
 				if ar.valid?
 					ar.save
-					m = Maintainer.new(client: client, user: user, ticket: ar, resolved: false)
+					if params[:admin] and admin_signed_in?
+						logger.info("ADMIN ------------------------> ")
+						m = Maintainer.new(client: current_admin.client, admin: current_admin, ticket: ar, resolved: false)
+					else
+						logger.info("USER ------------------------> ")
+						m = Maintainer.new(client: client, user: user, ticket: ar, resolved: false)
+					end
 					if m.valid?
 						m.save
 						respond({ status: 0, message: "Article Request Saved!" })
@@ -103,6 +118,36 @@ class MaintainersController < ApplicationController
 				else
 					respond({ status: 1, error: "#{ar.errors.full_messages}" })
 				end
+			end
+		end
+	end
+
+	def new_comment_maintainer
+		if(request.method == "OPTIONS")
+			respond({status: 1})
+		elsif request.method == "POST"
+			user = User.find_by(jive_id: params[:user][:jive_id])
+			if user
+				oc = OldComment.find_by(id: params[:com])
+				if oc and !oc.comment_issue
+					ci = CommentIssue.new(old_comment: oc)
+					ci.save
+					m = Maintainer.new(ticket: ci, user: user)
+					if m.valid? 
+						m.save
+						respond({ status: 0 })
+					else
+						respond({ status: 1, error: "#{m.errors.full_messages}" })
+					end
+				elsif oc.comment_issue
+					oc.comment_issue.destroy
+					oc.comment_issue.maintainer.destroy
+					respond({ status: 0, message: "Issue removed." })
+				else
+					respond({ status: 1, error: "Comment not found" })
+				end 
+			else
+				user_quick_create(params[:user])
 			end
 		end
 	end

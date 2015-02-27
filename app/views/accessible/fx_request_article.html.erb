@@ -245,35 +245,28 @@ label.sum-label{
 .hide{
   display: none;
 }
+.main{
+  margin-bottom: 100px;
+}
+.progress{
+  margin-top: 10px;
+  box-shadow: 0 0 10px #888;
+}
 </style>
-<div class="main" >
-  <h1 class="request-title">Create Your Request</h1>  
-  <form class="request">
+<div class="main" ng-app="ArticleRequest" ng-controller="AR as ar">
+  <h1 class="request-title">Create Your Request</h1> 
+  <div ng-show="ar.onSuccess.length > 0 " class="alert alert-success">{{ ar.onSuccess }}</div>
+  <form ng-hide="ar.onSuccess.length > 0" class="request" ng-submit="ar.createAdminAR(ar.doc)">
     <div class="fieldContainer">
-      <input id="docTitle" type="text" class="register-input title" placeholder="Title of Desired Document">
+      <input ng-model="ar.doc.title" id="docTitle" type="text" class="register-input title" placeholder="Title of Desired Document">
       <label class="sum-label">Summary of Request</label></br>
-      <textarea class="register-input" id="summary" rows="10" placeholder="Type your detailed description here..."></textarea>
-      <input type="submit" value="Submit Request" class="register-button">
-  </div>
+      <textarea ng-model="ar.doc.summary" class="register-input" id="summary" rows="10" placeholder="Type your detailed description here..."></textarea>
+      <input ng-model="ar.doc.file_label" id="docTitle" type="text" class="register-input title" placeholder="Attachment Label / Description">
+      <div s3-upload bucket="trb-kb" ng-model="ar.doc.file_url"
+            s3-upload-options="{getOptionsUri: 'https://lit-inlet-2632.herokuapp.com/s3-upload', folder: 'ArticleAttachments/'}">
+      </div>
+      <h3> {{ ar.doc.attachment }} </h3>
+      <input type="submit" value="Submit Request" class="register-button" >
+    </div>
   </form>
 </div>
-<script type="text/javascript" src="javascripts/jquery.min.js"></script>
-<script type="text/javascript">
-gadgets.util.registerOnLoadHandler(function() {
-      gadgets.window.adjustHeight();
-      gadgets.window.adjustWidth();
-      var data = {};
-
-   $(".request").submit(function(e){
-      e.preventDefault();
-   //   data.type = $('input[name=type]:radio:checked').val(),
-      data.docTitle = $("#docTitle").val(),
-   //   data.docNum = $("#docNum").val(),
-      data.summary = $("#summary").val(),
-      data.client = "fairfax";
-      console.log(data);
-
-   });
-
-});
-</script>

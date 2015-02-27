@@ -138,6 +138,11 @@ class ApplicationController < ActionController::Base
     @session_copy = session
   end
 
+  def user_quick_create(user)
+    u = User.new(jive_id: user[:jive_id], employee_id: user[:employee_id], name: user[:name])
+    u.valid ? u.save : logger.info("#{u.errors.full_messages}")
+  end
+
 end
 
 

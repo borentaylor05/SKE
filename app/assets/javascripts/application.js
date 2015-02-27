@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require angular.min.js
 //= require angular-sanitize.min.js
+//= require ng-s3upload.min.js
 //= require bootstrap
 //= require turbolinks
 //= require_tree .

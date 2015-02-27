@@ -60,7 +60,7 @@ class AccessibleController < ApplicationController
 	#PROCESSES
 
 	def temp_upload_process
-		HyundaiUser.import(params[:file])
+		TempUser.import(params[:file])
 		respond({ status: 0, message: "Upload Successful" })
 	end
 

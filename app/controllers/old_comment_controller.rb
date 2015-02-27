@@ -11,7 +11,7 @@ class OldCommentController < ApplicationController
 			resp = []
 			coms = params[:data]
 			coms.each do |com|
-				Rails.logger.info(com)
+				Rails.logger.info("COOMENT----> #{com} ")
 				if OldComment.exists?(api_id: com["api"].to_i)
 					c = OldComment.find_by(api_id: com["api"].to_i)
 				else
@@ -23,17 +23,17 @@ class OldCommentController < ApplicationController
 					if c.valid?
 						c.save
 						u = User.find_by(jive_id: params[:user])
-						m = Maintainer.new(ticket: c, user: u, client: u.client)
-						if m.valid?
-							m.save
-						else
-							Rails.logger.info("Maintainer Creation ERROR ---> #{m.errors.full_messages}")
-						end
 					else
 						Rails.logger.info("Unable to save comment: #{c.errors.full_messages}")
 					end
 				end
 				hash = c.attributes
+				hash[:content] = c.old_content
+				if c.comment_issue
+					hash[:being_reviewed] = true
+				else
+					hash[:being_reviewed] = false
+				end
 				hash[:created_time_ago] = "#{time_ago_in_words(c.created_at)} ago"
 				hash[:index] = com["index"]
 				if hash[:resolved] == true
@@ -60,10 +60,10 @@ class OldCommentController < ApplicationController
 					c.old_content.update_attributes(comments: c.old_content.comments+1)
 					c.update_attributes(resolved: true, resolved_at: Time.now)
 				end
-				respond({status: 1})
+				respond({status: 0})
 			else
 				Rails.logger.info("Comment #{params[:api]} does not exist");
-				respond({ status: 0 })
+				respond({ status: 1, error: "Comment #{params[:api]} does not exist" })
 			end
 		else
 			respond({})

@@ -1,10 +1,23 @@
 class OldContentController < ApplicationController
+	require "Jive"
+	require "Auth"
 	before_action :access_check
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 
 	def new_doc
 	
+	end
+
+	def subtract_replies
+		if(request.method == "OPTIONS")
+			respond({status: 1})
+		elsif request.method == "POST"
+			oc = OldContent.find_by(api_id: params[:doc])
+			cur = oc.comments
+			oc.update_attributes(comments: cur - params[:subtract].to_i)
+			respond({ status: 0, count: oc.comments })
+		end
 	end
 
 	def check
@@ -44,5 +57,9 @@ class OldContentController < ApplicationController
 			respond({ newComments: resp, created: created })
 		end
 	end
+
+	private
+
+		
 
 end

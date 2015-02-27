@@ -16,7 +16,7 @@ class CodesController < ApplicationController
 				member_first_name: params[:member_first].downcase,
 				member_last_name: params[:member_last].downcase,
 				member_zip: params[:zip],
-				agent_id: params[:agent_id], #this is there Jive API ID
+				agent_id: params[:agent_id], #this is their Jive API ID
 				agent_name: params[:agent_name].downcase,
 				token: generate_token(10),
 				description: params[:desc],
