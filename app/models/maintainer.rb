@@ -1,5 +1,6 @@
 class Maintainer < ActiveRecord::Base
 	include ActionView::Helpers::DateHelper
+	include ActionView::Helpers::SanitizeHelper
 	require 'Jive'
 	belongs_to :user
 	belongs_to :client
@@ -14,7 +15,6 @@ class Maintainer < ActiveRecord::Base
 
 
 	def makeRelevant
-		Rails.logger.info("MAIN -----> #{self.inspect}")
 		case self.ticket_type
 		when "ArticleRequest"
 			hash = {
@@ -39,8 +39,9 @@ class Maintainer < ActiveRecord::Base
 				ticket_status: self.ticket.old_comment.resolved,
 				url: com["resources"]["html"]["ref"],
 				title: com["subject"],
-				body: com["content"]["text"]
+				body: strip_tags(com["content"]["text"].gsub(/<!--(.*?)-->[\n]?/m, "")) # strip out comments that were throwing errors
 			}
+			Rails.logger.info("COMMENT ---------> #{hash[:body]}")
 		end
 		hash[:updated_at] = "#{time_ago_in_words(self.updated_at)} ago"
 		hash[:id] = self.id

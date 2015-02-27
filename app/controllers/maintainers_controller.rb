@@ -162,7 +162,7 @@ class MaintainersController < ApplicationController
 
 	def determine_type(maintainer, message)
 		case maintainer.ticket_type
-		when "OldComment"
+		when "CommentIssue"
 			message = "In response to comment #{maintainer.ticket.old_content.link}#comment-#{maintainer.ticket.api_id} \n\n #{message}"
 		when "ArticleRequest"
 			message = "In response to your article request titled: '#{maintainer.ticket.title}' \n\n #{message}"
