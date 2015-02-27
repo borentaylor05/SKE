@@ -7,12 +7,14 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-	<header class="navbar navbar-fixed-top navbar-inverse myNav">
+	<header class="navbar navbar-fixed-top navbar-inverse">
       <div class="container">
-        <%= link_to "SKE Admin", '#', id: "logo", class: "pull-left" %>
+        <%= link_to "SKE Admin", '/', id: "logo", class: "pull-left" %>
         <nav>
-          <ul class="nav navbar-nav navbar-right">
+          <ul class="nav navbar-nav navbar-right pull-right">
         			<% if admin_signed_in? %>
+                <li><%= link_to "Article Request", "/" %></li>
+                <li><%= link_to "View Requests", "/fx/tickets" %></li>
                 <li><%= link_to "Change your password", edit_admin_registration_path %></li>
         				<li><%= link_to "Log out", destroy_admin_session_path, :method => :delete %></li>
         			<% else %>

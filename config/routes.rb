@@ -127,7 +127,8 @@ Rails.application.routes.draw do
   match "/maintainers/:id/update", to: "maintainers#update_maintainer", via: :post
   match "/maintainers/:id/toggle", to: "maintainers#toggle_resolved", via: :post
   match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:post, :options]
-  root to: "maintainers#index", via: :get
+  match "/fx/tickets", to: "maintainers#index", via: :get
+  root to: "accessible#fx_request_article", via: :get
 
 
   # The priority is based upon order of creation: first created -> highest priority.

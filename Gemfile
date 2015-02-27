@@ -23,6 +23,7 @@ gem 'restforce'
 gem 'activerecord-session_store'
 gem 'devise'
 gem "font-awesome-rails"
+gem 'jquery-turbolinks'     # to prevent having to refresh to load js 
 
 group :development, :test do
   gem 'byebug',      '3.4.0'
