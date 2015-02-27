@@ -10,7 +10,6 @@ class ApplicationController < ActionController::Base
   $current_auth = Jive.auth
   $whitelist = [
       'http://localhost:8080', 
-      'http://localhost:3000', 
       'https://social.teletech.com', 
       'https://lit-inlet-2632.herokuapp.com',
       'https://jivedemo-teletech-gtm-alliances.jiveon.com'

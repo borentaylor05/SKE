@@ -75,5 +75,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  config.action_mailer.default_url_options = { host: 'lit-inlet-2632.herokuapp.com', port: 3000 }
+  # to setup emails, follow https://rubyonrailshelp.wordpress.com/2014/01/02/setting-up-mailer-using-devise-for-forgot-password/
+  config.action_mailer.default_url_options = { host: 'lit-inlet-2632.herokuapp.com' }
 end
