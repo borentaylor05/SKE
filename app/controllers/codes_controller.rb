@@ -60,8 +60,9 @@ class CodesController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			if WwCodeInfo.find_by(token: params[:token])
-				info = WwCodeInfo.find_by(token: params[:token])
+			info = WwCodeInfo.find_by(token: params[:token])
+			if info
+			#	info = WwCodeInfo.find_by(token: params[:token])
 				c = get_unused_code(params[:type])
 				if c[:status] == 0
 					c[:code].update_attributes(
