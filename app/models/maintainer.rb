@@ -26,7 +26,7 @@ class Maintainer < ActiveRecord::Base
 				body: self.ticket.summary 
 			}
 		when "CommentIssue"
-			com = Jive.grab("#{Jive.current}/comments/#{self.ticket.old_comment.api_id}", Auth.dev)
+			com = Jive.grab("#{Jive.current}/comments/#{self.ticket.old_comment.api_id}", Auth.current)
 			Rails.logger.info("COM ----------> #{com["error"]}")
 			if com["error"] # comment was deleted
 				self.update_attributes(do_delete: true)
