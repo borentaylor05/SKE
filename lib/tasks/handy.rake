@@ -17,3 +17,9 @@ task :move_category => :environment	do
 		c.save
 	end
 end
+
+task :clean_maintainers => :environment	do
+	Maintainer.destroy_all
+	OldComment.destroy_all
+	OldContent.destroy_all
+end

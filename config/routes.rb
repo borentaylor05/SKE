@@ -120,7 +120,7 @@ Rails.application.routes.draw do
   match "/maintainers/all", to: "maintainers#get_maintainers", via: :get
   match "/maintainers/:id/update", to: "maintainers#update_maintainer", via: :post
   match "/maintainers/:id/toggle", to: "maintainers#toggle_resolved", via: :post
-  match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: :post
+  match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:post, :options]
   root to: "maintainers#index", via: :get
 
 
