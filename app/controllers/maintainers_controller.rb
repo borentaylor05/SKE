@@ -25,10 +25,12 @@ class MaintainersController < ApplicationController
 			end
 			if message.length > 0
 				message = determine_type(m, message)
+				my_admin_user = User.find_by(jive_id: 99999999)
+				logger.info("ADMIN ------------> #{my_admin_user}")
 				msg = Message.new(
-					user: $admin_user, # sender is system admin user (jive_id = 99999999)
+					user: my_admin_user, # sender is system admin user (jive_id = 99999999)
 					text: message,
-					client: $admin_user.client
+					client: my_admin_user.client
 				)
 				if msg.valid?
 					Rails.logger.info("MESSAGE -----> #{msg.user.jive_id}")
