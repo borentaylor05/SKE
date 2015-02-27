@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
-  devise_for :admins
+  # disable registration, but allow for password change 
+  # https://github.com/plataformatec/devise/wiki/How-To:-Allow-users-to-edit-their-password
+  devise_for :admins, :skip => [:registrations]                                          
+    as :admin do
+      get 'admins/edit' => 'devise/registrations#edit', :as => 'edit_admin_registration'    
+      put 'admins/:id' => 'devise/registrations#update', :as => 'admin_registration'            
+    end
   get 'sessions/new'
 
 
