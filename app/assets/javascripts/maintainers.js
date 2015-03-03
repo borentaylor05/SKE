@@ -89,7 +89,7 @@ app.controller("Maintainer", ['$timeout', 'maintainers', function($timeout, main
 	// on page load
 	angular.element(document).ready(function () {
         main.getAll();
-        $timeout(function(){ main.loading = true; }, 1000);
+        $timeout(function(){ main.loading = false; }, 1000);
     });
 	
 }]);
