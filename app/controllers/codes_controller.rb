@@ -106,8 +106,9 @@ class CodesController < ApplicationController
 					codes = get_results(WwCode.where(code_num: params[:value]))
 				when "token"
 					codes = [] # only bc get_results expects array
-					if WwCodeInfo.exists?(token: params[:value])
-						codes.push(WwCodeInfo.find_by(token: params[:value]).ww_code)
+					i = WwCodeInfo.find_by(token: params[:value])
+					if i
+						codes.push(i.ww_code)
 						codes = get_results(codes)
 					end
 			end
@@ -166,8 +167,8 @@ class CodesController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			if WwCode.exists?(code_num: params[:code])
-				code = WwCode.find_by(code_num: params[:code])
+			code = WwCode.find_by(code_num: params[:code])
+			if code
 				info = code.ww_code_info
 				if params[:to_status] == false
 					code.update_attributes(used: params[:to_status])

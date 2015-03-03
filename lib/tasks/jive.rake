@@ -1,5 +1,6 @@
 require 'Jive'
 require "Auth"
+require 'csv'
 
 task :move_doc => :environment do
 	puts "Updating feed..."
@@ -171,4 +172,25 @@ task :clear_comments => :environment do
 	OldComment.destroy_all
 	Maintainer.where(ticket_type: "CommentIssue").destroy_all
 end
+
+task :get_users => :environment do 
+	si = 0
+	json = Jive.grab("#{Jive.social}/people?count=100&startIndex=#{si}", Auth.social)
+	while json["list"] && json["list"].count > 0
+		users = json["list"]
+		CSV.open("tmp/users.csv", "a+", :col_sep => ',') do |csv|
+			users.each do |u|
+				csv << [u["id"], u["jive"]["username"]]
+				puts "Processing #{u["id"]}" 
+			end
+		end
+		si = si + 100
+		json = Jive.grab("#{Jive.social}/people?count=100&startIndex=#{si}", Auth.social)
+	end
+
+end
+
+
+
+
 

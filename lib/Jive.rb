@@ -100,6 +100,7 @@ class Jive
   end
 
   def self.create(url, params, auth)
+    puts url
     headers 'Content-Type' => 'application/json'
     options = { body: params.to_json, basic_auth: auth }
     json = self.post(url, options).parsed_response
