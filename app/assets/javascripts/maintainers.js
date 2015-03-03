@@ -59,6 +59,7 @@ app.controller("Maintainer", ['$timeout', 'maintainers', function($timeout, main
 
 	main.getAll = function(){
 		maintainers.all().success(function(resp){
+			console.log(resp);
 			main.all = resp.m;
 		});
 	}
