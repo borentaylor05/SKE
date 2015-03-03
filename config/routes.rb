@@ -27,12 +27,12 @@ Rails.application.routes.draw do
   match "posts", to: "post#all", via: :get
 
   # User Routes
-  match "user/update-client", to: "user#update_client", via: :post
-  match "user/check", to: "user#check_init", via: :get
-  match "user", to: "user#create", via: [:post, :options]
-  match "users", to: "user#get_all", via: :get
-  match "users/search", to: "user#search", via: :get
-  match "users/:jive", to: "user#get", via: :get
+  match "/user/update-client", to: "user#update_client", via: :post     # tested
+  match "/user/check", to: "user#check_init", via: :get                 # tested
+  match "/user", to: "user#create", via: [:post, :options]              # tested 
+  match "/users", to: "user#get_all", via: :get                         # tested        
+  match "/users/search", to: "user#search", via: :get                   # tested
+  match "/users/:jive", to: "user#get", via: :get                       # tested
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   match "requests", to: "content_request#all", via: :get
 
   #FFX Comments Routes
-  match "old/content", to: "old_content#check", via: [:post, :options]
+  match "old/content", to: "old_content#check", via: [:post, :options] 
   match "old/comments", to: "old_comment#check", via: [:post, :options]
   match "old/comment/toggle", to: "old_comment#toggle", via: [:post, :options]
 

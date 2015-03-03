@@ -180,6 +180,21 @@ dlApp.controller("Deadlines", ['$http', '$scope', 'pubs', function($http, $scope
 
 var app = angular.module("ArticleRequest", ["ngSanitize", "ngS3upload"]);
 
+app.directive("loader", function(){
+	return {
+		restrict: "E",
+		scope: {
+			loading: "=", // boolean that determines whether to show spinner
+			size: "@"
+		},
+		template: '<i ng-show="loading" class="fa fa-circle-o-notch fa-spin"></i>',
+		link: function(scope, el, attrs){
+			console.log("Loading", scope.loading);
+			el.css("font-size", scope.size);
+		}
+	}
+});
+
 app.config(function(ngS3Config) {
   ngS3Config.theme = 'bootstrap3';
 });
@@ -203,6 +218,7 @@ app.controller("AR", ["$http", "maintainers", function($http, maintainers){
 	ar.requestingUser = {},
 	ar.hasClient = true,
 	ar.allClients = false,
+	ar.sending = false,
 	ar.currentClient = "";
 
 	ar.createAR = function(doc){
@@ -215,10 +231,13 @@ app.controller("AR", ["$http", "maintainers", function($http, maintainers){
 	}
 
 	ar.createAdminAR = function(doc){
+		ar.sending = true;
 		maintainers.newAdminAR(doc).success(function(resp){
 			console.log(resp);
-			if(resp.status == 0)
+			if(resp.status == 0){
 				ar.onSuccess = resp.message;
+			}
+			ar.sending = false;
 		});
 	}
 

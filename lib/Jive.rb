@@ -6,6 +6,7 @@ class Jive
   @@dev_url = "http://localhost:8080/api/core/v3"
   @@social = "https://social.teletech.com/api/core/v3"
   @@fairpoint = "https://fairfaqs.jiveon.com/api/core/v3"
+  @@ww_coaches = "https://weightwatchers.jiveon.com/api/core/v3"
 
 #  def initialize(base_url, auth_hash)
 #    @base_url = base_url
@@ -14,6 +15,10 @@ class Jive
   
   def self.current
     @@current
+  end
+
+  def self.ww_coaches
+    @@ww_coaches
   end
 
   def self.social

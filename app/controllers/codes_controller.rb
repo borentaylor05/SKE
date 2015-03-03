@@ -40,8 +40,8 @@ class CodesController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			if WwCodeInfo.exists?(token: params[:token])
-				info = WwCodeInfo.find_by(token: params[:token])
+			info = WwCodeInfo.find_by(token: params[:token])
+			if info
 				if info.used
 					respond({ status: 1, error: "This token has already been through the approval process." })
 				else

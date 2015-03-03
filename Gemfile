@@ -30,6 +30,8 @@ group :development, :test do
   gem 'web-console' 
   gem 'spring',      '1.1.3'
   gem 'faker', '~> 1.3.0'
+  gem 'rspec-rails', '~> 3.0'
+  gem 'factory_girl_rails'
 end
 
 group :test do

@@ -1,6 +1,5 @@
 require 'Jive'
 require "Auth"
-desc "This task is called by the Heroku scheduler add-on"
 
 task :move_doc => :environment do
 	puts "Updating feed..."
@@ -142,9 +141,34 @@ task :migrate_users, [:fromTable, :client_name, :backwards_name] => :environment
 	end
 end
 
+task :get_secGroup_users, [:group] => :environment do |t,args|
+	json = Jive.grab("#{Jive.ww_coaches}/securityGroups/#{args[:group]}/members?count=100", Auth.ww_coaches)
+	while json && json["links"]
+			json["list"].each do |u|
+				email = ""
+				u["emails"].each do |e|
+					if e["primary"] == true
+						email = e["value"]
+					end
+				end
+				puts "#{email} \t #{u["jive"]["username"]}"
+			end
+		if json["links"]["next"]
+			json = Jive.grab(json["links"]["next"], Auth.ww_coaches)
+		else
+			break
+		end
+	end
+end
+
 desc "Delete Maintainers with do_delete == true"
 task :delete_maintainers => :environment do
 	Maintainer.where(do_delete: true).destroy_all
 end
 
+task :clear_comments => :environment do 
+	OldContent.destroy_all
+	OldComment.destroy_all
+	Maintainer.where(ticket_type: "CommentIssue").destroy_all
+end
 
