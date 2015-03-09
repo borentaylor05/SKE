@@ -1,7 +1,4 @@
 class AccessibleController < ApplicationController
-	before_action :access_check
-	skip_before_action :verify_authenticity_token
-	after_filter :cors_set_access_control_headers
 	before_action :authenticate_admin!
 #	before_action :verify, only: [:upload_deadlines, :upload_fx_classifications, :fx_request_article, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
 	#VIEWS

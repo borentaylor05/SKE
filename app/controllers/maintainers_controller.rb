@@ -3,7 +3,7 @@ class MaintainersController < ApplicationController
 	#skip_before_action :verify_authenticity_token
 	#before_action :access_check
 	#after_filter :cors_set_access_control_headers
-	#before_action :authenticate_admin!
+	before_action :authenticate_admin!
 
 	def index
 		@user = current_admin
