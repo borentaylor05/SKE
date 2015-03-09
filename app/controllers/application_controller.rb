@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   $current_auth = Jive.auth
   $whitelist = [
       'http://localhost:8080', 
+      'http://localhost:8090', 
       'https://social.teletech.com', 
       'https://lit-inlet-2632.herokuapp.com',
       'https://jivedemo-teletech-gtm-alliances.jiveon.com'
@@ -23,7 +24,8 @@ class ApplicationController < ActionController::Base
   end
 
   def access_check
-    if !admin_signed_in? and !$whitelist.include?(request.headers['origin'])
+    logger.info("ORIGIN: #{request.original_url}")
+    if !admin_signed_in? and !$whitelist.include?(request.headers['origin']) and request.remote_ip != '127.0.0.1'
       return redirect_to "/admins/sign_in"
     end
   end  

@@ -90,8 +90,7 @@ class Jive
   #  puts url
     headers 'Content-Type' => 'application/json'
     options = { body: params.to_json, basic_auth: auth }
-    json = self.put(url, options).parsed_response
-  #  self.clean(json)
+    return self.put(url, options)
   end
 
   def self.remove(url, auth)
@@ -99,19 +98,53 @@ class Jive
     json = self.delete(url, :basic_auth => auth)
   end
 
-  def self.create(url, params, auth)
-    puts url
-    headers 'Content-Type' => 'application/json'
-    options = { body: params.to_json, basic_auth: auth }
-    json = self.post(url, options).parsed_response
-  end
+    def self.create(url, params, auth)
+        puts url
+        headers 'Content-Type' => 'application/json'
+        options = { body: params.to_json, basic_auth: auth }
+        json = self.post(url, options).parsed_response
+    end
 
-  def self.clean(json)
-    return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
-  end
+    def self.clean(json)
+        return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
+    end
 
-  def self.getTags(relative_url, auth)
-    json = self.grab(relative_url, auth)
-    return json["tags"]
-  end
-end
+    def self.getTags(relative_url, auth)
+        json = self.grab(relative_url, auth)
+        return json["tags"]
+    end
+
+    def self.humanify_doc(doc)
+        json = self.grab("#{Jive.dev_url}/contents?filter=entityDescriptor(102,#{self.parseDocNum(doc)})", Auth.dev)
+        puts json["list"][0]["content"]["text"]
+    end
+
+    def self.parseDocNum(doc)
+        return doc[4..-1]
+    end
+
+    # hash -> :email, :password, :username, :job_title, :client, :location, :lob, :first_name, :last_name
+    def new_person(hash)
+        {
+            emails: [ {
+                value: hash[:email],
+                type: "work",
+                primary: true,
+                jive_label: "Email"
+            } ],
+            jive: {
+                password: hash[:password],
+                username: hash[:username],
+                job_title: hash[:job_title],
+                manager: hash[:manager],
+                client: hash[:client],
+                location: hash[:location], # country code (APAC for now)
+                lob: hash[:lob] # 
+            },
+            name: {
+                familyName: hash[:last_name],
+                givenName: hash[:first_name]
+            }
+        }
+    end
+    end

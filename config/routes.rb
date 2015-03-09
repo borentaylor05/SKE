@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   match "/users", to: "user#get_all", via: :get                         # tested        
   match "/users/search", to: "user#search", via: :get                   # tested
   match "/users/:jive", to: "user#get", via: :get                       # tested
+  match "/user/new", to: "user#new", via: :get                          # non API <-------
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"
@@ -44,9 +45,9 @@ Rails.application.routes.draw do
   match "webhooks/issue", to: "issue#webhook_create_issue", via: :post
 
   # Request Routes
-  match "request/new-content", to: "content_request#new_content", via: [:post, :options]
-  match "request/revision", to: "content_request#revision", via: :post
-  match "requests", to: "content_request#all", via: :get
+#  match "request/new-content", to: "content_request#new_content", via: [:post, :options]  
+#  match "request/revision", to: "content_request#revision", via: :post
+#  match "requests", to: "content_request#all", via: :get
 
   #FFX Comments Routes
   match "old/content", to: "old_content#check", via: [:post, :options] 
@@ -77,8 +78,8 @@ Rails.application.routes.draw do
   match "cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
   match "cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
   match "cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
-  match "authenticate", to: "accessible#authenticate", via: :get
-  match "verify", to: "accessible#verify_user", via: :post
+#  match "authenticate", to: "accessible#authenticate", via: :get
+#  match "verify", to: "accessible#verify_user", via: :post
   match "fx/deadlines/edit", to: "accessible#fx_edit_deadlines", via: :get
   match "fx/deadline/save", to: "accessible#fx_save_deadline", via: :put
   match "fx/upload/classifications", to: "accessible#upload_fx_classifications", via: :get

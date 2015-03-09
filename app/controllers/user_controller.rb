@@ -1,9 +1,6 @@
 class UserController < ApplicationController
 	include ActionView::Helpers::DateHelper
-	skip_before_action :verify_authenticity_token
-	after_filter :cors_set_access_control_headers
-	after_action :allow_iframe # part of IE fix
-
+	
 	# see if user is in db
 	# Params: :jive_id
 	def check_init
@@ -72,6 +69,10 @@ class UserController < ApplicationController
 		else
 			respond({ status: 1, error: "User #{params[:jive]} not found" })
 		end
+	end
+
+	def new
+		
 	end
 
 	# Params :count(default = 50), :start(default = 0)

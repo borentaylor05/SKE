@@ -1,5 +1,6 @@
 require 'Jive'
-require "Auth"
+require 'Util'
+require 'Auth'
 require 'csv'
 
 task :move_doc => :environment do
@@ -189,6 +190,45 @@ task :get_users => :environment do
 	end
 
 end
+
+task :create_user_csv, [:file] => :environment do |t,args|
+	if !args[:file].empty?
+		# kgrimm -> no oracle ID
+		usernames = ['3151641', 'darby.conway', 'lindsay.keith', 'alecvillamarin', '2124496', '2121809', '2121597', 'lynettekoronowski', '3170083']
+		Util.create_csv(args[:file], Util.required_fields, "a")
+		usernames.each do |u|
+			json = Jive.grab("#{Jive.social}/people/username/#{u}", Auth.social)
+			hash = Util.create_csv_hash(json, 'Admin')
+			Util.create_csv(args[:file], Util.order_hash(hash), "a")
+		end
+	else
+		puts "You must supply a file name -> update_users[:filename]"
+	end
+end
+
+task :update_user => :environment do 
+	json = Jive.grab("#{Jive.social}/people/username/123456", Auth.social)
+	json = Util.fix_user(json)
+	if !json["jive"]["profile"]
+		json["jive"]["profile"] = []
+	end
+	json["jive"]["profile"].push({ "value" => "TEST", "jive_label" => "Locale" })
+	resp = Jive.update("#{Jive.social}/people/#{json["id"]}", json, Auth.social)
+	if resp.code > 399
+		puts "ERROR: #{resp.code} -> #{resp.message} -> #{resp.parsed_response}"
+	else
+		puts resp.parsed_response
+	end
+end
+
+task doc: :environment do 
+	#Jive.humanify_doc("DOC-1033")
+	puts Util.get_indices("!--->", "asdsdd!--->asdasdasdasddsad!--->asdsdd!--->dfgdfgfgfd!--->")
+end
+
+
+
+
 
 
 

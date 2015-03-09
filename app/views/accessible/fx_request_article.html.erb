@@ -256,7 +256,7 @@ label.sum-label{
 
 </style>
 <div class="main" ng-app="ArticleRequest" ng-controller="AR as ar">
-  <h1 class="request-title">Create Your Request {{ ar.sending }} </h1> 
+  <h1 class="request-title">Create Your Request </h1> 
   <div ng-show="ar.onSuccess.length > 0 " class="alert alert-success">{{ ar.onSuccess }}</div>
   <form ng-hide="ar.onSuccess.length > 0" class="request" ng-submit="ar.createAdminAR(ar.doc)">
     <div class="fieldContainer">

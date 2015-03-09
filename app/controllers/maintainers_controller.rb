@@ -1,9 +1,9 @@
 class MaintainersController < ApplicationController
 	require 'Jive'
-	skip_before_action :verify_authenticity_token
-	before_action :access_check
-	after_filter :cors_set_access_control_headers
-#	before_action :authenticate_admin!, except: [:new_article_request]
+	#skip_before_action :verify_authenticity_token
+	#before_action :access_check
+	#after_filter :cors_set_access_control_headers
+	#before_action :authenticate_admin!
 
 	def index
 		@user = current_admin
@@ -105,10 +105,8 @@ class MaintainersController < ApplicationController
 				if ar.valid?
 					ar.save
 					if params[:admin] and admin_signed_in?
-						logger.info("ADMIN ------------------------> ")
 						m = Maintainer.new(client: current_admin.client, admin: current_admin, ticket: ar, resolved: false)
 					else
-						logger.info("USER ------------------------> ")
 						m = Maintainer.new(client: client, user: user, ticket: ar, resolved: false)
 					end
 					if m.valid?
@@ -163,7 +161,7 @@ class MaintainersController < ApplicationController
 	def determine_type(maintainer, message)
 		case maintainer.ticket_type
 		when "CommentIssue"
-			message = "In response to comment #{maintainer.ticket.old_content.link}#comment-#{maintainer.ticket.api_id} \n\n #{message}"
+			message = "In response to comment #{maintainer.ticket.old_comment.old_content.link}#comment-#{maintainer.ticket.old_comment.api_id} \n\n #{message}"
 		when "ArticleRequest"
 			message = "In response to your article request titled: '#{maintainer.ticket.title}' \n\n #{message}"
 		end

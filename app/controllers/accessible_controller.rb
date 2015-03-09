@@ -1,7 +1,8 @@
 class AccessibleController < ApplicationController
 	before_action :access_check
 	skip_before_action :verify_authenticity_token
-	after_filter :cors_set_access_control_headers, except: :authenticate
+	after_filter :cors_set_access_control_headers
+	before_action :authenticate_admin!
 #	before_action :verify, only: [:upload_deadlines, :upload_fx_classifications, :fx_request_article, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
 	#VIEWS
 
@@ -24,37 +25,11 @@ class AccessibleController < ApplicationController
 	def upload_deadlines
 	end
 
-	def authenticate
-
-	end
-
 	def edit_a_to_z
 	end
 
 	def fx_edit_deadlines
 		
-	end
-
-	def verify_user
-		if cookies[:action].include? "upload"
-			if params[:password] == ENV['TAYLOR_PASSWORD']
-				route =  "#{cookies[:url]}?token=#{generate_access_token}"
-				respond({ status: 0, route: route })
-			else
-				respond({ status: 1, error: "Wrong password. Taylor is the only one with ability to upload." })
-			end
-		else
-			if params[:password] == ENV['ACCESSIBLE_PASSWORD']
-				if cookies[:url].include?("?")
-					route =  "#{cookies[:url]}&token=#{generate_access_token}"
-				else
-					route =  "#{cookies[:url]}?token=#{generate_access_token}"
-				end
-				respond({ status: 0, route: route })
-			else
-				respond({ status: 1, error: "Wrong password." })
-			end
-		end
 	end
 
 	#PROCESSES
