@@ -57,6 +57,7 @@ class CodesController < ApplicationController
 	end
 
 	def get_code
+		logger.info("Referrer ------------> #{request.env['HTTP_REFERER']}"
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
