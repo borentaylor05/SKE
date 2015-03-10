@@ -25,7 +25,8 @@ class ApplicationController < ActionController::Base
 
   def access_check
     logger.info("ORIGIN: #{request.original_url}")
-    if !admin_signed_in? and !$whitelist.include?(request.headers['origin']) and request.remote_ip != '127.0.0.1'
+    # if 1) Admin not signed in 2) origin not in whitelist 3) IP is not localhost 4) not being sent by IE 9 proxy page
+    if !admin_signed_in? and !$whitelist.include?(request.headers['origin']) and request.remote_ip != '127.0.0.1' and request.referrer != 'https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html' and request.referrer != 'http://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html'
       return redirect_to "/admins/sign_in"
     end
   end  
@@ -34,7 +35,7 @@ class ApplicationController < ActionController::Base
     Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
     if admin_signed_in?
       return request.headers['origin']
-    elsif $whitelist.include?(request.headers['origin']) or request.remote_ip == "::1" 
+    elsif $whitelist.include?(request.headers['origin']) or request.remote_ip == "::1" or request.referrer == 'https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html' or request.referrer == 'http://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html'
       return request.headers['origin']
     else
       return "noaccess-adssasadfdf"
