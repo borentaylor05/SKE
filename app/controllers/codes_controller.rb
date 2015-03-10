@@ -60,6 +60,7 @@ class CodesController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
+			Rails.logger.info("Referrer --------------> #{request.referrer}")
 			info = WwCodeInfo.find_by(token: params[:token])
 			if info
 			#	info = WwCodeInfo.find_by(token: params[:token])
