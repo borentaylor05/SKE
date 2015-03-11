@@ -7,9 +7,7 @@ class CodesController < ApplicationController
 	
 	#NOTE: here is where I started using status numbers correctly, i.e. 0 = success, 1 = error
 
-	def test
-		respond({ message: "SDASSDASDASD" })
-	end
+	
 
 	def new
 		if(request.method == "OPTIONS")
