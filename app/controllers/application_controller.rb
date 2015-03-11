@@ -51,7 +51,7 @@ class ApplicationController < ActionController::Base
 
   def origin_allowed?
     if $whitelist.include?(request.headers['origin']) or (request.referrer and $wl_domains.include?(URI(request.referrer).host)) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1' or request.referrer == 'https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html'
-      Rails.logger.info("Authorized! (Requesting) URL --> #{request.referrer}") 
+      Rails.logger.info("Authorized! --> HREF: #{request.referrer}, IP: #{request.remote_ip}, Domain: #{request.headers['origin']}") 
       return true
     else
       return false
