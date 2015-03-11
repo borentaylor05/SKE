@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
     elsif origin_allowed?
       return request.headers['origin']
     else
-      raise "Unauthorized - Invalid Origin"
+      raise "Unauthorized - Invalid Origin - IP: #{request.remote_ip} - Domain - #{request.headers['origin']} - Referrer - #{request.referrer}"
     end
   end
 
