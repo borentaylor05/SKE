@@ -15,6 +15,13 @@ class ApplicationController < ActionController::Base
       'https://lit-inlet-2632.herokuapp.com',
       'https://jivedemo-teletech-gtm-alliances.jiveon.com'
     ]
+  $wl_domains = [
+      'localhost:8080', 
+      'localhost:8090', 
+      'social.teletech.com', 
+      'lit-inlet-2632.herokuapp.com',
+      'jivedemo-teletech-gtm-alliances.jiveon.com'
+  ]
 
   def cors_set_access_control_headers
     headers['Access-Control-Allow-Origin'] = check_origin
@@ -36,15 +43,15 @@ class ApplicationController < ActionController::Base
     Rails.logger.info("Referrer (Requesting) URL --> #{request.referrer}") 
     if admin_signed_in?
       return request.headers['origin']
-    elsif origin_allowed
+    elsif origin_allowed?
       return request.headers['origin']
     else
       raise "Unauthorized - Invalid Origin"
     end
   end
 
-  def origin_allowed
-    if $whitelist.include?(request.headers['origin']) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1' or request.referrer == "https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html" or request.referrer == "http://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html"
+  def origin_allowed?
+    if $whitelist.include?(request.headers['origin']) or (request.referrer and $wl_domains.include?(URI(request.referrer).host)) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1'
       return true
     else
       return false
