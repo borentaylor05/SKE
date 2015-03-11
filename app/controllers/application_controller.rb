@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   def check_origin
     Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
     Rails.logger.info("Remote (Requesting) DOMAIN #{request.headers['origin']}") 
+    Rails.logger.info("Referrer (Requesting) URL --> #{request.referrer}") 
     if admin_signed_in?
       return request.headers['origin']
     elsif origin_allowed
