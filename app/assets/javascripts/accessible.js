@@ -7,25 +7,6 @@ function getURLParameter(name) {
 }
 var tokenString = "token="+getURLParameter("token");
 
-var verifyApp = angular.module("VerifyApp", []);
-
-verifyApp.controller("Verify", ['$http', function($http){
-	var ver = this;
-	ver.verify = function(pw){
-		$http.post("/verify", {password: pw}).success(function(resp){
-			ver.status = resp.status;
-			console.log(resp);
-			if(resp.status == 0)
-				window.location.href = resp.route;
-			else
-				ver.error = resp.error
-		});
-	}
-
-
-}]);
-
-
 var app = angular.module("AToZ", ['ngSanitize']);
 
 app.directive('href', function() {
@@ -47,7 +28,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 		az.loading = true;
 		az.narrowed = true;
 		$scope.data = null;
-		$http.get("/cdc/api/get-range?start="+start+"&end="+end+"&token="+getURLParameter("token")).success(function(resp){
+		$http.get("/cdc/a-to-z/get-range?start="+start+"&end="+end).success(function(resp){
 			console.log(resp);
 			az.topics = resp.topics
 			az.loading = false;
@@ -60,7 +41,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 		az.loading = true;
 		az.narrowed = true;
 		$scope.data = null;
-		$http.get("/cdc/api/search?search="+term+"&token="+getURLParameter("token")).success(function(resp){
+		$http.get("/cdc/a-to-z/search?search="+term).success(function(resp){
 			az.topics = resp.topics
 			az.loading = false;
 		}).error(function(err){
@@ -74,7 +55,7 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 		}
 		else{
 			az.currentlyEditing = topic;
-			$http.get("/cdc/api/topic?id="+topic.id+"&token="+getURLParameter("token")).success(function(resp){
+			$http.get("/cdc/a-to-z/topic?id="+topic.id).success(function(resp){
 				console.log(resp);
 				if(resp.status == 0){
 					az.currentTopic = resp.topic;
@@ -112,10 +93,10 @@ dlApp.factory("pubs", ['$http', function($http){
 	var pubs = {};
 
 	pubs.getAll = function(){
-		return $http.get("/fairfax/publications");
+		return $http.get("/fx/publications");
 	}
 	pubs.getDeadline = function(pub){
-		return $http.get("/fairfax/deadlines/publication?pub="+pub);
+		return $http.get("/fx/deadlines/publication?pub="+pub);
 	}
 	pubs.edit = function(deadline){
 		return $http.put("/fx/deadline/save", { deadline: deadline });

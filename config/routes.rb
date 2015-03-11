@@ -71,22 +71,35 @@ Rails.application.routes.draw do
   match "message", to: "message#send_message", via: [:post, :options]
   match "messages/all", to: "message#all", via: :get
 
-  # ACCESSIBLE ROUTES
+  # ----- Begin Accessible Routes ------
+
   match "/cdc/upload/address-book", to: "accessible#upload_address_book", via: :get
   match "/cdc/process/address-book", to: "accessible#process_address_book_upload", via: :post
   match "/cdc/upload/a-to-z", to: "accessible#upload_a_to_z", via: :get
   match "/cdc/process/a-to-z", to: "accessible#process_a_to_z_upload", via: :post
+  # A-Z
   match "/cdc/a-to-z", to: "accessible#edit_a_to_z", via: :get
+  match "/cdc/a-to-z/search", to: "accessible#cdc_search", via: :get
+  match "/cdc/a-to-z/get-range", to: "accessible#get_range", via: :get
+  match "/cdc/a-to-z/topic", to: "accessible#get_topic", via: :get
   match "/cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
+  # End A-Z Accessible
+
+  # FX Deadlines and classifications
   match "/fx/deadlines/edit", to: "accessible#fx_edit_deadlines", via: :get
   match "/fx/deadline/save", to: "accessible#fx_save_deadline", via: :put
   match "/fx/upload/classifications", to: "accessible#upload_fx_classifications", via: :get
   match "/fx/process/classifications", to: "accessible#process_fx_classification_upload", via: :post
   match "/fx/upload/deadlines", to: "accessible#upload_deadlines", via: :get
   match "/fx/process/deadlines", to: "accessible#process_deadlines", via: :post
+  match "/fx/deadlines/publication", to: "accessible#get_deadlines_by_pub", via: :get
+  match "/fx/publications", to: "accessible#get_pubs", via: :get
+  # End FX Dl and classifications
   match "/fx/request-article", to: "accessible#fx_request_article", via: :get
   match "/temp/upload", to: "accessible#temp_upload", via: :get
   match "/temp/upload/process", to: "accessible#temp_upload_process", via: :post
+
+  # ----- End Accessible Routes ------
 
   # A-Z
   match "/cdc/api/search", to: "a_to_z#cdc_search", via: :get

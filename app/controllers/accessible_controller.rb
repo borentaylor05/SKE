@@ -1,6 +1,7 @@
 class AccessibleController < ApplicationController
+	
 	before_action :authenticate_admin!
-#	before_action :verify, only: [:upload_deadlines, :upload_fx_classifications, :fx_request_article, :upload_address_book, :upload_a_to_z, :edit_a_to_z, :fx_edit_deadlines]
+	
 	#VIEWS
 
 	def fx_request_article
@@ -90,6 +91,53 @@ class AccessibleController < ApplicationController
 		end
 
 	end
+
+	# HTTP REQUESTS (Angular)
+	# A to Z
+	# gets all topics within range, e.g. a..m, determined by params
+	def get_range
+		Rails.logger.info("HOST ------> #{request.host}")
+		respond({ topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
+	end
+
+	def cdc_search
+		respond({ topics: AToZEntry.select(:topic, :id).contains(params[:search].upcase) })
+	end
+
+	def get_topic
+		if AToZEntry.exists?(id: params[:id])
+			respond({ status: 0, topic: AToZEntry.find(params[:id]) })
+		else
+			respond({ status: 1, error: "Topic not found" })
+		end
+	end
+
+	def get_deadlines_by_pub
+		deadlines = []
+		days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+		days.each do |day|
+			hash = { day: day, deadlines: Deadline.day(day).contains(params[:pub]) }
+			deadlines.push(hash)
+		end
+		respond({ status: 0, deadlines: deadlines })
+	end
+
+	def get_pubs
+		pubs = []
+		Deadline.uniq.pluck(:publication).each do |p|
+			name = p.match('^[^\(]*').to_s.strip
+			name = name.match('^[^\-]*').to_s.strip
+			if name[0] == "*"
+				name[0] = ''
+			end
+			if !pubs.include?(name)
+				pubs.push(name)
+			end
+		end
+		respond({ status: 0, pubs: pubs })
+	end
+
+	# ----- End Angular Request routes ------
 
 	#UTILITY
 
