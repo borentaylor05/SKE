@@ -2,10 +2,14 @@ class CodesController < ApplicationController
 	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
 #	before_action :access_check
-	after_filter :cors_set_access_control_headers
+	before_action :cors_set_access_control_headers, only: :test
 	after_action :allow_iframe
 	
 	#NOTE: here is where I started using status numbers correctly, i.e. 0 = success, 1 = error
+
+	def test
+		respond({ message: "SDASSDASDASD" })
+	end
 
 	def new
 		if(request.method == "OPTIONS")

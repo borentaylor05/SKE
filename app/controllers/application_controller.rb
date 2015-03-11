@@ -32,12 +32,21 @@ class ApplicationController < ActionController::Base
 
   def check_origin
     Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
+    Rails.logger.info("Remote (Requesting) DOMAIN #{request.headers['origin']}") 
     if admin_signed_in?
       return request.headers['origin']
-    elsif $whitelist.include?(request.headers['origin']) or request.remote_ip == "::1"
+    elsif origin_allowed
       return request.headers['origin']
     else
-      return "noaccess-adssasadfdf"
+      raise "Unauthorized - Invalid Origin"
+    end
+  end
+
+  def origin_allowed
+    if $whitelist.include?(request.headers['origin']) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1' or request.referrer == "https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html" or request.referrer == "http://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html"
+      return true
+    else
+      return false
     end
   end
 

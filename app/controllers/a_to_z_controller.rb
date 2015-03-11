@@ -1,11 +1,10 @@
 class AToZController < ApplicationController
 
 	skip_before_action :verify_authenticity_token
-	before_action :access_check
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 	
-	before_action :authenticate_admin!, only: :get_topic	
+	# before_action :authenticate_admin!, only: :get_topic	
 
 	# gets all topics within range, e.g. a..m, determined by params
 	def get_range
