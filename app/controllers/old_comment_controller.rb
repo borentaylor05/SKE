@@ -1,6 +1,5 @@
 class OldCommentController < ApplicationController
 	include ActionView::Helpers::DateHelper
-	before_action :access_check
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 

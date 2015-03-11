@@ -1,5 +1,6 @@
 class PostController < ApplicationController
 	include ActionView::Helpers::DateHelper
+	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 	
 	def all
