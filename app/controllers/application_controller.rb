@@ -21,6 +21,16 @@ class ApplicationController < ActionController::Base
       'social.teletech.com', 
       'jivedemo-teletech-gtm-alliances.jiveon.com'
   ]
+  $wl_ips = [
+      '204.93.64.4', # demo site
+      '::1',
+      '127.0.0.1',
+      '10.170.67.38', # activity engine SKE,
+      '10.170.67.44', # node
+      '10.170.67.43', # node
+      '10.170.67.42', # node
+      '10.170.67.45'  # node
+  ]
 
   def cors_set_access_control_headers
     headers['Access-Control-Allow-Origin'] = check_origin
@@ -52,7 +62,7 @@ class ApplicationController < ActionController::Base
   end
 
   def origin_allowed?
-    if $whitelist.include?(request.headers['origin']) or (request.referrer and $wl_domains.include?(URI(request.referrer).host)) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1' or request.referrer == 'https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html'
+    if $whitelist.include?(request.headers['origin']) or (request.referrer and $wl_domains.include?(URI(request.referrer).host)) or $wl_ips.include?(request.remote_ip) or request.referrer == 'https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html'
       Rails.logger.info("Authorized! --> HREF: #{request.referrer}, IP: #{request.remote_ip}, Domain: #{request.headers['origin']}") 
       return true
     else
