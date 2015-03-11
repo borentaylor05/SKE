@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
       'localhost:8080', 
       'localhost:8090', 
       'social.teletech.com', 
-      'lit-inlet-2632.herokuapp.com',
       'jivedemo-teletech-gtm-alliances.jiveon.com'
   ]
 
@@ -51,7 +50,8 @@ class ApplicationController < ActionController::Base
   end
 
   def origin_allowed?
-    if $whitelist.include?(request.headers['origin']) or (request.referrer and $wl_domains.include?(URI(request.referrer).host)) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1'
+    if $whitelist.include?(request.headers['origin']) or (request.referrer and $wl_domains.include?(URI(request.referrer).host)) or request.remote_ip == "::1" or request.remote_ip == '127.0.0.1' or request.referrer == 'https://lit-inlet-2632.herokuapp.com/web/IE9/proxy.html'
+      Rails.logger.info("Authorized! (Requesting) URL --> #{request.referrer}") 
       return true
     else
       return false
