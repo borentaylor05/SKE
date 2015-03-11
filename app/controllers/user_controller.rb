@@ -1,8 +1,8 @@
 class UserController < ApplicationController
 	include ActionView::Helpers::DateHelper
-	# skip_before_action :verify_authenticity_token
-	# before_action :cors_set_access_control_headers
-	# after_action :allow_iframe
+	 skip_before_action :verify_authenticity_token
+	 before_action :cors_set_access_control_headers
+	 after_action :allow_iframe
 	
 	# see if user is in db
 	# Params: :jive_id
