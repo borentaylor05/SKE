@@ -1,6 +1,10 @@
 class IssueController < ApplicationController
 	skip_before_action :verify_authenticity_token
-	after_filter :cors_set_access_control_headers
+	before_action :cors_set_access_control_headers_test
+
+	def test
+		respond({ message: "SDASSDASDASD" })
+	end
 
 	def webhook_create_issue
 		i = Issue.new(

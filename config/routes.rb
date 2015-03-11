@@ -63,7 +63,7 @@ Rails.application.routes.draw do
   match "codes/people", to: "codes#get_people", via: :get
   match "codes/load", to: "codes#load", via: [:post, :options]
   match "codes/toggle", to: "codes#toggle", via: [:post, :options]
-  match "codes/access", to: "codes#test", via: :get
+  match "codes/access", to: "issue#test", via: :get
 
   # MESSAGE ROUTES
   match "messages", to: "message#get_unread_messages", via: :get

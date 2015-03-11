@@ -29,6 +29,15 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
+  def cors_set_access_control_headers_test
+    headers['Access-Control-Allow-Origin'] = check_origin
+    headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
+    headers['Access-Control-Request-Method'] = '*'
+    headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  end
+
+
+
   def access_check
     # if 1) Admin not signed in 2) origin not in whitelist 3) IP is not localhost 4) not being sent by IE 9 proxy page
     if !admin_signed_in? and !$whitelist.include?(request.headers['origin']) and request.remote_ip != '127.0.0.1' 
