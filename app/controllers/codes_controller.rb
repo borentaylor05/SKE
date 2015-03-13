@@ -12,7 +12,6 @@ class CodesController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			Rails.logger.info("Referrer --------------> #{request.referrer}")
 			i = WwCodeInfo.new(
 				sub_num: params[:sub],
 				member_first_name: params[:member_first].downcase,

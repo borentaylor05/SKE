@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150227001608) do
+ActiveRecord::Schema.define(version: 20150312151237) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -184,6 +184,7 @@ ActiveRecord::Schema.define(version: 20150227001608) do
     t.string   "training_impact"
     t.boolean  "do_delete",       default: false
     t.integer  "admin_id"
+    t.string   "lob"
   end
 
   create_table "message_trackers", force: true do |t|
@@ -270,7 +271,12 @@ ActiveRecord::Schema.define(version: 20150227001608) do
     t.string   "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string   "username"
+    t.string   "oracle_id"
+    t.string   "job_title"
+    t.string   "client"
+    t.string   "region"
+    t.string   "location"
+    t.string   "lob"
   end
 
   create_table "tokens", force: true do |t|
@@ -299,6 +305,7 @@ ActiveRecord::Schema.define(version: 20150227001608) do
     t.string   "title"
     t.string   "location"
     t.string   "lob"
+    t.string   "region"
   end
 
   add_index "users", ["jive_id"], name: "index_users_on_jive_id", using: :btree

@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   require 'Jive' # needed for production despite being autoloaded
 
-  $token = ""
   $admin_user = User.find_by(jive_id: 99999999)
   $instance = "http://localhost:8080"
   $current_url = "http://localhost:8080/api/core/v3"
@@ -39,19 +38,7 @@ class ApplicationController < ActionController::Base
     headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 
-
-
-  def access_check
-    # if 1) Admin not signed in 2) origin not in whitelist 3) IP is not localhost 4) not being sent by IE 9 proxy page
-    if !admin_signed_in? and !$whitelist.include?(request.headers['origin']) and request.remote_ip != '127.0.0.1' 
-      return redirect_to "/admins/sign_in"
-    end
-  end  
-
   def check_origin
-    Rails.logger.info("Remote (Requesting) IP #{request.remote_ip}") 
-    Rails.logger.info("Remote (Requesting) DOMAIN #{request.headers['origin']}") 
-    Rails.logger.info("Referrer (Requesting) URL --> #{request.referrer}") 
     if admin_signed_in?
       return request.headers['origin']
     elsif origin_allowed?
@@ -106,27 +93,6 @@ class ApplicationController < ActionController::Base
     response.headers.except! 'X-Frame-Options'
   end
 
-  def verify
-    logger.info("Origin -----> #{request.headers['origin']}")
-    if (request.headers['origin'].nil? or !$whitelist.include?(request.headers['origin'])) and !token_valid(params[:token])
-      Rails.logger.info("URL SHOULD BE ----> #{request.original_url.gsub!(/token(=[^&]*)?|^token(=[^&]*)/, '')}")
-      cookies[:url] = request.original_url
-      cookies[:action] = params[:action]
-      if !params.has_key?("token")
-        flash[:error] = "Access to this page requires a password." 
-        redirect_to "/authenticate"
-      else
-        if !token_valid(params[:token])
-          flash[:error] = "The token provided was invalid.  Tokens expire after 5 minutes."
-          redirect_to "/authenticate"
-        end
-      end
-    else
-      Rails.logger.info("WRRRRRROOOOOOOOONG")
-      return true
-    end
-  end
-
   def generate_token(length)
     token = Digest::SHA1.hexdigest([Time.now, rand].join)[0...length]
     while WwCodeInfo.exists?(token: token)
@@ -161,11 +127,6 @@ class ApplicationController < ActionController::Base
 
   def handle_expired_session
     respond({ status: 1, type: "oauth", error: "Session expired, reauthenticating." })
-  end
-
-  def copy_session
-    Rails.logger.info("Session ----> #{session['token']}")
-    @session_copy = session
   end
 
   def user_quick_create(user)

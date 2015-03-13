@@ -36,23 +36,18 @@ Rails.application.routes.draw do
   match "/user/new", to: "user#new", via: :get                          # non API <-------
 
   # Specialty Routes
-  get "specialties/", to: "specialty#get"
-  match "user/add-specialties", to: "specialty#add_specialties", via: :post
+  get "specialties/", to: "specialty#get"                                   # Not being used 
+  match "user/add-specialties", to: "specialty#add_specialties", via: :post # Not being used 
 
   # Issue Routes
-  match "issue/unresolve", to: "issue#unresolve", via: :post
-  match "issue/resolve", to: "issue#resolve", via: :post
-  match "webhooks/issue", to: "issue#webhook_create_issue", via: :post
-
-  # Request Routes
-#  match "request/new-content", to: "content_request#new_content", via: [:post, :options]  
-#  match "request/revision", to: "content_request#revision", via: :post
-#  match "requests", to: "content_request#all", via: :get
+  match "issue/unresolve", to: "issue#unresolve", via: :post            # Not being used 
+  match "issue/resolve", to: "issue#resolve", via: :post                # Not being used 
+  match "webhooks/issue", to: "issue#webhook_create_issue", via: :post  # Not being used 
 
   #FFX Comments Routes
-  match "old/content", to: "old_content#check", via: [:post, :options] 
-  match "old/comments", to: "old_comment#check", via: [:post, :options]
-  match "old/comment/toggle", to: "old_comment#toggle", via: [:post, :options]
+  match "/old/content", to: "old_content#check", via: [:post, :options]         # tested
+  match "/old/comments", to: "old_comment#check", via: [:post, :options]        # tested
+  match "/old/comment/toggle", to: "old_comment#toggle", via: [:post, :options] # tested
 
   # CODE ROUTES
   match "code/request", to: "codes#new", via: [:options, :post]
@@ -63,7 +58,6 @@ Rails.application.routes.draw do
   match "codes/people", to: "codes#get_people", via: :get
   match "codes/load", to: "codes#load", via: [:post, :options]
   match "codes/toggle", to: "codes#toggle", via: [:post, :options]
-  match "codes/access", to: "issue#test", via: :get
 
   # MESSAGE ROUTES
   match "messages", to: "message#get_unread_messages", via: :get
@@ -98,6 +92,13 @@ Rails.application.routes.draw do
   match "/fx/request-article", to: "accessible#fx_request_article", via: :get
   match "/temp/upload", to: "accessible#temp_upload", via: :get
   match "/temp/upload/process", to: "accessible#temp_upload_process", via: :post
+  # Maintainers
+  match "/maintainers/all", to: "accessible#get_maintainers", via: :get
+  match "/maintainers/:id/update", to: "accessible#update_maintainer", via: :post
+  match "/maintainers/:id/toggle", to: "accessible#toggle_resolved", via: :post
+  match "/maintainers", to: "accessible#maintainers", via: :get
+  match "/admin/article-request/new", to: "accessible#new_article_request", via: [:post, :options]
+  root to: "accessible#fx_request_article", via: :get
 
   # ----- End Accessible Routes ------
 
@@ -131,16 +132,11 @@ Rails.application.routes.draw do
 
 
   # S3 Upload Route
-  match "s3-upload", to: "content#generate_s3_json", via: :get
+  match "/s3-upload", to: "content#generate_s3_json", via: :get
 
   # Maintainer routes
   match "/maintainers/comment/new", to: "maintainers#new_comment_maintainer", via: [:options, :post]
-  match "/maintainers/all", to: "maintainers#get_maintainers", via: :get
-  match "/maintainers/:id/update", to: "maintainers#update_maintainer", via: :post
-  match "/maintainers/:id/toggle", to: "maintainers#toggle_resolved", via: :post
   match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:post, :options]
-  match "/fx/tickets", to: "maintainers#index", via: :get
-  root to: "accessible#fx_request_article", via: :get
 
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -253,7 +253,19 @@ label.sum-label{
   margin-top: 10px;
   box-shadow: 0 0 10px #888;
 }
-
+.lob{
+  font-weight: 200;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 1.2em;
+}
+.lob > h3{
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.lob > input{
+  margin-left: 10px;
+}
 </style>
 <div class="main" ng-app="ArticleRequest" ng-controller="AR as ar">
   <h1 class="request-title">Create Your Request </h1> 
@@ -261,6 +273,13 @@ label.sum-label{
   <form ng-hide="ar.onSuccess.length > 0" class="request" ng-submit="ar.createAdminAR(ar.doc)">
     <div class="fieldContainer">
       <input ng-model="ar.doc.title" id="docTitle" type="text" class="register-input title" placeholder="Title of Desired Document">
+      <div class="lob">
+        <h3>Which LOB is this for? <em style="font-style: italic;">{{ ar.doc.lob | capitalize }}</em> </h3>
+        <input type="radio" ng-model="ar.doc.lob" value="care">&nbsp  Care 
+        <input type="radio" ng-model="ar.doc.lob" value="sales">&nbsp  Sales 
+        <input type="radio" ng-model="ar.doc.lob" value="both">&nbsp  Both 
+        <input type="radio" ng-model="ar.doc.lob" value="other">&nbsp  Other
+      </div>
       <label class="sum-label">Summary of Request</label></br>
       <textarea ng-model="ar.doc.summary" class="register-input" id="summary" rows="10" placeholder="Type your detailed description here..."></textarea>
       <input ng-model="ar.doc.file_label" id="docTitle" type="text" class="register-input title" placeholder="Attachment Label / Description">
