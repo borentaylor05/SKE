@@ -10,15 +10,15 @@ class Bunchball
 	POINT_CATEGORY_ALL = "all";
 	TAGS_OPERATOR_OR = "OR";   
 
-       def initialize
-	       # Required Parameters
-	       @baseURL = "https://solutions.nitro.bunchball.net/nitro/json"
-	       @secretKey = "6c5d3cb1dcea4cf4b88f33b9c328264d"                # Use your secretKey to connect to the API
-	       @apiKey = "5c4b9534bf9d460994b35f648ba63caa"                   # Use your apiKey to connect to the API
-	       @userName = "3170083"
-	       @actionTag = "NewChanllenge"
-	       @value = "10"
-	       @sessionKey = login
+   	def initialize
+       # Required Parameters
+       @baseURL = "https://solutions.nitro.bunchball.net/nitro/json"
+       @secretKey = "6c5d3cb1dcea4cf4b88f33b9c328264d"                # Use your secretKey to connect to the API
+       @apiKey = "5c4b9534bf9d460994b35f648ba63caa"                   # Use your apiKey to connect to the API
+       @userName = "3170083"
+       @actionTag = "NewChanllenge"
+       @value = "10"
+       @sessionKey = login
 	end
 	       
 #   Method for constructing a signature
@@ -29,31 +29,29 @@ class Bunchball
 	end
 
 	def get(url)
-		puts url
 		return JSON.parse(HTTParty.get(url).body, symbolize_names: true)
 	end
 	
 	def login
-	       	ts = Time.now.gmtime.to_i.to_s()
-	       	request = "#{@baseURL}?method=user.login&apiKey=#{@apiKey}&userId=#{@userName}&ts=#{ts}&sig=#{getSignature}";
-			hash = get(request)
-	       	@sessionKey = hash[:Nitro][:Login][:sessionKey]
-	    #	puts @sessionKey
+       	ts = Time.now.gmtime.to_i.to_s()
+       	request = "#{@baseURL}?method=user.login&apiKey=#{@apiKey}&userId=#{@userName}&ts=#{ts}&sig=#{getSignature}";
+		hash = get(request)
+       	@sessionKey = hash[:Nitro][:Login][:sessionKey]
 	end
 	
 	def logAction
-	       sessionKey = @sessionKey
-	       request = @baseURL + "method=user.logAction" + "&sessionKey=" + sessionKey + "&userId="+ @userName + "&tags=" + @actionTag + "&value=" + @value               
-	       print "Logging an action... \n";
-	       xml_data = Net::HTTP.get_response(URI.parse(request)).body              
-	                       doc = REXML::Document.new(xml_data)             
-	       doc.elements.each('Nitro') do |ele|
-	               @response = ele.attributes['res']
-	       end
-	       print @response         
-	       if @response.eql? "ok"
-	               print "logAction successful!\n"
-	       end     
+		sessionKey = @sessionKey
+		request = @baseURL + "method=user.logAction" + "&sessionKey=" + sessionKey + "&userId="+ @userName + "&tags=" + @actionTag + "&value=" + @value               
+		print "Logging an action... \n";
+		xml_data = Net::HTTP.get_response(URI.parse(request)).body              
+		               doc = REXML::Document.new(xml_data)             
+		doc.elements.each('Nitro') do |ele|
+		       @response = ele.attributes['res']
+		end
+		print @response         
+		if @response.eql? "ok"
+		       print "logAction successful!\n"
+		end     
 	end
 	
 	def getUserPointsBalance(user)

@@ -1,4 +1,10 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :suburb do
+    name "MyString"
+  end
+  factory :add do
+    Suburb "MyString"
+  end
+
   factory :user do
     jive_id User.first.jive_id
     employee_id User.first.employee_id

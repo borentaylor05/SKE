@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150312151237) do
+ActiveRecord::Schema.define(version: 20150316195249) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,12 @@ ActiveRecord::Schema.define(version: 20150312151237) do
     t.string   "CommentText"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+  end
+
+  create_table "adds", force: true do |t|
+    t.string   "Suburb"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "admins", force: true do |t|
@@ -264,6 +270,14 @@ ActiveRecord::Schema.define(version: 20150312151237) do
 
   add_index "specialties_users", ["specialty_id", "user_id"], name: "index_specialties_users_on_specialty_id_and_user_id", using: :btree
   add_index "specialties_users", ["user_id", "specialty_id"], name: "index_specialties_users_on_user_id_and_specialty_id", using: :btree
+
+  create_table "suburbs", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "suburbs", ["name"], name: "index_suburbs_on_name", using: :btree
 
   create_table "temp_users", force: true do |t|
     t.string   "first_name"
