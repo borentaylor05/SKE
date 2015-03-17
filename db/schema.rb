@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150316195249) do
+ActiveRecord::Schema.define(version: 20150317172021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,6 +146,13 @@ ActiveRecord::Schema.define(version: 20150316195249) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.integer  "fx_class_cat_id"
+  end
+
+  create_table "fx_publications", force: true do |t|
+    t.string   "name"
+    t.string   "parent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "hyundai_users", force: true do |t|

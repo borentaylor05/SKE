@@ -1,4 +1,8 @@
-FactoryGirl.define do  factory :suburb do
+FactoryGirl.define do  factory :fx_publication do
+    name "MyString"
+parent "MyString"
+  end
+  factory :suburb do
     name "MyString"
   end
   factory :add do

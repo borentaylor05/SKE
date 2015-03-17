@@ -1,4 +1,4 @@
-
+require 'csv'
 
 task :create_fx_cats => :environment do
 	cats = ["FAMILY NOTICES", "ADULT CLASSIFICATIONS", "AUTOMOTIVE", "EMPLOYMENT", "CHURCH NOTICES", "GENERAL", "NOTICES & SERVICES", "ENTERTAINMENT SERVICES", "RURAL, PETS, LIVESTOCK", "PROPERTY & ACCOMMODATION", "BILL ONLY CLASSIFIED", "CLASS FEATURE", "DIRECTORIES CLASSIFIED", "HOUSE FILLERS", "ONLINE EDITIONS", "LATE CLASSIFICATIONS", "LUGS", "TRADES AND SERVICES"]
@@ -38,6 +38,38 @@ task check_pubs: :environment do
 	pubs.each do |p|
 		if Deadline.contains(p).blank?
 			puts p
+		end
+	end
+end
+
+task import_csvs: :environment do 
+	CSV.foreach('suburbs_sheet_1.csv', :headers => true) do |row|
+		pub = FxPublication.find_by(name: row[1])
+  		if !pub
+  			FxPublication.create(name: row[1].strip)
+  			puts "Created #{row[1].strip}"
+  		else
+  			puts "Duplicate ------------------------> #{row[1]} -> File = #{file}"
+  		end
+	end
+	files = ['suburbs_sheet_2.csv','suburbs_sheet_3.csv','suburbs_sheet_4.csv']
+	files.each do |file|
+		CSV.foreach(file, :headers => true) do |row|
+			pub = FxPublication.find_by(name: row[1])
+	  		if !pub
+	  			parent = FxPublication.find_by(name: row[2])
+	  			if !parent and row[2]
+	  				FxPublication.create(name: row[2].strip)
+	  			end
+	  			if row[2] and row[1]
+	  				FxPublication.create(name: row[1].strip, parent: row[2].strip)
+	  				puts "Created #{row[1].strip}"
+	  			else
+	  				"Blank row -> #{row[1]} and #{row[2]}"
+	  			end
+	  		else
+	  			puts "Error ------------------------> #{row[1]} -> File = #{file}"
+	  		end
 		end
 	end
 end
