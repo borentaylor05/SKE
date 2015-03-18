@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317172021) do
+ActiveRecord::Schema.define(version: 20150317204657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,15 @@ ActiveRecord::Schema.define(version: 20150317172021) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "fx_publications", ["name"], name: "index_fx_publications_on_name", using: :btree
+
+  create_table "fx_publications_suburbs", force: true do |t|
+    t.integer  "fx_publication_id"
+    t.integer  "suburb_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
   create_table "hyundai_users", force: true do |t|
     t.string   "name"
     t.integer  "oracle_id"
@@ -277,6 +286,13 @@ ActiveRecord::Schema.define(version: 20150317172021) do
 
   add_index "specialties_users", ["specialty_id", "user_id"], name: "index_specialties_users_on_specialty_id_and_user_id", using: :btree
   add_index "specialties_users", ["user_id", "specialty_id"], name: "index_specialties_users_on_user_id_and_specialty_id", using: :btree
+
+  create_table "suburb_fx_publications", force: true do |t|
+    t.integer  "fx_publication_id"
+    t.integer  "suburb_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
 
   create_table "suburbs", force: true do |t|
     t.string   "name"
