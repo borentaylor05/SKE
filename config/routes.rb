@@ -111,6 +111,8 @@ Rails.application.routes.draw do
   match "cdc/address-book", to: "address_book#get_all", via: :get
   match "cdc/address-book/entry", to: "address_book#get_entry", via: :get
 
+  # ----- Fairfax Routes ------  
+
   # FX DEADLINES
   match "fairfax/deadlines/publication", to: "deadline#get_deadlines_by_pub", via: :get
   match "fairfax/publications", to: "deadline#get_pubs", via: :get
@@ -118,6 +120,13 @@ Rails.application.routes.draw do
   # FX CLASSIFICATION ROUTES
   match "fx/classifications", to: "fx_classification#get_classifications", via: :get  
   match "fx/classifications/categories", to: "fx_classification#get_categories", via: :get  
+
+  # FX SUBURBS
+  match "/fx/api/publications", to: "fx#get_all_publications", via: :get
+  match "/fx/api/publications/:publication_id/suburbs", to: "fx#get_suburbs_for_publication", via: :get
+  match "/fx/api/suburbs/:suburb_id/publications", to: "fx#get_publications_for_suburb", via: :get
+
+  # ----- END Fairfax Routes ------  
   
   # TWITTER ROUTES
   match "tweets/multiple-users", to: "twitter#get_tweets_from_multiple", via: :get

@@ -71,7 +71,7 @@ task fix_missing: :environment do
 		pub = pubs[c]
 		s = Suburb.find_by(name: sub.strip)
 		if !s 
-			s = Suburb.create!(name: sub)
+			s = Suburb.create!(name: sub.strip)
 		end
 		p = FxPublication.find_by(name: pub.strip)
 		if !p 

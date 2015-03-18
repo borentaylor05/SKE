@@ -1,20 +1,16 @@
-FactoryGirl.define do  factory :fx_publications_suburb do
+FactoryGirl.define do  
+  factory :fx_publications_suburb do
     fx_publication_id 1
-suburb_id 1
+    suburb_id 1
   end
-  factory :suburb_fx_publication do
-    fx_publication_id 1
-suburb_id 1
-  end
+
   factory :fx_publication do
-    name "MyString"
-parent "MyString"
+    name "A Publication"
+    parent "A Parent Publication"
   end
+  
   factory :suburb do
-    name "MyString"
-  end
-  factory :add do
-    Suburb "MyString"
+    name "A suburb"
   end
 
   factory :user do
