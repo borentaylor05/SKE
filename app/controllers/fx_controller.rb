@@ -17,7 +17,6 @@ class FxController < ApplicationController
 			else
 				suburbs = []
 				pubs = FxPublication.where(parent: pub.name)
-				Rails.logger.info("ADSSADSAD ->>> #{pubs.count}")
 				pubs.each do |p|
 					p.suburbs.each do |burb|
 						b = burb.attributes
@@ -46,6 +45,15 @@ class FxController < ApplicationController
 			end
 		else
 			respond({ status: 1, error: "Suburb not found." })
+		end
+	end
+
+	def cpts_for_publication
+		pub = FxPublication.find_by(id: params[:publication_id])
+		if pub 
+			respond({ status: 0, cpts: pub.cost_per_thousands })
+		else
+			respond({ status: 1, error: "Publication not found" })
 		end
 	end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317204657) do
+ActiveRecord::Schema.define(version: 20150318214842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,20 @@ ActiveRecord::Schema.define(version: 20150317204657) do
 
   add_index "contents_specialties", ["content_id", "specialty_id"], name: "index_contents_specialties_on_content_id_and_specialty_id", using: :btree
   add_index "contents_specialties", ["specialty_id", "content_id"], name: "index_contents_specialties_on_specialty_id_and_content_id", using: :btree
+
+  create_table "cost_per_thousands", force: true do |t|
+    t.string   "publications"
+    t.integer  "cost"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "cost_per_thousands_fx_publications", force: true do |t|
+    t.integer  "cost_per_thousand_id"
+    t.integer  "fx_publication_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
 
   create_table "deadlines", force: true do |t|
     t.string   "publication"

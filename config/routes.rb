@@ -126,6 +126,9 @@ Rails.application.routes.draw do
   match "/fx/api/publications/:publication_id/suburbs", to: "fx#get_suburbs_for_publication", via: :get
   match "/fx/api/suburbs/:suburb_id/publications", to: "fx#get_publications_for_suburb", via: :get
 
+  # COST PER THOUSANDS
+  match "/fx/api/publications/:publication_id/cost-per-thousands", to: "fx#cpts_for_publication", via: :get  
+
   # ----- END Fairfax Routes ------  
   
   # TWITTER ROUTES

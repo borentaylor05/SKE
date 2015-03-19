@@ -83,3 +83,35 @@ task fix_missing: :environment do
 		c = c + 1
 	end
 end
+
+task cost_per_thousand_init: :environment do 
+	CSV.foreach("cost_per_thousand.csv") do |row|
+		publications = row[0]
+		if row[1].strip == "n/a"
+			cur_cost = 0
+		else
+			cur_cost = row[1].gsub!(",", "").to_i
+		end
+		if !CostPerThousand.create(publications: publications, cost: cur_cost)
+			puts "ERROR -- #{row[0]}"
+		end
+	end
+end
+
+task cost_per_thousand_associations: :environment do 
+	CSV.foreach("cost_per_thousand.csv") do |row|
+		cpt = CostPerThousand.find_by(publications: row[0])
+		row[0].split("+").each do |pub|
+			pub = pub.strip
+			p = FxPublication.find_by(name: pub)
+			if !p
+				puts pub
+			else
+				cpt.fx_publications << p
+			end
+		end
+	end
+end
+
+
+

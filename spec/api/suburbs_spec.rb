@@ -53,6 +53,21 @@ describe "Comments API", :type => :request do
 		expect(json["status"]).to eq(1)
 	end
 
+	# for /fx/api/publications/:publication_id/cost-per-thousands 
+	it "should fail gracefully with invalid publication_id" do 
+		id = "gibberish"
+		get "/fx/api/publications/#{id}/cost-per-thousands"
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should return all costs for publication_id" do 
+		id = 157
+		get "/fx/api/publications/#{id}/cost-per-thousands"
+		expect(json["status"]).to eq(0)
+		expect(json["cpts"]).to_not eq(nil)
+		expect(json["cpts"].count).to be > 1
+	end
+
 end
 
 

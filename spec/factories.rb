@@ -1,4 +1,8 @@
-FactoryGirl.define do  
+FactoryGirl.define do  factory :cost_per_thousand do
+    publications "MyString"
+cost 1
+  end
+  
   factory :fx_publications_suburb do
     fx_publication_id 1
     suburb_id 1
