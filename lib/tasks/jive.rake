@@ -98,26 +98,42 @@ task :follow_docs_in_place => :environment do
 	 Jive.add_to_stream(288687, docs, Auth.social)
 end
 
-task :get_non_oracle_ids => :environment do
-	HyundaiUser.all.each do |u|
-		begin
-			json = Jive.grab("#{Jive.social}/people/username/#{u.oracle_id}", Auth.social)
+task :update_users_and_change_username_to_oracle_id => :environment do
+	file = "test_upload.csv"
+	jive = {
+		auth: Auth.social,
+		url: Jive.social
+	}
+	if Util.user_csv_valid?(CSV.open(file).first)
+		CSV.foreach(file, headers: true) do |row|
+			user = Util.parse_csv_user(row)
+			json = Jive.grab("#{jive[:url]}/people/username/#{user[:oracle_id]}", jive[:auth])
 			if json["error"]
-				matches = Jive.people_search(u.name)
+				# username is not oracle ID
+				matches = Jive.people_search("#{user[:first_name]} #{user[:last_name]}", jive)
 				if matches["list"].count == 1
-					u.jive_id = matches["list"][0]["id"]
-					u.save
-					puts "Can Fix: #{u.name}"
+					json = Jive.change_username_to_oracle_id(matches["list"][0]["id"], user[:oracle_id], jive)
+					user[:jive_id] = json["id"]
+					if json
+						Util.create_or_update_from_csv(user) # creates in local db
+						Jive.update_user_with_csv_data(json, user, jive) # creates in Jive 
+					else
+						puts "Error --------------> Error changing username to oracle_id"
+					end
+					puts "Can Fix: #{user[:first_name]} #{user[:last_name]}"
 				else
-					puts "Must fix manually ---------------> #{u.name}"
+					puts "Must fix manually ---------------> #{user[:first_name]} #{user[:last_name]}"
 				end
 			else
-				u.jive_id = json["id"]
-				u.save
+				# user has oracle ID as username
+				user[:jive_id] = json["id"]
+				Util.create_or_update_from_csv(user) # creates in local db
+				Jive.update_user_with_csv_data(json, user, jive) # creates in Jive 
+				# "#{user[:first_name]} #{user[:last_name]} is good to go!"
 			end
-		rescue TypeError
-			puts "BAD ERROR ******************* #{u.name}"
 		end
+	else
+		puts "Invalid User CSV --> Num Rows = #{CSV.open(file).first.count} "
 	end
 end
 
@@ -221,11 +237,22 @@ task :update_user => :environment do
 	end
 end
 
-task doc: :environment do 
-	#Jive.humanify_doc("DOC-1033")
-	puts Util.get_indices("!--->", "asdsdd!--->asdasdasdasddsad!--->asdsdd!--->dfgdfgfgfd!--->")
+task check_csv_users: :environment do 
+	CSV.foreach('roster_031715.csv', headers: true) do |row|
+		json = Jive.grab("#{Jive.social}/people/username/#{row[3]}", Auth.social)
+		if json and !json["error"]
+			json["jive"]["profile"].each do |p|
+				if p["jive_label"] == "Title"
+				   title_exists = true
+				   p["value"] = "#{row[4]}"
+				end
+			end
+		end
+		resp = Jive.update("#{Jive.social}/people/username/#{row[3]}", json, Auth.social)
+		puts resp
+		break
+	end
 end
-
 
 
 

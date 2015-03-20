@@ -1,5 +1,7 @@
 class AccessibleController < ApplicationController
-	
+	require 'Jive'
+	require 'Auth'
+
 	before_action :authenticate_admin!
 	
 	#VIEWS
@@ -34,8 +36,8 @@ class AccessibleController < ApplicationController
 	#PROCESSES
 
 	def temp_upload_process
-		TempUser.import(params[:file])
-		respond({ status: 0, message: "Upload Successful" })
+		results = TempUser.import(params[:file])
+		respond({ status: 0, results: results })
 	end
 
 	def process_address_book_upload

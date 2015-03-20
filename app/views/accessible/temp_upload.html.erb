@@ -1,6 +1,5 @@
 <div class="container">
 	<h2>Import Temp Table</h2>
-
 	<%= form_tag "/temp/upload/process", multipart: true do %>
 	  <%= file_field_tag :file %>
 	  <%= submit_tag "Import", class: "btn btn-md btn-success" %>

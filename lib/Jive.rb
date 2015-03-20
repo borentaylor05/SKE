@@ -1,6 +1,7 @@
 class Jive
   include HTTParty
   require 'Auth'
+  require 'Util'
   format :json
   @@current = ENV['SKE_URL']
   @@dev_url = "http://localhost:8080/api/core/v3"
@@ -42,8 +43,8 @@ class Jive
     self.clean(json)
   end
 
-  def self.people_search(name)
-    Jive.grab("#{Jive.social}/search/people?filter=search(#{name.gsub(/\s+/, "")})", Auth.social)
+  def self.people_search(name, jive)
+    Jive.grab("#{jive[:url]}/search/people?filter=search(#{name.gsub(/\s+/, ",")})", jive[:auth])
   end
 
   def self.get_docs_from_place(instance, auth, placeID)
@@ -122,6 +123,33 @@ class Jive
     def self.parseDocNum(doc)
         return doc[4..-1]
     end
+
+    # NOTE: this does not perform PUT, only returns updated json object
+    #         :jive -> hash{ :auth, :url }
+    def self.change_username_to_oracle_id(jive_id, oracle_id, jive)
+      if oracle_id
+         json = self.grab("#{jive[:url]}/people/#{jive_id}", jive[:auth])
+         json["jive"]["username"] = oracle_id
+         return json
+      else
+         return false
+      end
+    end
+
+   # Params: :json -> jive user from API call
+   #         :user -> hash created from CSV row (user[:jive_id] is from API call)   
+   #         :jive -> hash{ :auth, :url }              
+   def self.update_user_with_csv_data(json, user, jive)
+      if Util.csv_user_is_valid?(user)
+         json = Util.parse_profile(json, user)
+         json["emails"][0] = { value: user[:email], type: "work", jive_label: "Email", primary: true }
+         json["name"]['familyName'] = user[:last_name]
+         json["name"]["givenName"] = user[:first_name]
+         return self.update("#{jive[:url]}/people/#{user[:jive_id]}", json, jive[:auth])
+      else
+         puts "Invalid user: #{user}"
+      end
+   end
 
     # hash -> :email, :password, :username, :job_title, :client, :location, :lob, :first_name, :last_name
     def new_person(hash)
