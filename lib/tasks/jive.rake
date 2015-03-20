@@ -241,16 +241,18 @@ task check_csv_users: :environment do
 	CSV.foreach('roster_031715.csv', headers: true) do |row|
 		json = Jive.grab("#{Jive.social}/people/username/#{row[3]}", Auth.social)
 		if json and !json["error"]
+			jive_id = json["id"]
 			json["jive"]["profile"].each do |p|
 				if p["jive_label"] == "Title"
 				   title_exists = true
 				   p["value"] = "#{row[4]}"
 				end
 			end
+			resp = Jive.update("#{Jive.social}/people/#{jive_id}", json, Auth.social)
+			if resp["error"] and resp 
+				puts "#{row[0]} #{row[1]} - resp['error']"
+			end
 		end
-		resp = Jive.update("#{Jive.social}/people/username/#{row[3]}", json, Auth.social)
-		puts resp
-		break
 	end
 end
 
