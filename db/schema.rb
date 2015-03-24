@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324163708) do
+ActiveRecord::Schema.define(version: 20150324193314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -272,6 +272,21 @@ ActiveRecord::Schema.define(version: 20150324163708) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "redeliveries", force: true do |t|
+    t.integer  "fx_publication_id"
+    t.string   "town"
+    t.string   "round_id"
+    t.boolean  "redelivery"
+    t.string   "cutoff_mf"
+    t.string   "cutoff_sat"
+    t.string   "cutoff_sun"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "redeliveries", ["round_id"], name: "index_redeliveries_on_round_id", using: :btree
+  add_index "redeliveries", ["town"], name: "index_redeliveries_on_town", using: :btree
 
   create_table "sf_o_auths", force: true do |t|
     t.string   "token"

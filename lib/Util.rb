@@ -253,4 +253,16 @@ class Util
 		end
 	end
 
+
+	def self.parse_redelivery_row(row)
+		return {
+			town: row[1], 		# string
+			round_id: row[2],	# string
+			redelivery: row[3],	# bool
+			cutoff_mf: row[4], 	# string
+			cutoff_sat: row[5],	# string
+			cutoff_sun: row[6]	# string
+		}
+	end
+
 end

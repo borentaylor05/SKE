@@ -1,4 +1,13 @@
-FactoryGirl.define do  factory :cost_per_thousand do
+FactoryGirl.define do  factory :redelivery do
+    fx_publication_id 1
+town "MyString"
+round_id "MyString"
+redelivery false
+cutoff_mf "MyString"
+cutoff_sat "MyString"
+cutoff_sun "MyString"
+  end
+  factory :cost_per_thousand do
     publications "MyString"
 cost 1
   end
