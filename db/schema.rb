@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150319170616) do
+ActiveRecord::Schema.define(version: 20150324163708) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,8 +73,17 @@ ActiveRecord::Schema.define(version: 20150319170616) do
     t.text     "summary"
     t.string   "file_label"
     t.string   "file_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.string   "file_label2"
+    t.string   "file_label3"
+    t.string   "file_url2"
+    t.string   "file_url3"
+    t.string   "lob"
+    t.datetime "pub_date"
+    t.datetime "expire_date"
+    t.integer  "priority"
+    t.string   "request_type"
   end
 
   create_table "clients", force: true do |t|
@@ -346,6 +355,8 @@ ActiveRecord::Schema.define(version: 20150319170616) do
     t.string   "location"
     t.string   "lob"
     t.string   "region"
+    t.string   "first_name"
+    t.string   "last_name"
   end
 
   add_index "users", ["employee_id"], name: "index_users_on_employee_id", using: :btree

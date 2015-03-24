@@ -1,0 +1,7 @@
+<div class="container">
+	<h2>Import Temp Table to DB Only</h2>
+	<%= form_tag "/temp/upload/process/db-only", multipart: true do %>
+	  <%= file_field_tag :file %>
+	  <%= submit_tag "Import", class: "btn btn-md btn-success" %>
+	<% end %>
+</div>

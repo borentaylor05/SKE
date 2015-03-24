@@ -296,19 +296,11 @@ app.factory("maintainers", ['$http', function($http){
 app.controller("AR", ["$http", "maintainers", function($http, maintainers){
 	var ar = this;
 	ar.requestingUser = {},
+	ar.attCount = 1,
 	ar.hasClient = true,
 	ar.allClients = false,
 	ar.sending = false,
 	ar.currentClient = "";
-
-	ar.createAR = function(doc){
-		doc.user = ar.requestingUser.jive_id;
-		doc.client = ar.currentClient;
-		maintainers.newAR(doc).success(function(resp){
-			if(resp.status == 0)
-				ar.onSuccess = resp.message;
-		});
-	}
 
 	ar.createAdminAR = function(doc){
 		ar.sending = true;
@@ -318,9 +310,8 @@ app.controller("AR", ["$http", "maintainers", function($http, maintainers){
 				ar.onSuccess = resp.message;
 			}
 			ar.sending = false;
-		});
+		}); 
 	}
-
 	ar.getUser = function(){
 		$http.get(util.rails_env.current+"/users/"+window.parent._jive_current_user.ID).success(function(resp){
 			ar.requestingUser = resp.user;
@@ -335,7 +326,29 @@ app.controller("AR", ["$http", "maintainers", function($http, maintainers){
 	ar.setClient = function(client){
 		ar.currentClient = client;
 	}
-
-//	ar.getUser();
+	ar.incAtt = function(){
+		ar.attCount++;
+	}
+	ar.numAttachments = function(first){
+		if(!first && ar.attCount == 1)
+			return 0;
+		else if(first)
+			return 1;
+		else
+			return ar.attCount;
+	}
+	ar.priWords = function(pri){
+		switch(pri){
+			case "1":
+				return "High"
+			break;
+			case "2":
+				return "Medium"
+			break;
+			case "3":
+				return "Low"
+			break;
+		}
+	}
 
 }]);

@@ -7,11 +7,15 @@ class UserController < ApplicationController
 	# see if user is in db
 	# Params: :jive_id
 	def check_init
-		if User.exists?(jive_id: params[:user])
-			u = User.find_by(jive_id: params[:user])
+		u = User.find_by(jive_id: params[:user])
+		if u and u.jive_id > 0
 			respond({ status: 0, message: "User exists", user: u, client: u.client })
 		else
-			respond({ status: 1, error: "User is not in DB." })
+			if u.jive_id > 0
+				respond({ status: 1, error: "User is not in DB." })
+			else
+				respond({ status: 1, error: "User needs a Jive ID." })
+			end
 		end
 	end
 
@@ -65,7 +69,7 @@ class UserController < ApplicationController
 
 	def get
 		user = User.find_by(jive_id: params[:jive])
-		if user
+		if user and params[:jive] and params[:jive].to_i > 0
 			hash = user.attributes
 			hash[:client] = user.client ? user.client.name : nil
 			respond({ status: 0, user: hash })

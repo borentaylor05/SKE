@@ -4,6 +4,27 @@ class TempUser < ActiveRecord::Base
 	require 'Util'
 	require 'Auth'
 
+	def self.import_db_only(file)
+		results = {
+			good: 0,
+			bad: 0
+		}
+		if Util.user_csv_valid?(CSV.open(file.path).first)
+			CSV.foreach(file.path, headers: true) do |row|
+				user = Util.parse_csv_user(row)
+				user[:jive_id] = '0'
+				if Util.create_or_update_from_csv(user)
+					results[:good] += 1
+				else
+					results[:bad] += 1
+				end
+			end
+			return results
+		else
+			return "Bad CSV -> #{CSV.open(file.path).first.count}"
+		end
+	end
+
 	def self.import(file)
 		results = {
 			errors: [],

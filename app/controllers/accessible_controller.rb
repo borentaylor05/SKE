@@ -24,6 +24,9 @@ class AccessibleController < ApplicationController
 	def temp_upload
 	end
 
+	def temp_upload_local
+	end
+
 	def upload_deadlines
 	end
 
@@ -37,6 +40,11 @@ class AccessibleController < ApplicationController
 
 	def temp_upload_process
 		results = TempUser.import(params[:file])
+		respond({ status: 0, results: results })
+	end
+
+	def temp_upload_process_db_only
+		results = TempUser.import_db_only(params[:file])
 		respond({ status: 0, results: results })
 	end
 
@@ -158,14 +166,14 @@ class AccessibleController < ApplicationController
 				client = user.client
 				ar = ArticleRequest.new(
 					title: params[:title],
-					summary: params[:summary]
+					summary: params[:summary],
+					lob: params[:lob],
+					priority: params[:priority].to_i,
+					request_type: params[:type],
+					expire_date: params[:expire_date].to_datetime,
+					pub_date: params[:pub_date].to_datetime
 				)
-				if params.has_key?("file_label")
-					ar.file_label = params[:file_label]
-				end
-				if params.has_key?("file_url")
-					ar.file_url = params[:file_url]
-				end
+				ar = get_attachments(params,ar)
 				if ar.valid?
 					ar.save
 					m = Maintainer.new(client: current_admin.client, admin: current_admin, ticket: ar, resolved: false, lob: params[:lob])
@@ -275,5 +283,26 @@ class AccessibleController < ApplicationController
 			return message
 		end
 
+		def get_attachments(params,ar)
+			if params.has_key?("file_label")
+				ar.file_label = params[:file_label]
+			end
+			if params.has_key?("file_label2")
+				ar.file_label2 = params[:file_label2]
+			end
+			if params.has_key?("file_label3")
+				ar.file_label3 = params[:file_label3]
+			end
+			if params.has_key?("file_url")
+				ar.file_url = params[:file_url]
+			end
+			if params.has_key?("file_url2")
+				ar.file_url2 = params[:file_url2]
+			end
+			if params.has_key?("file_url3")
+				ar.file_url3 = params[:file_url3]
+			end
+			return ar
+		end
 
 end

@@ -257,7 +257,40 @@ task check_csv_users: :environment do
 end
 
 
+task get_wwc_followers: :environment do 
+	places = [
+		{ name: "24-7 Click to Chat Knowledge Base", id: 2007, type: 14, users: [] },
+		{ name: "Personal Coaching Knowledge Base", id: 2006, type: 14, users: [] },
+		{ name: "Coaches Support Bridge", id: 1033, type: 700, users: [] },
+		{ name: "Coaches Tech-Escalation Bridge", id: 1034, type: 700, users: [] }
+	]
 
+	places.each do |p|
+		json = Jive.grab("#{Jive.ww_coaches}/places?filter=entityDescriptor(#{p[:type]},#{p[:id]})", Auth.ww_coaches)
+		if json and json["error"]
+			puts json["error"]
+		else
+			json = Jive.grab("#{json["list"][0]["resources"]["followers"]["ref"]}?count=100", Auth.ww_coaches)
+			while json and json["list"].count > 0
+				json["list"].each { |u| p[:users].push({ username: u["jive"]["username"], name: u["name"]["formatted"] }) }
+				if json["links"]["next"]
+					json = Jive.grab(json["links"]["next"], Auth.ww_coaches)
+				else
+					break
+				end
+			end
+		end
+	end
+	
+	places.each do |p|
+		CSV.open("tmp/#{p[:name]}-followers.csv", 'w') do |file|
+			p[:users].each do |u|	
+				file << [ u[:username], u[:name] ]
+			end
+		end
+	end
+
+end
 
 
 

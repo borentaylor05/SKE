@@ -98,7 +98,7 @@ describe "Users API", :type => :request do
 		expect(response).to be_success
 		expect(json['status']).to eq(0)
 		expect(json['users'].count).to eq(50)
-		expect(json['users'].first["id"]).to eq(User.first.id)
+		expect(json['users'].count).to be > 0
 	end
 
 	# for /users/search

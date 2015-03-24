@@ -91,6 +91,8 @@ Rails.application.routes.draw do
   # End FX Dl and classifications
   match "/fx/request-article", to: "accessible#fx_request_article", via: :get
   match "/temp/upload", to: "accessible#temp_upload", via: :get
+  match "/temp/upload/db-only", to: "accessible#temp_upload_db_only", via: :get
+  match "/temp/upload/process/db-only", to: "accessible#temp_upload_process_db_only", via: :post
   match "/temp/upload/process", to: "accessible#temp_upload_process", via: :post
   # Maintainers
   match "/maintainers/all", to: "accessible#get_maintainers", via: :get
@@ -125,6 +127,7 @@ Rails.application.routes.draw do
   match "/fx/api/publications", to: "fx#get_all_publications", via: :get
   match "/fx/api/publications/:publication_id/suburbs", to: "fx#get_suburbs_for_publication", via: :get
   match "/fx/api/suburbs/:suburb_id/publications", to: "fx#get_publications_for_suburb", via: :get
+  match "/fx/api/suburbs/search", to: "fx#suburb_search", via: :get
 
   # COST PER THOUSANDS
   match "/fx/api/publications/:publication_id/cost-per-thousands", to: "fx#cpts_for_publication", via: :get  

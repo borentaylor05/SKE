@@ -57,4 +57,12 @@ class FxController < ApplicationController
 		end
 	end
 
+	def suburb_search 
+		if params.has_key?("term") and !params[:term].blank?
+			respond({ status: 0, matches: Suburb.contains(params[:term]) })
+		else
+			respond({ status: 1, error: "No :term param in request." })
+		end
+	end
+
 end

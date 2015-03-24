@@ -111,18 +111,21 @@ class Util
 	def self.create_or_update_from_csv(user)
 		client = Client.find_by(name: user[:client].downcase.strip)
 		if !client 
-			client = self.check_client_map(client)
+			client = Client.find_by(name: self.check_client_map(user[:client].downcase.strip))
 		end
 		if client and self.csv_user_is_valid?(user)
-			u = User.find_by(jive_id: user[:jive_id].strip)
+			u = User.find_by(employee_id: user[:oracle_id].strip)
 			if u 
 				u.update_attributes(
 					client: client,
 					employee_id: user[:oracle_id].strip,
 					title: user[:job_title].strip,
 					location: user[:location].strip,
-					lob: user[:lob].strip
+					lob: user[:lob].strip,
+					first_name: user[:first_name],
+					last_name: user[:last_name]
 				)
+				return true
 			else
 				u = User.new(
 					jive_id: user[:jive_id].strip,
@@ -134,12 +137,15 @@ class Util
 				)
 				if u.valid?
 					u.save
+					return true
 				else
-					puts "ERROR: #{u.errors.full_messages}"
+					Rails.logger.info("ERROR: #{u.errors.full_messages}")
+					return false
 				end
 			end
 		else
-			puts "Error -> User #{user} is invalid"
+			Rails.logger.info("Error -> User #{user} is invalid")
+			return false
 		end
 	end
 
@@ -201,6 +207,8 @@ class Util
 			return "ww"
 		when "American Red Cross".downcase
 			return "arc"
+		when "Fairfax Media".downcase
+			return "fairfax"
 		end
 	end
 
@@ -215,6 +223,34 @@ class Util
 		start, result = -1, []
 		result << start while start = (string.index e, start + 1)
 		result
+	end
+
+	def self.to_readable_mlevel(row)
+		user = {
+			first_name: row[0],
+			last_name: row[1],
+			email: "#{row[3]}@teletech.com",
+			oracle_id: row[3],
+			job_title: row[4],
+			client: row[5],
+			location: "APAC", # all for now
+			lob: row[6],
+			password: eval(ENV['MLEVEL_PASSWORD_FOR_USER'])
+		}
+		return user
+	end
+
+	def self.csv_convert_mlevel(readfile, client)
+		client = Client.find_by(name: self.check_client_map(client))
+		if client 
+			CSV.open("tmp/#{client}_mlevel_users.csv", 'w') do |users|
+				User.where(client: client) do |u|
+					users << [ user[:first_name], user[:last_name], user[:email], user[:oracle_id], user[:job_title], user[:client], user[:location], user[:lob], user[:password]  ]
+				end
+			end
+		else
+			puts "Client not found"
+		end
 	end
 
 end

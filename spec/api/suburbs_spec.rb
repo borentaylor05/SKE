@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Comments API", :type => :request do
+describe "Suburbs API", :type => :request do
 
 	# For /fx/api/publications -> no params
 	it "should be able to access /fx/api/publications" do 
@@ -66,6 +66,34 @@ describe "Comments API", :type => :request do
 		expect(json["status"]).to eq(0)
 		expect(json["cpts"]).to_not eq(nil)
 		expect(json["cpts"].count).to be > 1
+	end
+
+	# for /fx/api/suburbs/search?term=:searchTerm 
+	it "should fail gracefully if no :searchTerm provided" do 
+		get "/fx/api/suburbs/search"
+		expect(json["status"]).to eq(1)
+		expect(json["error"]).to_not be_blank
+	end
+
+	it "should fail gracefully if searchTerm is empty" do 
+		st = ""
+		get "/fx/api/suburbs/search?term=#{st}"
+		expect(json["status"]).to eq(1)
+		expect(json["error"]).to_not be_blank
+	end
+
+	it "return empty array if no results are found but searchTerm exists" do 
+		st = "dsfdsfdsfdsfdfsdfdsfggdd"
+		get "/fx/api/suburbs/search?term=#{st}"
+		expect(json["status"]).to eq(0)
+		expect(json["matches"]).to be_empty
+	end
+
+	it "should return valid results if valid suburb" do 
+		st = "Linden"
+		get "/fx/api/suburbs/search?term=#{st}"
+		expect(json["status"]).to eq(0)
+		expect(json["matches"]).to_not be_empty
 	end
 
 end
