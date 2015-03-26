@@ -114,11 +114,5 @@ task cost_per_thousand_associations: :environment do
 	end
 end
 
-task :make_fairfax_mlevel_csv => :environment do |t,args|
-	CSV.open("tmp/fairfax_users_mlevel.csv", 'w') do |file|
-		User.where(client: Client.find_by(name: "fairfax")).each do |user|
-			file << [ user.first_name, user.last_name, "#{user.employee_id}@teletech.com", user.employee_id, user.title, "APAC", user.lob, eval(ENV["MLEVEL_PASSWORD_FOR_USER"]) ]
-		end
-	end
-end
+
 

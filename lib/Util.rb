@@ -133,7 +133,9 @@ class Util
 					client: client,
 					title: user[:job_title].strip,
 					location: user[:location].strip,
-					lob: user[:lob].strip
+					lob: user[:lob].strip,
+					first_name: user[:first_name],
+					last_name: user[:last_name]
 				)
 				if u.valid?
 					u.save
@@ -226,7 +228,7 @@ class Util
 	end
 
 	def self.to_readable_mlevel(row)
-		user = {
+		return {
 			first_name: row[0],
 			last_name: row[1],
 			email: "#{row[3]}@teletech.com",
@@ -237,7 +239,6 @@ class Util
 			lob: row[6],
 			password: eval(ENV['MLEVEL_PASSWORD_FOR_USER'])
 		}
-		return user
 	end
 
 	def self.csv_convert_mlevel(readfile, client)

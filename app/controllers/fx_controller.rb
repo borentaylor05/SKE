@@ -3,6 +3,8 @@ class FxController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
+	# Contains Fx Publications, Suburbs and Redelivery
+
 	def get_all_publications
 		pubs = FxPublication.select(:name, :id)
 		respond({ status: 0, pubs: pubs })
@@ -63,6 +65,42 @@ class FxController < ApplicationController
 		else
 			respond({ status: 1, error: "No :term param in request." })
 		end
+	end
+
+	def get_redelivery
+		r = Redelivery.find_by(id: params[:id])
+		if r 
+			respond({ status: 0, redelivery: r })
+		else
+			respond({ status: 1, error: "Redelivery #{params[:id]} not found" })
+		end
+	end
+
+	def get_pub_redeliveries
+		pub = FxPublication.find_by(id: params[:id])
+		if pub 
+			respond({ status: 0, redeliveries: pub.redeliveries })
+		else
+			respond({ status: 1, error: "Publication #{params[:id]} not found" })
+		end
+	end
+
+	def red_publications
+		pubs = []
+		Redelivery.uniq.pluck(:fx_publication_id).each { |r|  pubs.push(FxPublication.find(r)) }
+		pubs = pubs.sort_by { |pub| pub[:name] }
+		respond({ status: 0, publications: pubs })
+	end
+
+	def redelivery_search
+		reds = Redelivery.search(params[:term]).limit(30)
+		all = []
+		reds.each do |r|
+			hash = r.attributes
+			hash[:publication] = r.fx_publication.name
+			all.push(hash)
+		end
+		respond({ status: 0, matches: all })
 	end
 
 end

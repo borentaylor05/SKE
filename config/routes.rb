@@ -132,6 +132,12 @@ Rails.application.routes.draw do
   # COST PER THOUSANDS
   match "/fx/api/publications/:publication_id/cost-per-thousands", to: "fx#cpts_for_publication", via: :get  
 
+  # REDELIVERY
+  match "/fx/api/redelivery/publications", to: "fx#red_publications", via: :get  
+  match "/fx/api/publication/:id/redeliveries", to: "fx#get_pub_redeliveries", via: :get
+  match "/fx/api/redelivery/:id", to: "fx#get_redelivery", via: :get
+  match "/fx/api/search/redeliveries", to: "fx#redelivery_search", via: :get
+
   # ----- END Fairfax Routes ------  
   
   # TWITTER ROUTES

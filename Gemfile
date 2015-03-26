@@ -24,7 +24,8 @@ gem 'activerecord-session_store'
 gem 'devise'
 gem "font-awesome-rails"
 gem 'jquery-turbolinks'     # to prevent having to refresh to load js 
-gem 'rack-cors', :require => 'rack/cors'
+gem 'net-sftp'
+gem 'net-ssh'
 
 group :development, :test do
   gem 'byebug',      '3.4.0'
