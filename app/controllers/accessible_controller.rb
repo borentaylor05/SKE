@@ -9,6 +9,9 @@ class AccessibleController < ApplicationController
 	def maintainers
 	end
 
+	def fx_edit_suburbs
+	end
+
 	def fx_request_article
 	end
 
@@ -253,7 +256,25 @@ class AccessibleController < ApplicationController
 		end
 	end
 
+	def get_suburbs_by_condition
+		all = []
+		case params[:condition]
+		when 'range'
+		when 'with-period'
+		when "length"
+			subs = Suburb.find_by_sql("select suburbs.* from suburbs where LENGTH(name) > #{params[:length]}")
+			subs.each do |sub|
+				s = sub.attributes
+				s[:publications] = sub.fx_publications
+				all.push(s) 
+			end
+		end
+		respond({ status: 0, matches: all }) 
+	end
 
+	def save_suburbs
+		
+	end
 
 	# ----- End Angular Request routes ------
 

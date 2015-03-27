@@ -1,0 +1,26 @@
+
+<div ng-app="SuburbsApp" ng-controller="Subs as subs">
+	<h1>Suburbs</h1>
+	<div ng-repeat="sub in subs.matches">
+		<ul>
+			<li ng-hide="subs.beingEdited(sub, pub)" ng-repeat="pub in sub.publications">
+				{{ sub.name }} --> {{ pub.name }}
+				<button class="btn btn-xs btn-info" ng-click="subs.edit(sub,pub)">Edit</button>
+			</li>
+			<li ng-show="subs.beingEdited(sub, pub)" ng-repeat="pub in sub.publications">
+				<form ng-submit="subs.saveEdit(sub, pub)">
+					<div class="row">
+						<div class="col-xs-5">
+							Suburb: <input type="text" class="form-control" ng-model="sub.name">
+						</div>
+						<div class="col-xs-5">
+							Publication: <input type="text" class="form-control" ng-model="pub.name">
+						</div>
+					</div>
+					<input type="submit" class="btn btn-md btn-success" value="Save">
+				</form>
+			</li>
+		</ul>
+	</div>
+</div>
+

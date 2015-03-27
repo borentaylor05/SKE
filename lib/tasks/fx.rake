@@ -36,9 +36,5 @@ task :make_fairfax_mlevel_csv => :environment do |t,args|
 		end
 	end
 	sftp = SFTP.new('mlevel')
-	puts sftp.send('tmp/fairfax_users_mlevel.csv')
-end
-
-task :fx_bash => :environment do
-	`sftp -vv -oPort=10022 teletech@securefiletransfer.mlevel.com`
+	sftp.send('tmp/fairfax_users_mlevel.csv')
 end

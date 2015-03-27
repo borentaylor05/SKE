@@ -49,16 +49,6 @@ Rails.application.routes.draw do
   match "/old/comments", to: "old_comment#check", via: [:post, :options]        # tested
   match "/old/comment/toggle", to: "old_comment#toggle", via: [:post, :options] # tested
 
-  # CODE ROUTES
-  match "code/request", to: "codes#new", via: [:options, :post]
-  match "code/info", to: "codes#get_info", via: [:options, :post]
-  match "code", to: "codes#get_code", via: [:options, :post]
-  match "web/IE9/proxy.html", to: "codes#proxy", via: :get
-  match "codes", to: "codes#get_all", via: :get
-  match "codes/people", to: "codes#get_people", via: :get
-  match "codes/load", to: "codes#load", via: [:post, :options]
-  match "codes/toggle", to: "codes#toggle", via: [:post, :options]
-
   # MESSAGE ROUTES
   match "messages", to: "message#get_unread_messages", via: :get
   match "message/acknowledge", to: "message#acknowledge", via: [:post, :options]
@@ -79,7 +69,7 @@ Rails.application.routes.draw do
   match "/cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
   # End A-Z Accessible
 
-  # FX Deadlines and classifications
+  # FX Deadlines, classifications suburbs
   match "/fx/deadlines/edit", to: "accessible#fx_edit_deadlines", via: :get
   match "/fx/deadline/save", to: "accessible#fx_save_deadline", via: :put
   match "/fx/upload/classifications", to: "accessible#upload_fx_classifications", via: :get
@@ -88,6 +78,8 @@ Rails.application.routes.draw do
   match "/fx/process/deadlines", to: "accessible#process_deadlines", via: :post
   match "/fx/deadlines/publication", to: "accessible#get_deadlines_by_pub", via: :get
   match "/fx/publications", to: "accessible#get_pubs", via: :get
+  match "/fx/suburbs", to: "accessible#fx_edit_suburbs", via: :get
+  match "/fx/suburbs/condition", to: "accessible#get_suburbs_by_condition", via: :get
   # End FX Dl and classifications
   match "/fx/request-article", to: "accessible#fx_request_article", via: :get
   match "/temp/upload", to: "accessible#temp_upload", via: :get
@@ -138,7 +130,24 @@ Rails.application.routes.draw do
   match "/fx/api/redelivery/:id", to: "fx#get_redelivery", via: :get
   match "/fx/api/search/redeliveries", to: "fx#redelivery_search", via: :get
 
-  # ----- END Fairfax Routes ------  
+  # ----- END Fairfax Routes ------ 
+
+  # ----- BEGIN WW Routes ------ 
+
+  # CODE ROUTES
+  match "code/request", to: "codes#new", via: [:options, :post]
+  match "code/info", to: "codes#get_info", via: [:options, :post]
+  match "code", to: "codes#get_code", via: [:options, :post]
+  match "web/IE9/proxy.html", to: "codes#proxy", via: :get
+  match "codes", to: "codes#get_all", via: :get
+  match "codes/people", to: "codes#get_people", via: :get
+  match "codes/load", to: "codes#load", via: [:post, :options]
+  match "codes/toggle", to: "codes#toggle", via: [:post, :options] 
+
+  # PROMO ROUTES
+  match "/ww/api/promotions", to: "ww#create_promotion_entry", via: [:post, :options]
+  
+  # ----- END WW Routes ------ 
   
   # TWITTER ROUTES
   match "tweets/multiple-users", to: "twitter#get_tweets_from_multiple", via: :get

@@ -352,3 +352,58 @@ app.controller("AR", ["$http", "maintainers", function($http, maintainers){
 	}
 
 }]);
+
+var sub_app = angular.module("SuburbsApp", []);
+
+sub_app.factory("suburbs", ['$http', function($http){
+	var subs = this
+
+	subs.getByLength = function(length){
+		return $http.get("/fx/suburbs/condition?condition=length&length="+length)
+	}
+
+	return subs;
+}]);
+
+sub_app.controller("Subs", ['suburbs', function(suburbs){
+	var subs = this;
+	subs.current = {},
+		subs.currentPub = {};
+
+	subs.getByCondition = function(condition, alt){
+		switch(condition){
+			case 'length': 
+				suburbs.getByLength(alt.toString()).success(function(resp){
+					subs.matches = resp.matches;
+				});
+			break;
+		}
+	}
+	subs.beingEdited = function(sub,pub){
+		if(sub == subs.current && subs.currentPub == pub)
+			return true;
+		else
+			return false;
+	}
+	subs.edit = function(sub, pub){
+		subs.current = sub;
+		subs.currentPub = pub;
+	}
+	subs.saveEdit = function(sub, pub){
+		suburbs.save(sub,pub).success(function(resp){
+			console.log(resp);
+		});
+	}
+	// on page load
+	subs.getByCondition('length', 20);
+
+}]);
+
+
+
+
+
+
+
+
+

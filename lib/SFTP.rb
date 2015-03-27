@@ -15,7 +15,7 @@ class SFTP
 
 	def send(local_path)
 		Net::SFTP.start(@host, @username , { password: @password, port: @port } ) do |sftp|
-			sftp.upload!(local_path, "/files")
+			sftp.upload!(local_path, "/fairfax_users_mlevel2.csv")
 		end
 	end
 
