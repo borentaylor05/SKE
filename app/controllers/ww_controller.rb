@@ -1,4 +1,5 @@
 class WwController < ApplicationController
+	include ActionView::Helpers::DateHelper
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 
@@ -12,7 +13,12 @@ class WwController < ApplicationController
 				promo.save
 				respond({ status: 0, promo: promo })
 			else
-				respond({ status: 1, error: "#{promo.errors.full_messages}" })
+				if promo.errors.full_messages.include?("Member num has already been taken")
+					p = WwPromotion.find_by(member_num: params[:ww_promotion][:member_num])
+					respond({ status: 1, type: 'duplicate', error: "This member's request was submitted #{time_ago_in_words(p.created_at)} ago." })
+				else
+					respond({ status: 1, error: "#{promo.errors.full_messages}" })
+				end
 			end
 		end
 	end
