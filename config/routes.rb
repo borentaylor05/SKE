@@ -50,10 +50,10 @@ Rails.application.routes.draw do
   match "/old/comment/toggle", to: "old_comment#toggle", via: [:post, :options] # tested
 
   # MESSAGE ROUTES
-  match "messages", to: "message#get_unread_messages", via: :get
-  match "message/acknowledge", to: "message#acknowledge", via: [:post, :options]
-  match "message", to: "message#send_message", via: [:post, :options]
-  match "messages/all", to: "message#all", via: :get
+  match "/messages", to: "message#get_unread_messages", via: :get                  
+  match "/message/acknowledge", to: "message#acknowledge", via: [:post, :options]
+  match "/message", to: "message#send_message", via: [:post, :options]
+  match "/messages/all", to: "message#all", via: :get
 
   # ----- Begin Accessible Routes ------
 
@@ -145,8 +145,8 @@ Rails.application.routes.draw do
   match "codes/toggle", to: "codes#toggle", via: [:post, :options] 
 
   # PROMO ROUTES
-  match "/ww/api/promotions", to: "ww#create_promotion_entry", via: [:post, :options]
-  
+  match "/ww/api/promotions", to: "ww#create_promotion_entry", via: [:post, :options]   #tested
+
   # ----- END WW Routes ------ 
   
   # TWITTER ROUTES

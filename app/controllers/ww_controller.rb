@@ -12,7 +12,7 @@ class WwController < ApplicationController
 				promo.save
 				respond({ status: 0, promo: promo })
 			else
-				respond({ status: 1, error: "Error: #{promo.errors.full_messages}" })
+				respond({ status: 1, error: "#{promo.errors.full_messages}" })
 			end
 		end
 	end

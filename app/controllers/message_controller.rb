@@ -14,10 +14,15 @@ class MessageController < ApplicationController
 		end
 	end
 
+	# Params: { usser: :jive_id }
 	def get_unread_messages
 		user = User.find_by(jive_id: params[:user])
-		msgs = get_unread(user)
-		respond({ status: 0, messages: msgs })
+		if user 
+			msgs = get_unread(user)
+			respond({ status: 0, messages: msgs })
+		else
+			respond({ status: 1, error: "User #{params[:user]} not found." })
+		end
 	end
 
 	def acknowledge
@@ -25,9 +30,13 @@ class MessageController < ApplicationController
 			respond({status: 0})
 		elsif request.method == "POST"
 			user = User.find_by(jive_id: params[:jive_id])
-			m = MessageTracker.find_by(user: user, message_id: params[:message])
-			m.update_attributes(acknowledged: true)
-			respond({ status: 0, messages: get_unread(user) })
+			if user 
+				m = MessageTracker.find_by(user: user, message_id: params[:message])
+				m.update_attributes(acknowledged: true)
+				respond({ status: 0, messages: get_unread(user) })
+			else
+				respond({ status: 1, error: "User #{params[:jive_id]} not found" })
+			end
 		end
 	end
 
