@@ -212,6 +212,7 @@ class CodesController < ApplicationController
 				return [ { name: "lifetime", unused: WwCode.where(code_type: "lifetime", used: false).size } ]	
 			else
 				return [
+					{ name: "44.95", unused: WwCode.where(code_type: "44.95", used: false).size },
 					{ name: "42.95", unused: WwCode.where(code_type: "42.95", used: false).size },
 					{ name: "39.95", unused: WwCode.where(code_type: "39.95", used: false).size },
 					{ name: "Lifetime", unused: WwCode.where(code_type: "lifetime", used: false).size }
