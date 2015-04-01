@@ -214,7 +214,6 @@ class Util
 		end
 	end
 
-	# method -> a+ for append, 'wb' = append
 	def self.create_csv(filename, array, method)
 		CSV.open(filename, method, :col_sep => ',') do |csv|
 			csv << array

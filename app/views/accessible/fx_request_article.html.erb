@@ -331,13 +331,20 @@ label.sum-label{
       <input class="rad" type="radio" ng-model="ar.doc.type" value="Announcement">&nbsp  Announcement
       <div class="lob">
         <h3 class="tLabel">Which LOB is this for? <em style="font-style: italic;">{{ ar.doc.lob | capitalize }}</em> </h3>
-        <input type="radio" ng-model="ar.doc.lob" value="AU AMM Care">&nbsp  AU AMM Care 
-        <input type="radio" ng-model="ar.doc.lob" value="AU ACM Sales">&nbsp  AU ACM Sales 
-        <input type="radio" ng-model="ar.doc.lob" value="AU Outbound">&nbsp  AU Outbound 
-        </br>
-        <input type="radio" ng-model="ar.doc.lob" value="NZ Care ">&nbsp  NZ Care 
-        <input type="radio" ng-model="ar.doc.lob" value="NZ Sales">&nbsp  NZ Sales
-        <input type="radio" ng-model="ar.doc.lob" value="NZ Magazines">&nbsp  NZ Magazines
+        <table id="lob-table">
+          <tr>
+            <td><input type="radio" ng-model="ar.doc.lob" value="AU AMM Care">&nbsp  AU AMM Care </td>
+            <td><input type="radio" ng-model="ar.doc.lob" value="AU AMM Sales">&nbsp  AU AMM Sales </td>
+            <td><input type="radio" ng-model="ar.doc.lob" value="AU ACM Care">&nbsp  AU ACM Care </td>
+            <td><input type="radio" ng-model="ar.doc.lob" value="AU ACM Sales">&nbsp  AU ACM Sales </td> 
+          </tr>
+          <tr>
+            <td><input type="radio" ng-model="ar.doc.lob" value="AU Outbound">&nbsp  AU Outbound </td>
+            <td><input type="radio" ng-model="ar.doc.lob" value="NZ Care">&nbsp  NZ Care </td>
+            <td><input type="radio" ng-model="ar.doc.lob" value="NZ Sales">&nbsp  NZ Sales </td>
+            <td><input type="radio" ng-model="ar.doc.lob" value="NZ Magazines">&nbsp  NZ Magazines </td>
+          </tr>
+        </table>
       </div>
       <div class="row dateContainer">
         <div class="col-xs-5">

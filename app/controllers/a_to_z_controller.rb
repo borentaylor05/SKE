@@ -4,21 +4,28 @@ class AToZController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 	
-	# before_action :authenticate_admin!, only: :get_topic	
 
 	# gets all topics within range, e.g. a..m, determined by params
 	def get_range
-		Rails.logger.info("HOST ------> #{request.host}")
-		respond({ topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
+		if params.has_key?("start") and params.has_key?("end")
+			respond({ status: 0, topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
+		else
+			respond({ status: 1, error: "Must supply :start and :end parameter." })
+		end	
 	end
 
 	def cdc_search
-		respond({ topics: AToZEntry.select(:topic, :id).contains(params[:search].upcase) })
+		if params.has_key?("search")
+			respond({ status: 0, topics: AToZEntry.select(:topic, :id).contains(params[:search].upcase) })
+		else
+			respond({ status: 1, error: "Must supply :search parameter." })
+		end
 	end
 
 	def get_topic
-		if AToZEntry.exists?(id: params[:id])
-			respond({ status: 0, topic: AToZEntry.find(params[:id]) })
+		a = AToZEntry.find_by(id: params[:id])
+		if a
+			respond({ status: 0, topic: a })
 		else
 			respond({ status: 1, error: "Topic not found" })
 		end

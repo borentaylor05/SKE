@@ -50,10 +50,10 @@ Rails.application.routes.draw do
   match "/old/comment/toggle", to: "old_comment#toggle", via: [:post, :options] # tested
 
   # MESSAGE ROUTES
-  match "/messages", to: "message#get_unread_messages", via: :get                  
-  match "/message/acknowledge", to: "message#acknowledge", via: [:post, :options]
-  match "/message", to: "message#send_message", via: [:post, :options]
-  match "/messages/all", to: "message#all", via: :get
+  match "/messages", to: "message#get_unread_messages", via: :get                 # tested     
+  match "/message/acknowledge", to: "message#acknowledge", via: [:post, :options] # tested
+  match "/message", to: "message#send_message", via: [:post, :options]            # tested
+  match "/messages/all", to: "message#all", via: :get                             # tested
 
   # ----- Begin Accessible Routes ------
 
@@ -96,14 +96,18 @@ Rails.application.routes.draw do
 
   # ----- End Accessible Routes ------
 
+  # ----- CDC Routes ------  
+
   # A-Z
-  match "/cdc/api/search", to: "a_to_z#cdc_search", via: :get
-  match "/cdc/api/get-range", to: "a_to_z#get_range", via: :get
-  match "/cdc/api/topic", to: "a_to_z#get_topic", via: :get
+  match "/cdc/api/search", to: "a_to_z#cdc_search", via: :get     # tested
+  match "/cdc/api/get-range", to: "a_to_z#get_range", via: :get   # tested
+  match "/cdc/api/topic", to: "a_to_z#get_topic", via: :get       # tested
 
   # ADDRESS BOOK
-  match "cdc/address-book", to: "address_book#get_all", via: :get
+  match "cdc/address-book", to: "address_book#get_all", via: :get         # 
   match "cdc/address-book/entry", to: "address_book#get_entry", via: :get
+
+  # ----- End CDC Routes ------  
 
   # ----- Fairfax Routes ------  
 

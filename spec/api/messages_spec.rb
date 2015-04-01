@@ -23,13 +23,76 @@ describe "Messages API", :type => :request do
 
 	# for /message/acknowledge -> { jive_id: :jive_id, message: :message_id }
 	it "should have a json response" do 
-		get "/messages/acknowledge"
+		post "/message/acknowledge"
 		expect(json).to_not eq(nil)
 	end
 
 	it "should fail gracefully if no user found / provided" do 
-		get "/messages/acknowledge"
+		post "/message/acknowledge"
 		expect(json["status"]).to eq(1)
 	end
 
+	it "should toggle acknowledged attribute" do 
+		mt = MessageTracker.where(acknowledged: false).first
+		msg = mt.message
+		user = mt.user
+		post "/message/acknowledge", { jive_id: user.jive_id, message: msg.id }
+		expect(json["status"]).to eq(0)	
+		expect(json["acknowledged"]["acknowledged"]).to eq(true)
+	end
+
+	# for /message -> { sender: :jive_id, body: text, recipients: [jive_ids] }
+	it "should have json response" do 
+		post "/message"
+		expect(json).to_not eq(nil)
+	end
+
+	it "should fail without proper parameters" do 
+		post "/message"
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should respond properly when passed bad body param" do 
+		post "/message", { sender: User.first.jive_id, body: "", recipients: [User.last] }
+		expect(json["status"]).to eq(1)
+		expect(json["error"]).to eq("Body cannot be empty.")
+	end
+
+	it "should respond properly when passed bad recipients param" do 
+		post "/message", { sender: User.first.jive_id, body: "hggfhgfhgfg", recipients: Array.new }
+		expect(json["status"]).to eq(1)
+		expect(json["error"]).to eq("There must be at least one recipient.")
+	end
+
+	it "should send message to recipients" do 
+		post "/message", { sender: User.first.jive_id, body: "hggfhgfhgfg", recipients: [User.first.jive_id, User.last.jive_id] }
+		expect(json["status"]).to eq(0)
+		expect(json["message"]).to eq("Message Sent to 2 people.")
+	end	
+
+	# for /messages/all -> { user: :jive_id }
+	it "should have json response" do 
+		get "/messages/all"
+		expect(json).to_not eq(nil)
+	end
+
+	it "should respond with error if no user param" do 
+		get "/messages/all"
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should respond with messages if user exists" do 
+		get "/messages/all", { user: User.first.jive_id }
+		expect(json["status"]).to eq(0)
+		expect(json["messages"].count).to be > 0
+	end
 end
+
+
+
+
+
+
+
+
+

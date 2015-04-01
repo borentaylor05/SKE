@@ -4,13 +4,14 @@ class MessageController < ApplicationController
 	before_action :cors_set_access_control_headers
 	after_action :allow_iframe
 
+ 	# for /messages/all -> { user: :jive_id }
 	def all
 		user = User.find_by(jive_id: params[:user])
-		if user.nil?
-			respond({ status: 1, error: "User not found" })
-		else
+		if user
 			msgs = get_all(user)
 			respond({ status: 0, messages: msgs })
+		else
+			respond({ status: 1, error: "User #{params[:user]} not found" })
 		end
 	end
 
@@ -30,20 +31,22 @@ class MessageController < ApplicationController
 			respond({status: 0})
 		elsif request.method == "POST"
 			user = User.find_by(jive_id: params[:jive_id])
-			if user 
-				m = MessageTracker.find_by(user: user, message_id: params[:message])
+			msg = Message.find_by(id: params[:message])
+			if user and msg
+				m = MessageTracker.find_by(user: user, message: msg)
 				m.update_attributes(acknowledged: true)
-				respond({ status: 0, messages: get_unread(user) })
+				respond({ status: 0, messages: get_unread(user), acknowledged: m })
 			else
-				respond({ status: 1, error: "User #{params[:jive_id]} not found" })
+				respond({ status: 1, error: "User #{params[:jive_id]} or message (#{params[:message]}) not found" })
 			end
 		end
 	end
 
-	# needs Jive ID of sender and array of IDs for recipients
+	# needs Jive ID of sender and array of Jive IDs for recipients
+	# for /message -> { sender: :jive_id, body: text, recipients: [jive_ids] }
 	def send_message
-		if User.exists?(jive_id: params[:sender])
-			u = User.find_by(jive_id: params[:sender])
+		u = User.find_by(jive_id: params[:sender])
+		if u and params[:body].length > 0 and params[:recipients] and params[:recipients].count > 0
 			m = Message.new(
 				user: u,
 				text: params[:body],
@@ -57,7 +60,13 @@ class MessageController < ApplicationController
 				respond({ status: 1, error: "#{m.errors.full_messages}" })
 			end
 		else
-			respond({ status: 2, error: "Sender doesn't exist, creating now." })
+			if !u 
+				respond({ status: 1, error: "Sender #{params[:sender]} doesn't exist, creating now." })
+			elsif params[:body].length == 0
+				respond({ status: 1, error: "Body cannot be empty." })
+			elsif !params[:recipients] or params[:recipients].count == 0
+				respond({ status: 1, error: "There must be at least one recipient." })
+			end
 		end
 	end
 

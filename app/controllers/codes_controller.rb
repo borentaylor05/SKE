@@ -61,10 +61,8 @@ class CodesController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			Rails.logger.info("Referrer --------------> #{request.referrer}")
 			info = WwCodeInfo.find_by(token: params[:token])
 			if info
-			#	info = WwCodeInfo.find_by(token: params[:token])
 				c = get_unused_code(params[:type])
 				if c[:status] == 0
 					c[:code].update_attributes(
@@ -142,7 +140,7 @@ class CodesController < ApplicationController
 		elsif request.method == "POST"
 			amounts = []
 			errors = []
-			valid = ["42.95", "39.95", "lifetime"]
+			valid = ["44.95", "42.95", "39.95", "lifetime"]
 			params.each do |key, array|
 				if valid.include?(key)
 					hash = { name: key, amount: 0 }

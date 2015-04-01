@@ -31,6 +31,7 @@ class TempUser < ActiveRecord::Base
 			fixed: [],
 			good: [],
 			manual: [],
+			users: [],
 			totals: {}
 		}
 		jive = {
@@ -67,6 +68,7 @@ class TempUser < ActiveRecord::Base
 					user[:jive_id] = json["id"]
 					Util.create_or_update_from_csv(user) # creates in local db
 					resp = Jive.update_user_with_csv_data(json, user, jive) # creates in Jive 
+					results[:users].push(json)
 					if resp["error"]
 						results[:errors].push("#{user[:first_name]} #{user[:last_name]} - #{resp}")
 					else
