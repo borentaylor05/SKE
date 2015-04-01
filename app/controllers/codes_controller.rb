@@ -116,9 +116,9 @@ class CodesController < ApplicationController
 			codes = get_results(WwCode.all)
 		end
 		if codes.count > 0
-			respond({ status: 0, content: codes, amounts: get_unused_amounts })
+			respond({ status: 0, content: codes, amounts: get_unused_amounts('all') })
 		else
-			respond({ status: 1, amounts: get_unused_amounts, error: "There are no matching codes in the database." })
+			respond({ status: 1, amounts: get_unused_amounts('all'), error: "There are no matching codes in the database." })
 		end
 	end
 
@@ -127,7 +127,7 @@ class CodesController < ApplicationController
 			# Both get unique values, first way didn't interfere with my model order, second way did
 			assigning_agents: WwCode.select(:assigned_by_name).map(&:assigned_by_name).uniq,
 			requesting_agents: WwCodeInfo.uniq.pluck(:agent_name),
-			amounts: get_unused_amounts
+			amounts: get_unused_amounts('all')
 		})
 	end
 
@@ -191,7 +191,7 @@ class CodesController < ApplicationController
 				Rails.logger.info("NUMBER: #{get_number_unused(type)}")
 				return { status: 1, content: { message: "There are no more codes of this type:", type: type } }
 			else
-				return { status: 0, code: WwCode.where(code_type: type, used: false).first, amounts: get_unused_amounts }
+				return { status: 0, code: WwCode.where(code_type: type, used: false).first, amounts: get_unused_amounts(type) }
 			end
 		end
 
@@ -200,12 +200,24 @@ class CodesController < ApplicationController
 			return num
 		end
 
-		def get_unused_amounts
-			return [
-				{ name: "42.95", unused: WwCode.where(code_type: "42.95", used: false).count },
-				{ name: "39.95", unused: WwCode.where(code_type: "39.95", used: false).count },
-				{ name: "Lifetime", unused: WwCode.where(code_type: "lifetime", used: false).count }
-			]
+		def get_unused_amounts(type)
+			case type 
+			when '44.95'
+				return [ { name: "44.95", unused: WwCode.where(code_type: "44.95", used: false).size } ]
+			when '42.95'
+				return [ { name: "42.95", unused: WwCode.where(code_type: "42.95", used: false).size } ]
+			when '39.95'
+				return [ { name: "39.95", unused: WwCode.where(code_type: "39.95", used: false).size } ]
+			when 'lifetime'
+				return [ { name: "lifetime", unused: WwCode.where(code_type: "lifetime", used: false).size } ]	
+			else
+				return [
+					{ name: "42.95", unused: WwCode.where(code_type: "42.95", used: false).size },
+					{ name: "39.95", unused: WwCode.where(code_type: "39.95", used: false).size },
+					{ name: "Lifetime", unused: WwCode.where(code_type: "lifetime", used: false).size }
+				]
+			end
+			
 		end
 
 		# returns max 100 results
