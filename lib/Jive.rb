@@ -8,6 +8,7 @@ class Jive
   @@social = "https://social.teletech.com/api/core/v3"
   @@fairpoint = "https://fairfaqs.jiveon.com/api/core/v3"
   @@ww_coaches = "https://weightwatchers.jiveon.com/api/core/v3"
+  @@uat = "https://uat-social.teletech.com/api/core/v3"
 
 #  def initialize(base_url, auth_hash)
 #    @base_url = base_url
@@ -16,6 +17,10 @@ class Jive
   
   def self.current
     @@current
+  end
+
+  def self.uat 
+    @@uat
   end
 
   def self.ww_coaches
@@ -151,9 +156,9 @@ class Jive
       end
    end
 
-    # hash -> :email, :password, :username, :job_title, :client, :location, :lob, :first_name, :last_name
-    def new_person(hash)
-        {
+    # hash -> :email, :password, :employee_id, :job_title, :client, :location, :lob, :first_name, :last_name
+    def self.new_person(hash)
+        return {
             emails: [ {
                 value: hash[:email],
                 type: "work",
@@ -162,9 +167,8 @@ class Jive
             } ],
             jive: {
                 password: hash[:password],
-                username: hash[:username],
+                username: hash[:employee_id],
                 job_title: hash[:job_title],
-                manager: hash[:manager],
                 client: hash[:client],
                 location: hash[:location], # country code (APAC for now)
                 lob: hash[:lob] # 

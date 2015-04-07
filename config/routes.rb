@@ -92,7 +92,13 @@ Rails.application.routes.draw do
   match "/maintainers/:id/toggle", to: "accessible#toggle_resolved", via: :post
   match "/maintainers", to: "accessible#maintainers", via: :get
   match "/admin/article-request/new", to: "accessible#new_article_request", via: [:post, :options]
+
   root to: "accessible#fx_request_article", via: :get
+
+  # USERS 
+
+  match "/ske/user/new", to: "accessible#new_user", via: :get
+  match "/ske/user", to: "accessible#create_user", via: :post
 
   # ----- End Accessible Routes ------
 
@@ -164,6 +170,10 @@ Rails.application.routes.draw do
   match 'salesforce/unauthenticate', to: "salesforce#unauthenticate", via: :get
   match 'salesforce/search/contact', to: "salesforce#search_for_contact", via: :get
 
+  # GAMIFICATION ROUTES
+  match '/api/gamification/leaderboard', to: "gamification#leaderboard", via: :get
+  match '/api/gamification/missions', to: "gamification#missions", via: :get
+  match '/api/gamification/missions/users/:username', to: "gamification#user_missions", via: :get
 
   # S3 Upload Route
   match "/s3-upload", to: "content#generate_s3_json", via: :get

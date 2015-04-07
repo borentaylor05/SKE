@@ -1,0 +1,2 @@
+module MobileGamificationHelper
+end

@@ -1,0 +1,52 @@
+
+<h1 class="text-center">New User</h1>
+<div class="formContainer" ng-app="UserApp" ng-controller="NewUser as u">
+	<div class="alert alert-danger" ng-if="u.error"> {{ u.error }} </div>
+	<div class="alert alert-success text-center" ng-if="u.success"> {{ u.success }} 
+		<button style="display:block;margin-left:auto;margin-right:auto;" class="btn btn-xs btn-default" ng-click="u.clear()">Create Another User</button> 
+	</div>
+	<form ng-hide="u.success" ng-submit="u.create(user)" name="userForm" novalidate>
+		<label>First Name</label>
+		<input type="text" class="form-control" ng-model="user.first_name" name="first_name" required>
+		<p ng-show="userForm.first_name.$invalid && !userForm.first_name.$pristine" class="help-block">First Name is required.</p>
+
+		<label>Last Name</label>
+		<input type="text" class="form-control" ng-model="user.last_name" name="last_name" required>
+		<p ng-show="userForm.last_name.$invalid && !userForm.last_name.$pristine" class="help-block">Last Name is required.</p>
+
+		<label>Oracle ID</label>
+		<input type="text" class="form-control" ng-model="user.employee_id" name="oracle_id" required>
+		<p ng-show="userForm.oracle_id.$invalid && !userForm.oracle_id.$pristine" class="help-block">Oracle ID is required.</p>
+
+		<label>Client</label>
+		<select name="client_id" ng-model="user.client_id" required>
+			<option value="1">Admin (All Clients)</option>
+			<option value="2">American Red Cross</option>
+			<option value="3">Weight Watchers</option>
+			<option value="4">Fairfax</option>
+			<option value="5">Spark</option>
+			<option value="6">CDC</option>
+			<option value="7">HRSA</option>
+			<option value="8">Hyundai</option>
+		</select>
+		<br/>
+		<p ng-show="userForm.client_id == 0 && !userForm.client_id.$pristine" class="help-block">Client is required</p>
+
+		<label>Title</label>
+		<input type="text" class="form-control" ng-model="user.job_title" name="title" required>
+		<p ng-show="userForm.title.$invalid && !userForm.title.$pristine" class="help-block">Title is required.</p>
+
+		<label>LOB</label>
+		<input type="text" class="form-control" ng-model="user.lob" name="lob" required>
+		<p ng-show="userForm.lob.$invalid && !userForm.lob.$pristine" class="help-block">LOB is required.</p>
+
+		<label>Location</label>
+		<input type="text" class="form-control" ng-model="user.location" name="location" required>
+		<p ng-show="userForm.location.$invalid && !userForm.location.$pristine" class="help-block">Location is required.</p>
+
+		<div class="text-center">
+			<p class="help-block" style="margin-top:10px;">Note: All fields are required!</p>
+			<input type="submit" style="margin-top:4px;margin-bottom: 15px;" class="btn btn-sm btn-success" value="Create User" ng-disabled="userForm.$invalid"> 
+		</div>
+	</form>
+</div>

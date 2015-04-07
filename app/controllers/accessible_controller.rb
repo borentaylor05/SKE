@@ -9,6 +9,9 @@ class AccessibleController < ApplicationController
 	def maintainers
 	end
 
+	def new_user
+	end
+
 	def fx_edit_suburbs
 	end
 
@@ -195,7 +198,7 @@ class AccessibleController < ApplicationController
 
 	def get_maintainers
 		ms = []
-		Maintainer.limit(50).each do |m|
+		Maintainer.where(resolved: false).limit(50).each do |m|
 			if m.do_delete == true
 				m.destroy
 				m.ticket.destroy
@@ -276,11 +279,45 @@ class AccessibleController < ApplicationController
 		
 	end
 
+	def create_user
+		hash = params[:user]
+		hash[:email] = "#{hash[:employee_id]}@nomail.com"
+		hash[:password] = ENV['FP_PASSWORD']
+		person = hash
+		hash = Jive.new_person(hash)
+		resp = Jive.create("#{Jive.dev_url}/people", hash, Auth.dev)
+		if(resp["error"])
+			respond({ status: 1, error: resp["error"] })
+		else
+			person[:jive_id] = resp["id"]
+			u = User.new(
+					first_name: person[:first_name], 
+					last_name: person[:last_name],
+					lob: person[:lob],
+					title: person[:job_title],
+					client_id: person[:client_id],
+					employee_id: person[:employee_id],
+					jive_id: person[:jive_id],
+					name: "#{person[:first_name]} #{person[:last_name]}"
+				)
+			if u.valid?
+				u.save
+				respond({ status: 0, user: u })
+			else
+				respond({ status: 1, error: u.errors.full_messages })
+			end
+		end
+	end
+
 	# ----- End Angular Request routes ------
 
 	#UTILITY
 
 	private
+
+		def user_params
+			params.require(:user).permit(:first_name, :last_name, :employee_id, :client_id, :title, :lob, :jive_id)
+		end
 
 		def entry_params
 			params.require(:a_to_z_entry).permit(:owner, :aka, :scope, :notes, :program_flow, :cdc_link)

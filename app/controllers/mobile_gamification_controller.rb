@@ -1,0 +1,5 @@
+class MobileGamificationController < ApplicationController
+
+	
+	
+end

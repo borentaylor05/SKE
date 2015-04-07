@@ -1,4 +1,22 @@
-FactoryGirl.define do  factory :ww_promotion do
+FactoryGirl.define do  factory :user_mission do
+    user_id 1
+mission_id 1
+  end
+  factory :jive_mission do
+    
+  end
+  factory :empower_mission do
+    metric_name "MyString"
+target "MyString"
+  end
+  factory :mission do
+    bunchball_name "MyString"
+    badge_url "MyString"
+    game_type "MyString"
+    game_id 1
+    folder "MyString"
+  end
+  factory :ww_promotion do
       member_num "MyString"
       first_name "MyString"
       last_name "MyString"

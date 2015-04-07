@@ -35,7 +35,7 @@ textarea {
 .formContainer .btn{
 	margin-top: 15px;
 }
-.my.formContainer label{
+.formContainer label{
 	font-weight: 200;
 	font-size: 1.3em;
 	margin-top: 10px;
@@ -83,4 +83,7 @@ p.myLabel, span.myLabel{
 }
 .myLabel > span.tiny{
 	font-size: .7em;
+}
+.help-block{
+	color: red !important;
 }

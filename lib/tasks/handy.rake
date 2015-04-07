@@ -1,5 +1,7 @@
 require 'csv'
 require 'Util'
+require 'Jive'
+require 'Auth'
 
 task :create_fx_cats => :environment do
 	cats = ["FAMILY NOTICES", "ADULT CLASSIFICATIONS", "AUTOMOTIVE", "EMPLOYMENT", "CHURCH NOTICES", "GENERAL", "NOTICES & SERVICES", "ENTERTAINMENT SERVICES", "RURAL, PETS, LIVESTOCK", "PROPERTY & ACCOMMODATION", "BILL ONLY CLASSIFIED", "CLASS FEATURE", "DIRECTORIES CLASSIFIED", "HOUSE FILLERS", "ONLINE EDITIONS", "LATE CLASSIFICATIONS", "LUGS", "TRADES AND SERVICES"]
@@ -10,6 +12,32 @@ task :create_fx_cats => :environment do
 	end
 end
 
+task api_test: :environment do 
+	users = [
+		{
+			current: 'testself',
+			new_username: 'put_test_1'
+		},
+		{
+			current: 'TestKeimig',
+			new_username: 'put_test_2'
+		}
+	]
+	users.each do |u| 
+		resp = Jive.grab("#{Jive.uat}/people/username/#{u[:current]}", Auth.uat) # GET request
+		id = resp["id"]
+		resp = Util.fix_user(resp) # makes sure family and give name are in the updated user object
+		resp["jive"]["username"] = u[:new_username]
+		puts "JSON for #{u[:current]} --> #{resp.to_json}"
+		puts "Response for updating #{u[:current]} --> "
+		resp = Jive.update("#{Jive.uat}/people/#{id}", resp, Auth.uat) # PUT request with updated user object as param
+		if resp.code > 399
+			puts "ERROR: #{resp["error"]}"
+		else
+			puts resp 
+		end
+	end
+end
 
 task :move_category => :environment	do
 	FxClassification.all.each do |c|
@@ -23,6 +51,7 @@ task :clean_maintainers => :environment	do
 	Maintainer.destroy_all
 	OldComment.destroy_all
 	OldContent.destroy_all
+	ArticleRequest.destroy_all
 end
 
 task create_suburbs: :environment do 

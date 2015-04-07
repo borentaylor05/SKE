@@ -6,7 +6,12 @@ class Auth
 	@@fairpoint = { username: ENV['FP_USERNAME'], password: ENV['FP_PASSWORD'] }
 	@@ww_coaches = { username: ENV['WWC_USERNAME'], password: ENV['WWC_PASSWORD'] }
 	@@dev = { username: 'admin', password: 'admin' }
+	@@uat = { username: 3170083, password: ENV['FP_PASSWORD'] }
 	
+
+	def self.uat
+		@@uat
+	end
 
 	def self.social
 		@@social

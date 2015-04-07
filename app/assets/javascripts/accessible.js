@@ -399,6 +399,30 @@ sub_app.controller("Subs", ['suburbs', function(suburbs){
 
 }]);
 
+var user_app = angular.module("UserApp", []);
+
+user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
+	var u = this;
+
+	u.create = function(user){
+		u.error = null;
+		u.success = null;
+		$http.post("/ske/user", { user: user }).success(function(resp){
+			if(resp.status == 0){
+				u.success = resp.user.name+" created successfully!"
+			}
+			else{
+				u.error = resp.error;
+			}
+		});
+	}
+	u.clear = function(){
+		u.success = null;
+		u.error = null;
+		$scope.user = null;
+		$scope.userForm.$setPristine();
+	}
+}]);
 
 
 

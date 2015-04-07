@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327213358) do
+ActiveRecord::Schema.define(version: 20150406175338) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,14 @@ ActiveRecord::Schema.define(version: 20150327213358) do
 
   add_index "deadlines", ["publication"], name: "index_deadlines_on_publication", using: :btree
 
+  create_table "empower_missions", force: true do |t|
+    t.string   "metric_name"
+    t.string   "target"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "units"
+  end
+
   create_table "fx_class_cats", force: true do |t|
     t.string   "name"
     t.datetime "created_at", null: false
@@ -202,6 +210,11 @@ ActiveRecord::Schema.define(version: 20150327213358) do
     t.string   "title"
   end
 
+  create_table "jive_missions", force: true do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "maintainers", force: true do |t|
     t.boolean  "pcf"
     t.integer  "assigned_to"
@@ -239,6 +252,16 @@ ActiveRecord::Schema.define(version: 20150327213358) do
     t.datetime "updated_at", null: false
     t.boolean  "sent"
     t.integer  "user_id"
+  end
+
+  create_table "missions", force: true do |t|
+    t.string   "bunchball_name"
+    t.string   "badge_url"
+    t.string   "game_type"
+    t.integer  "game_id"
+    t.string   "folder"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "old_comments", force: true do |t|
@@ -354,6 +377,13 @@ ActiveRecord::Schema.define(version: 20150327213358) do
     t.integer  "user_id"
     t.integer  "client_id"
     t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_missions", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "mission_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

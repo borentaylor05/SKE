@@ -15,4 +15,6 @@ class User < ActiveRecord::Base
 	accepts_nested_attributes_for :message_trackers
 
 	has_many :sf_o_auths
+	has_many :user_missions
+	has_many :missions, through: :user_missions
 end
