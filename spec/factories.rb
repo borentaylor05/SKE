@@ -10,11 +10,11 @@ mission_id 1
 target "MyString"
   end
   factory :mission do
-    bunchball_name "MyString"
-    badge_url "MyString"
-    game_type "MyString"
+    bunchball_name "sads"
+    badge_url "dfgdfg"
+    game_type "EmpowerMission"
     game_id 1
-    folder "MyString"
+    folder "vbcb"
   end
   factory :ww_promotion do
       member_num "MyString"
@@ -67,19 +67,19 @@ target "MyString"
     title "Developer"
   end
 
-  factory :old_content do 
-  	api_id OldContent.first.api_id
-  	comments 1
-  	link 'http://localhost:8080/docs/DOC-1033'
-  	commentsUrl 'http://localhost:8080/api/core/v3/contents/1046/comments'
-  	title 'Bergdorf Goodman'
-  end
+  # factory :old_content do 
+  # 	api_id OldContent.first.api_id
+  # 	comments 1
+  # 	link 'http://localhost:8080/docs/DOC-1033'
+  # 	commentsUrl 'http://localhost:8080/api/core/v3/contents/1046/comments'
+  # 	title 'Bergdorf Goodman'
+  # end
 
-  factory :old_comment do 
-  	old_content_id OldContent.first.api_id
-    api_id OldComment.first.api_id
-    resolved false
-  end
+  # factory :old_comment do 
+  # 	old_content_id OldContent.first.api_id
+  #   api_id OldComment.first.api_id
+  #   resolved false
+  # end
 
 
 end

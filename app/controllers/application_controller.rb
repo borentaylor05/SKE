@@ -31,6 +31,8 @@ class ApplicationController < ActionController::Base
       '10.170.67.45'  # node
   ]
 
+  $cloud_ip = IPAddr.new ENV['CLOUD_IP']
+
   def cors_set_access_control_headers
     headers['Access-Control-Allow-Origin'] = check_origin
     headers['Access-Control-Allow-Methods'] = 'POST, PUT, DELETE, GET, OPTIONS'
@@ -41,6 +43,8 @@ class ApplicationController < ActionController::Base
   def check_origin
     if admin_signed_in?
       return request.headers['origin']
+    elsif $cloud_ip.include?(request.remote_ip)
+        return request.headers['origin']
     elsif origin_allowed?
       return request.headers['origin']
     else

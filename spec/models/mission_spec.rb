@@ -14,4 +14,11 @@ RSpec.describe Mission, type: :model do
 		expect(@mission).to_not be_valid
 	end
 
+	it "should not allow duplicate names" do 
+		m1 = FactoryGirl.create(:mission)
+		m2 = FactoryGirl.create(:mission, bunchball_name: "blah")
+		m2.bunchball_name = m1.bunchball_name
+		expect(m2).to_not be_valid
+	end
+
 end

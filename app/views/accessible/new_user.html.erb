@@ -1,4 +1,3 @@
-
 <h1 class="text-center">New User</h1>
 <div class="formContainer" ng-app="UserApp" ng-controller="NewUser as u">
 	<div class="alert alert-danger" ng-if="u.error"> {{ u.error }} </div>
@@ -20,14 +19,7 @@
 
 		<label>Client</label>
 		<select name="client_id" ng-model="user.client_id" required>
-			<option value="1">Admin (All Clients)</option>
-			<option value="2">American Red Cross</option>
-			<option value="3">Weight Watchers</option>
-			<option value="4">Fairfax</option>
-			<option value="5">Spark</option>
-			<option value="6">CDC</option>
-			<option value="7">HRSA</option>
-			<option value="8">Hyundai</option>
+			<%= options_for_select(@clients) %>
 		</select>
 		<br/>
 		<p ng-show="userForm.client_id == 0 && !userForm.client_id.$pristine" class="help-block">Client is required</p>

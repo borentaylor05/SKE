@@ -1,6 +1,7 @@
 class AccessibleController < ApplicationController
 	require 'Jive'
 	require 'Auth'
+	require 'Bunchball'
 
 	before_action :authenticate_admin!
 	
@@ -9,7 +10,44 @@ class AccessibleController < ApplicationController
 	def maintainers
 	end
 
+	def gamification
+		@all = Client.find_by(name: 'all').id
+		@ww = Client.find_by(name: 'ww').id
+		@arc = Client.find_by(name: 'arc').id
+		@fairfax = Client.find_by(name: 'fairfax').id
+		@spark = Client.find_by(name: 'spark').id
+		@hyundai = Client.find_by(name: 'hyundai').id
+		@cdc = Client.find_by(name: 'cdc').id
+		@hrsa = Client.find_by(name: 'hrsa').id
+		@clients = []
+		@clients.push(['All (Admin)', 'ALL'])
+		@clients.push(['WeightWatchers', 'WW'])
+		@clients.push(['American Red Cross', 'ARC'])	
+		@clients.push(['Fairfax', 'FAIRFAX'])
+		@clients.push(['Spark', 'SPARK'])
+		@clients.push(['Hyundai', 'HYUNDAI'])
+		@clients.push(['CDC', 'CDC'])
+		@clients.push(['HRSA', 'HRSA'])
+	end
+
 	def new_user
+		@all = Client.find_by(name: 'all').id
+		@ww = Client.find_by(name: 'ww').id
+		@arc = Client.find_by(name: 'arc').id
+		@fairfax = Client.find_by(name: 'fairfax').id
+		@spark = Client.find_by(name: 'spark').id
+		@hyundai = Client.find_by(name: 'hyundai').id
+		@cdc = Client.find_by(name: 'cdc').id
+		@hrsa = Client.find_by(name: 'hrsa').id
+		@clients = []
+		@clients.push(['All (Admin)', @all])
+		@clients.push(['WeightWatchers', @ww])
+		@clients.push(['American Red Cross', @arc])	
+		@clients.push(['Farifax', @fairfax])
+		@clients.push(['Spark', @spark])
+		@clients.push(['Hyundai', @hyundai])
+		@clients.push(['CDC', @cdc])
+		@clients.push(['HRSA', @hrsa])
 	end
 
 	def fx_edit_suburbs
@@ -307,6 +345,26 @@ class AccessibleController < ApplicationController
 				respond({ status: 1, error: u.errors.full_messages })
 			end
 		end
+	end
+
+	def get_mission
+		
+		if params.has_key?("name")
+			m = Mission.find_by(bunchball_name: params[:name].nil?)
+			if !m
+				bb = Bunchball.new('3170083')
+				resp = bb.get_mission(params[:name])
+				respond({ status: 0, mission: resp })
+			else
+				respond({ status: 1, error: "Mission with that name has already been created." })
+			end
+		else
+			respond({ status: 1, error: "Request needs name parameter" })
+		end
+	end
+
+	def create_mission
+		respond(params)
 	end
 
 	# ----- End Angular Request routes ------

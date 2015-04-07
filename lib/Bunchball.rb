@@ -84,6 +84,10 @@ class Bunchball
 		return get("user.logAction&tags=#{action}")
 	end
 
+	def get_mission(name)
+		return get("user.getChallengeProgress&challengeName=#{URI.encode(name)}")
+	end
+
 end
 
 # nitroAPI = NitroAPISample.new

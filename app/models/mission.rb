@@ -2,6 +2,7 @@ class Mission < ActiveRecord::Base
 
 	validates :bunchball_name, presence: true
 	validates :folder, presence: true
+	validates :bunchball_name, uniqueness: true
 
 	belongs_to :game, touch: true, polymorphic: true
 	has_many :user_missions

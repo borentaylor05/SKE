@@ -1,0 +1,125 @@
+<style>
+	label{
+		display: block;
+	}
+	select#type{
+		width: 200px;
+		font-size: 1.4em;
+	}
+	.gType{
+		font-weight: bold;
+		font-style: italic;
+	}
+	#checking{
+		vertical-align: bottom;
+	}
+	.formContainer{
+		overflow-x:hidden; 
+		padding: 5px;
+	}
+	.alert{
+		margin: 3px;
+		padding: 5px;
+	}
+</style>
+<script>
+	
+	var game_app = angular.module("GamificationApp", []);
+
+	game_app.controller("Gamification", ['$http', function($http){
+		var g = this;
+		g.formValid = false;
+
+		g.check = function(name){
+			g.checking = true;
+			g.error = null;
+			$http.get("/gamification/mission?name="+name).success(function(resp){
+				if(resp.status == 0){
+					if(typeof resp.mission.Nitro.challenges == 'boolean')
+						g.error = "Mission '"+name+"' not found";
+					else if(typeof resp.mission.Nitro.challenges == 'object'){
+						console.log(resp.mission.Nitro.challenges.Challenge);
+						g.found = resp.mission.Nitro.challenges.Challenge;
+
+					}
+					else{
+						g.error = resp.error;
+					}
+				}
+				 
+				g.checking = false;
+			});
+		}
+		g.correctFolder = function(client,lob,folder){
+			if(client && client.toUpperCase()+"-"+lob == folder)
+				return true;
+			else
+				return false;
+		}
+		g.checkFolder = function(){
+			g.folderChecked = true;
+		}
+		g.valid = function(game){
+			return false;
+		}
+
+	}]);	
+
+</script>	
+<h1 class="text-center">New Mission</h1>
+<div class="formContainer" ng-app="GamificationApp" ng-controller="Gamification as g">
+	<div class="alert alert-danger" ng-if="g.error"> {{ g.error }} </div>
+	<div class="alert alert-success text-center" ng-if="u.success"> {{ u.success }} 
+		<button style="display:block;margin-left:auto;margin-right:auto;" class="btn btn-xs btn-default" ng-click="u.clear()">Create Another Mission</button> 
+	</div>
+	<form name="missionForm" ng-submit="g.create(g.game)" novalidate>
+		<label>Bunchball Mission Name</label>
+		<input ng-model="g.game.bunchball_name" class="form-control" name="bunchball_name" >
+		<button class="btn btn-sm btn-info" ng-click="g.check(g.game.bunchball_name)">Check Mission Name</button>
+		<span id="checking" ng-show="g.checking">Checking...</span>
+		<br/>
+		<div ng-show="g.found"> 
+			<label>Which System should this mission use? <span class="gType"> {{ g.game.game_type }} </span> </label>
+			<select id="type" ng-model="g.game.game_type">
+				<option value="Jive">Jive</option>
+				<option value="Empower">Empower</option>
+				<option value="SalesForce">SalesForce</option>
+			</select>
+			<label>Which client is this for?</label>
+			<select ng-model="g.game.client">
+				<%= options_for_select(@clients) %>
+			</select>
+			<label>Which LOB is this for?</label>
+			<input class="form-control" type="text" ng-model="g.game.lob">
+			<div ng-show="g.folderChecked">
+				<div class="alert alert-danger" ng-hide="g.correctFolder(g.game.client, g.game.lob, g.folder)">
+					Error: Bunchball folder name should be 
+					<strong>{{ g.game.client }}-{{ g.game.lob }}</strong> but is
+					<strong> {{ g.found.folderName }}</strong>
+				</div>
+				<div class="alert alert-success" ng-show="g.correctFolder(g.game.client, g.game.lob, g.folder)">
+					Folder name is correct!
+				</div>
+			</div>
+			<button ng-click="g.checkFolder()" class="btn btn-sm btn-info">Check Folder Name</button>
+		</div>
+		<div ng-show="g.found && g.game.client && g.folderChecked" ng-switch="g.game.game_type">
+			<div ng-switch-when="Jive">
+				<label>Description: <span class="gType">{{ g.found.description }}</strong> </label>
+			</div>
+			<div ng-switch-when="Empower">
+				<label>Metric Name</label>
+				<input name="mn" class="form-control" ng-model="g.game.metric_name" required>
+				<p ng-show="missionForm.mn.$invalid && !missionForm.mn.$pristine" class="help-block">Mission name is required.</p>
+				<label>Target</label>
+				<input type="number" name="target" class="form-control" ng-model="g.game.target" required>
+				<p ng-show="missionForm.target.$invalid && !missionForm.target.$pristine" class="help-block">Must be a number.</p>
+				<label>Units <span>(e.g. seconds, %, ads sold)</span></label>
+				<input class="form-control" ng-model="g.game.units">
+			</div>
+		</div>
+		<div class="text-center">
+			<input type="submit" style="margin-top:4px;margin-bottom: 15px;" class="btn btn-sm btn-success" value="Create Mission" ng-disabled="!g.formValid"> 
+		</div>
+	</form>
+</div>

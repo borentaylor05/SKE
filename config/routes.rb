@@ -95,6 +95,10 @@ Rails.application.routes.draw do
 
   root to: "accessible#fx_request_article", via: :get
 
+  match "/gamification/mission/new", to: "accessible#gamification", via: :get
+  match "/gamification/mission", to: "accessible#get_mission", via: :get
+  match "/gamification/mission/create", to: "accessible#create_mission", via: :post
+
   # USERS 
 
   match "/ske/user/new", to: "accessible#new_user", via: :get
