@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150406175338) do
+ActiveRecord::Schema.define(version: 20150408203308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -262,6 +262,8 @@ ActiveRecord::Schema.define(version: 20150406175338) do
     t.string   "folder"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.string   "description"
+    t.integer  "points"
   end
 
   create_table "old_comments", force: true do |t|
@@ -384,8 +386,11 @@ ActiveRecord::Schema.define(version: 20150406175338) do
   create_table "user_missions", force: true do |t|
     t.integer  "user_id"
     t.integer  "mission_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "times_completed"
+    t.integer  "progress"
+    t.boolean  "notify_complete"
   end
 
   create_table "users", force: true do |t|

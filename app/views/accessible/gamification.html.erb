@@ -2,9 +2,10 @@
 	label{
 		display: block;
 	}
-	select#type{
+	select{
 		width: 200px;
 		font-size: 1.4em;
+		display: block;
 	}
 	.gType{
 		font-weight: bold;
@@ -21,6 +22,11 @@
 		margin: 3px;
 		padding: 5px;
 	}
+	#check, i{
+		vertical-align: bottom;
+		font-size: .8em;
+		font-weight: bold;
+	}
 </style>
 <script>
 	
@@ -28,7 +34,6 @@
 
 	game_app.controller("Gamification", ['$http', function($http){
 		var g = this;
-		g.formValid = false;
 
 		g.check = function(name){
 			g.checking = true;
@@ -38,9 +43,7 @@
 					if(typeof resp.mission.Nitro.challenges == 'boolean')
 						g.error = "Mission '"+name+"' not found";
 					else if(typeof resp.mission.Nitro.challenges == 'object'){
-						console.log(resp.mission.Nitro.challenges.Challenge);
 						g.found = resp.mission.Nitro.challenges.Challenge;
-
 					}
 					else{
 						g.error = resp.error;
@@ -48,6 +51,28 @@
 				}
 				 
 				g.checking = false;
+			});
+		}
+		g.create = function(game, found){
+			var msg = { mission: game, bb: found };
+			$http.post("/gamification/mission/create", msg).success(function(resp){
+				if(resp.status == 0){
+					g.created = true;
+					g.success = "Mission was created and assigned to "+resp.assigned_to+" users!";
+				}
+				else
+					g.error = resp.error;
+			});
+		}
+		g.getLobTitles = function(client){
+			$http.get("/clients/"+client.trim()+"/lob-titles").success(function(resp){
+				g.lobs = resp.lobs;
+				g.titles = resp.titles;
+			});
+		}
+		g.getClients = function(){
+			$http.get("/clients").success(function(resp){
+				g.clients = resp.clients;
 			});
 		}
 		g.correctFolder = function(client,lob,folder){
@@ -60,8 +85,16 @@
 			g.folderChecked = true;
 		}
 		g.valid = function(game){
-			return false;
+			if(g.found){
+				return true;
+			}
+
 		}
+		g.clear = function(){
+			location.reload();
+		}
+
+		g.getClients();
 
 	}]);	
 
@@ -69,16 +102,18 @@
 <h1 class="text-center">New Mission</h1>
 <div class="formContainer" ng-app="GamificationApp" ng-controller="Gamification as g">
 	<div class="alert alert-danger" ng-if="g.error"> {{ g.error }} </div>
-	<div class="alert alert-success text-center" ng-if="u.success"> {{ u.success }} 
-		<button style="display:block;margin-left:auto;margin-right:auto;" class="btn btn-xs btn-default" ng-click="u.clear()">Create Another Mission</button> 
+	<div class="alert alert-success text-center" ng-if="g.success">  {{ g.success }} 
+		<button style="display:block;margin-left:auto;margin-right:auto;" class="btn btn-xs btn-default" ng-click="g.clear()">Create Another Mission</button> 
 	</div>
-	<form name="missionForm" ng-submit="g.create(g.game)" novalidate>
+	<form ng-hide="g.created" name="missionForm" novalidate>
 		<label>Bunchball Mission Name</label>
 		<input ng-model="g.game.bunchball_name" class="form-control" name="bunchball_name" >
 		<button class="btn btn-sm btn-info" ng-click="g.check(g.game.bunchball_name)">Check Mission Name</button>
 		<span id="checking" ng-show="g.checking">Checking...</span>
 		<br/>
 		<div ng-show="g.found"> 
+			<label>Description:</label>
+			<span class="gType"> {{ g.found.description }} </span>
 			<label>Which System should this mission use? <span class="gType"> {{ g.game.game_type }} </span> </label>
 			<select id="type" ng-model="g.game.game_type">
 				<option value="Jive">Jive</option>
@@ -86,11 +121,17 @@
 				<option value="SalesForce">SalesForce</option>
 			</select>
 			<label>Which client is this for?</label>
-			<select ng-model="g.game.client">
-				<%= options_for_select(@clients) %>
+			<select name="client_id" ng-model="g.game.client" ng-change="g.getLobTitles(g.game.client)" required>
+				<option ng-repeat="c in g.clients" ng-value="{{c.name}}"> 
+					{{ c.name.toUpperCase() }} 
+				</option>
 			</select>
-			<label>Which LOB is this for?</label>
-			<input class="form-control" type="text" ng-model="g.game.lob">
+			<div ng-show="g.game.client">
+				<label>Which LOB is this for?</label>
+				<select ng-model="g.game.lob" ng-options="l as l for l in g.lobs track by l" required></select>
+			</div>
+			<button ng-click="g.checkFolder()" class="btn btn-sm btn-info">Check Folder Name</button>
+			<span id="check"> <i class="fa fa-long-arrow-left"></i> You must click this to see remaining fields</span>
 			<div ng-show="g.folderChecked">
 				<div class="alert alert-danger" ng-hide="g.correctFolder(g.game.client, g.game.lob, g.folder)">
 					Error: Bunchball folder name should be 
@@ -101,12 +142,8 @@
 					Folder name is correct!
 				</div>
 			</div>
-			<button ng-click="g.checkFolder()" class="btn btn-sm btn-info">Check Folder Name</button>
 		</div>
 		<div ng-show="g.found && g.game.client && g.folderChecked" ng-switch="g.game.game_type">
-			<div ng-switch-when="Jive">
-				<label>Description: <span class="gType">{{ g.found.description }}</strong> </label>
-			</div>
 			<div ng-switch-when="Empower">
 				<label>Metric Name</label>
 				<input name="mn" class="form-control" ng-model="g.game.metric_name" required>
@@ -119,7 +156,7 @@
 			</div>
 		</div>
 		<div class="text-center">
-			<input type="submit" style="margin-top:4px;margin-bottom: 15px;" class="btn btn-sm btn-success" value="Create Mission" ng-disabled="!g.formValid"> 
+			<button style="margin-top:24px;margin-bottom: 15px;" class="btn btn-sm btn-success" ng-disabled="!g.valid()" ng-click="g.create(g.game, g.found)">Create Mission</button>
 		</div>
 	</form>
 </div>

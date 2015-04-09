@@ -55,6 +55,9 @@ Rails.application.routes.draw do
   match "/message", to: "message#send_message", via: [:post, :options]            # tested
   match "/messages/all", to: "message#all", via: :get                             # tested
 
+  # CLIENT ROUTES
+  match "/api/clients/:client/lob-titles", to: "message#get_lobs_titles_for_client", via: :get
+
   # ----- Begin Accessible Routes ------
 
   match "/cdc/upload/address-book", to: "accessible#upload_address_book", via: :get
@@ -98,6 +101,11 @@ Rails.application.routes.draw do
   match "/gamification/mission/new", to: "accessible#gamification", via: :get
   match "/gamification/mission", to: "accessible#get_mission", via: :get
   match "/gamification/mission/create", to: "accessible#create_mission", via: :post
+
+  match "/clients/:client/lob-titles", to: "accessible#get_lobs_titles_for_client", via: :get
+  match "/clients", to: "accessible#get_clients", via: :get
+
+  match "ske/users", to: "accessible#users", via: :get
 
   # USERS 
 

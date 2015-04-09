@@ -138,6 +138,10 @@ class ApplicationController < ActionController::Base
     u.valid ? u.save : logger.info("#{u.errors.full_messages}")
   end
 
+  def numeric?(string)
+      true if Float(string) rescue false
+  end
+
 end
 
 

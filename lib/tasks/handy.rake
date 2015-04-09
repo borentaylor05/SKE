@@ -3,6 +3,13 @@ require 'Util'
 require 'Jive'
 require 'Auth'
 
+task clean_missions: :environment do
+	UserMission.destroy_all
+	Mission.destroy_all
+	EmpowerMission.destroy_all
+	JiveMission.destroy_all
+end
+
 task :create_fx_cats => :environment do
 	cats = ["FAMILY NOTICES", "ADULT CLASSIFICATIONS", "AUTOMOTIVE", "EMPLOYMENT", "CHURCH NOTICES", "GENERAL", "NOTICES & SERVICES", "ENTERTAINMENT SERVICES", "RURAL, PETS, LIVESTOCK", "PROPERTY & ACCOMMODATION", "BILL ONLY CLASSIFIED", "CLASS FEATURE", "DIRECTORIES CLASSIFIED", "HOUSE FILLERS", "ONLINE EDITIONS", "LATE CLASSIFICATIONS", "LUGS", "TRADES AND SERVICES"]
 	cats.each do |c|

@@ -46,7 +46,7 @@ class MessageController < ApplicationController
 	# for /message -> { sender: :jive_id, body: text, recipients: [jive_ids] }
 	def send_message
 		u = User.find_by(jive_id: params[:sender])
-		if u and params[:body].length > 0 and params[:recipients] and params[:recipients].count > 0
+		if u and params[:body].length > 0 and params[:groups] and params[:groups].count > 0
 			m = Message.new(
 				user: u,
 				text: params[:body],
@@ -54,8 +54,9 @@ class MessageController < ApplicationController
 			)
 			if m.valid?
 				m.save
-				m.send_message(params[:recipients])
-				respond({ status: 0, message: "Message Sent to #{params[:recipients].count} people." })
+				recipients = get_people_from_groups(params[:groups])
+				m.send_message(recipients)
+				respond({ status: 0, message: "Message Sent to #{recipients.count} people.", users: recipients })
 			else
 				respond({ status: 1, error: "#{m.errors.full_messages}" })
 			end
@@ -64,13 +65,49 @@ class MessageController < ApplicationController
 				respond({ status: 1, error: "Sender #{params[:sender]} doesn't exist, creating now." })
 			elsif params[:body].length == 0
 				respond({ status: 1, error: "Body cannot be empty." })
-			elsif !params[:recipients] or params[:recipients].count == 0
+			elsif !params[:groups] or params[:groups].count == 0
 				respond({ status: 1, error: "There must be at least one recipient." })
 			end
 		end
 	end
 
+	# /api/clients/:client/lobs-titles
+	def get_lobs_titles_for_client
+		if numeric?(params[:client])
+			client = Client.find_by(id: params[:client])
+		else
+			client = Client.find_by(name: params[:client].downcase)
+		end
+		if client
+			lobs = get_client_lobs(client.id)
+			titles = get_client_titles(client.id)
+			if lobs.count > 0
+				respond({ status: 0, lobs: lobs, titles: titles })
+			else
+				respond({ status: 1, error: "No LOBS found.  Need to upload users." })
+			end
+		else
+			respond({ status: 1, error: "Client not found." })
+		end
+	end
+
 	private
+
+		# groups = titles and lobs
+		def get_people_from_groups(groups)
+			users = []
+			groups.each do |g|
+				if g[:name] == 'Admins'
+					matches = User.where(client: Client.find_by(name: 'all'))
+				elsif g[:type] == 'lob'
+					matches = User.where(lob: g[:name]).select(:jive_id)
+				elsif g[:type] == 'title'
+					matches = User.where(title: g[:name]).select(:jive_id)
+				end	
+				users.push(*matches)				
+			end
+			return users;
+		end
 
 		def get_all(user)
 			msgs = []
@@ -98,6 +135,14 @@ class MessageController < ApplicationController
 				end
 			end
 			return msgs
+		end
+
+		def get_client_lobs(client_id)
+			return User.where(client_id: client_id).uniq.pluck(:lob).sort_by(&:to_s)
+		end
+
+		def get_client_titles(client_id)
+			return User.where(client_id: client_id).uniq.pluck(:title).sort_by(&:to_s)
 		end
 
 end

@@ -1,3 +1,58 @@
+<style>
+	
+	label{
+		display: block;
+	}
+	select{
+		width: 200px;
+		font-size: 1.4em;
+		display: block;
+	}
+
+</style>
+<script type="text/javascript">
+	
+	var user_app = angular.module("UserApp", []);
+
+user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
+	var u = this;
+	u.init = false;
+
+	u.create = function(user){
+		u.error = null;
+		u.success = null;
+		$http.post("/ske/user", { user: user }).success(function(resp){
+			if(resp.status == 0){
+				u.success = resp.user.name+" created successfully!"
+			}
+			else{
+				u.error = resp.error;
+			}
+		});
+	}
+	u.getLobTitles = function(client){
+		$http.get("/clients/"+client.trim()+"/lob-titles").success(function(resp){
+			u.lobs = resp.lobs;
+			u.titles = resp.titles;
+			u.init = true;
+		});
+	}
+	u.getClients = function(){
+		$http.get("/clients").success(function(resp){
+			u.clients = resp.clients;
+		});
+	}
+	u.clear = function(){
+		u.success = null;
+		u.error = null;
+		$scope.user = null;
+		$scope.userForm.$setPristine();
+	}
+	u.getClients();
+}]);
+
+</script>
+
 <h1 class="text-center">New User</h1>
 <div class="formContainer" ng-app="UserApp" ng-controller="NewUser as u">
 	<div class="alert alert-danger" ng-if="u.error"> {{ u.error }} </div>
@@ -18,27 +73,31 @@
 		<p ng-show="userForm.oracle_id.$invalid && !userForm.oracle_id.$pristine" class="help-block">Oracle ID is required.</p>
 
 		<label>Client</label>
-		<select name="client_id" ng-model="user.client_id" required>
-			<%= options_for_select(@clients) %>
+		<select name="client_id" ng-model="user.client_id" ng-change="u.getLobTitles(user.client_id)" required>
+			<option ng-repeat="c in u.clients" ng-value="{{c.id}}"> 
+				{{ c.name.toUpperCase() }} 
+			</option>
 		</select>
 		<br/>
 		<p ng-show="userForm.client_id == 0 && !userForm.client_id.$pristine" class="help-block">Client is required</p>
+		<div ng-if="u.init && !u.titles" class="alert alert-danger">
+			You have no users in the database. Ping Taylor.
+		</div>
+		<div ng-show="u.titles">
+			<label>Title</label>
+			<select ng-model="user.title" ng-options="t as t for t in u.titles track by t" required></select>
+			<br/>
+			<label>LOB</label>
+			<select ng-model="user.lob" ng-options="l as l for l in u.lobs track by l" required></select>
+			<br/>
+			<label>Location</label>
+			<input type="text" class="form-control" ng-model="user.location" name="location" required>
+			<p ng-show="userForm.location.$invalid && !userForm.location.$pristine" class="help-block">Location is required.</p>
 
-		<label>Title</label>
-		<input type="text" class="form-control" ng-model="user.job_title" name="title" required>
-		<p ng-show="userForm.title.$invalid && !userForm.title.$pristine" class="help-block">Title is required.</p>
-
-		<label>LOB</label>
-		<input type="text" class="form-control" ng-model="user.lob" name="lob" required>
-		<p ng-show="userForm.lob.$invalid && !userForm.lob.$pristine" class="help-block">LOB is required.</p>
-
-		<label>Location</label>
-		<input type="text" class="form-control" ng-model="user.location" name="location" required>
-		<p ng-show="userForm.location.$invalid && !userForm.location.$pristine" class="help-block">Location is required.</p>
-
-		<div class="text-center">
-			<p class="help-block" style="margin-top:10px;">Note: All fields are required!</p>
-			<input type="submit" style="margin-top:4px;margin-bottom: 15px;" class="btn btn-sm btn-success" value="Create User" ng-disabled="userForm.$invalid"> 
+			<div class="text-center">
+				<p class="help-block" style="margin-top:10px;">Note: All fields are required!</p>
+				<input type="submit" style="margin-top:4px;margin-bottom: 15px;" class="btn btn-sm btn-success" value="Create User" ng-disabled="userForm.$invalid"> 
+			</div>
 		</div>
 	</form>
 </div>

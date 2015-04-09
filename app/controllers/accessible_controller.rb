@@ -332,9 +332,10 @@ class AccessibleController < ApplicationController
 					first_name: person[:first_name], 
 					last_name: person[:last_name],
 					lob: person[:lob],
-					title: person[:job_title],
+					title: person[:title],
 					client_id: person[:client_id],
 					employee_id: person[:employee_id],
+					location: person[:location],
 					jive_id: person[:jive_id],
 					name: "#{person[:first_name]} #{person[:last_name]}"
 				)
@@ -350,7 +351,7 @@ class AccessibleController < ApplicationController
 	def get_mission
 		
 		if params.has_key?("name")
-			m = Mission.find_by(bunchball_name: params[:name].nil?)
+			m = Mission.find_by(bunchball_name: params[:name])
 			if !m
 				bb = Bunchball.new('3170083')
 				resp = bb.get_mission(params[:name])
@@ -367,11 +368,83 @@ class AccessibleController < ApplicationController
 		respond(params)
 	end
 
+	def get_clients
+		respond({ status: 0, clients: Client.select(:id, :name) })	
+	end
+
+	# /clients/:client/lobs-titles
+	def get_lobs_titles_for_client
+		if numeric?(params[:client])
+			client = Client.find_by(id: params[:client])
+		else
+			client = Client.find_by(name: params[:client].downcase)
+		end
+		if client
+			lobs = get_client_lobs(client.id)
+			titles = get_client_titles(client.id)
+			if lobs.count > 0
+				respond({ status: 0, lobs: lobs, titles: titles })
+			else
+				respond({ status: 1, error: "No LOBS found.  Need to upload users." })
+			end
+		else
+			respond({ status: 1, error: "Client not found." })
+		end
+	end
+
+	def create_mission
+		if params.has_key?("mission") and params.has_key?("bb")
+			hash = make_mission(params[:mission], params[:bb])
+			client = Client.find_by(name: params[:mission][:client].downcase)
+			if hash[:game].valid?
+				if hash[:mission].valid?
+					hash[:game].save
+					hash[:mission].game = hash[:game]
+					hash[:mission].save
+					users = User.where(client: client, lob: params[:mission][:lob])
+					count = hash[:mission].assign_to_users(users)
+					if users.count == count
+						respond({ status: 0, assigned_to: users.count })
+					else
+						respond({ status: 1, error: "Something went wrong when assigning missions :( " })
+					end
+				else
+					respond({ status: 1, error: hash[:mission].errors.full_messages })
+				end
+			else
+				respond({ status: 1, error: hash[:game].errors.full_messages })
+			end
+		else
+			respond({ status: 1, error: "You must have 'mission' and 'bb' params." })
+		end
+	end
+
 	# ----- End Angular Request routes ------
 
 	#UTILITY
 
 	private
+
+		def make_mission(mission, bb)
+			m = Mission.new(
+				bunchball_name: bb[:name],
+				badge_url: bb[:fullUrl],
+				description: bb[:description],
+				folder: bb[:folderName],
+				points: bb[:pointAward]
+			)
+			case mission[:game_type]
+			when 'Jive'
+				game = JiveMission.new
+			when 'Empower'
+				game = EmpowerMission.new(
+					metric_name: mission[:metric_name],
+					target: mission[:target],
+					units: mission[:units]
+				)
+			end
+			return { mission: m, game: game }
+		end
 
 		def user_params
 			params.require(:user).permit(:first_name, :last_name, :employee_id, :client_id, :title, :lob, :jive_id)
@@ -397,6 +470,14 @@ class AccessibleController < ApplicationController
 				message = "In response to your article request titled: '#{maintainer.ticket.title}' \n\n #{message}"
 			end
 			return message
+		end
+
+		def get_client_lobs(client_id)
+			return User.where(client_id: client_id).uniq.pluck(:lob).sort_by(&:to_s)
+		end
+
+		def get_client_titles(client_id)
+			return User.where(client_id: client_id).uniq.pluck(:title).sort_by(&:to_s)
 		end
 
 		def get_attachments(params,ar)

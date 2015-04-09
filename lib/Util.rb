@@ -253,7 +253,6 @@ class Util
 		end
 	end
 
-
 	def self.parse_redelivery_row(row)
 		return {
 			town: row[1], 		# string
