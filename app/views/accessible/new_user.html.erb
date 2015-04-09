@@ -12,11 +12,29 @@
 </style>
 <script type="text/javascript">
 	
-	var user_app = angular.module("UserApp", []);
+var user_app = angular.module("UserApp", []);
+
+user_app.directive("loader", function(){
+	return {
+		restrict: "E",
+		scope: {
+			loading: "=", // boolean that determines whether to show spinner
+			size: "@"
+		},
+		template: '<i ng-show="loading" class="fa fa-circle-o-notch fa-spin"></i>',
+		link: function(scope, el, attrs){
+			console.log("Loading", scope.loading);
+			el.css("font-size", scope.size);
+		}
+	}
+});
 
 user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 	var u = this;
 	u.init = false;
+	u.loading = {
+		lobs: false
+	}
 
 	u.create = function(user){
 		u.error = null;
@@ -31,10 +49,12 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 		});
 	}
 	u.getLobTitles = function(client){
+		u.loading.lobs = true;
 		$http.get("/clients/"+client.trim()+"/lob-titles").success(function(resp){
 			u.lobs = resp.lobs;
 			u.titles = resp.titles;
 			u.init = true;
+			u.loading.lobs = true;
 		});
 	}
 	u.getClients = function(){
@@ -78,6 +98,7 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 				{{ c.name.toUpperCase() }} 
 			</option>
 		</select>
+		<loader loading="u.loading.lobs" size="1em"></loader>
 		<br/>
 		<p ng-show="userForm.client_id == 0 && !userForm.client_id.$pristine" class="help-block">Client is required</p>
 		<div ng-if="u.init && !u.titles" class="alert alert-danger">
