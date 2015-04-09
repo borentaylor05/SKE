@@ -54,7 +54,7 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 			u.lobs = resp.lobs;
 			u.titles = resp.titles;
 			u.init = true;
-			u.loading.lobs = true;
+			u.loading.lobs = false;
 		});
 	}
 	u.getClients = function(){
