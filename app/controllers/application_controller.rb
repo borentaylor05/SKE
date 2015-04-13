@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
       'jivedemo-teletech-gtm-alliances.jiveon.com'
   ]
   $wl_ips = [
+      '170.65.128.6',
       '204.93.64.4', # demo site
       '::1',
       '127.0.0.1',

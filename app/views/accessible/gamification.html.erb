@@ -44,6 +44,7 @@
 						g.error = "Mission '"+name+"' not found";
 					else if(typeof resp.mission.Nitro.challenges == 'object'){
 						g.found = resp.mission.Nitro.challenges.Challenge;
+						console.log(g.found);
 					}
 					else{
 						g.error = resp.error;
@@ -114,6 +115,8 @@
 		<div ng-show="g.found"> 
 			<label>Description:</label>
 			<span class="gType"> {{ g.found.description }} </span>
+			<label>Points Awarded:</label>
+			<span class="gType"> {{ g.found.pointAward }} points </span>
 			<label>Which System should this mission use? <span class="gType"> {{ g.game.game_type }} </span> </label>
 			<select id="type" ng-model="g.game.game_type">
 				<option value="Jive">Jive</option>
