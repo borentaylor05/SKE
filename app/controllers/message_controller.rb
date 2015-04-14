@@ -98,7 +98,7 @@ class MessageController < ApplicationController
 			users = []
 			groups.each do |g|
 				if g[:name] == 'Admins'
-					matches = User.where(client: Client.where(name: 'all'))
+					matches = User.where(client: Client.find_by(name: 'all'))
 				elsif g[:type] == 'lob'
 					matches = User.where(lob: g[:name]).select(:jive_id)
 				elsif g[:type] == 'title'
