@@ -22,8 +22,8 @@ end
 task api_test: :environment do 
 	users = [
 		{
-			current: 'testself',
-			new_username: 'put_test_1'
+			current: 'previousname',
+			new_username: 'LOOK_IM_UPDATED'
 		},
 		{
 			current: 'TestKeimig',
@@ -31,6 +31,7 @@ task api_test: :environment do
 		}
 	]
 	users.each do |u| 
+		puts u
 		resp = Jive.grab("#{Jive.uat}/people/username/#{u[:current]}", Auth.uat) # GET request
 		id = resp["id"]
 		resp = Util.fix_user(resp) # makes sure family and give name are in the updated user object

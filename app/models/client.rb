@@ -8,4 +8,5 @@ class Client < ActiveRecord::Base
 	has_many :content_requests
 	has_many :message_trackers
 	has_many :messages, through: :message_trackers
+	has_many :missions
 end

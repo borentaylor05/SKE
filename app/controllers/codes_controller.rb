@@ -89,7 +89,6 @@ class CodesController < ApplicationController
 	end
 
 	def get_all
-		Rails.logger.info()
 		if params.has_key?("status")
 			codes = get_results(WwCode.where(used: params[:status]))
 		elsif params.has_key?("key")

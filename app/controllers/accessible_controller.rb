@@ -10,44 +10,14 @@ class AccessibleController < ApplicationController
 	def maintainers
 	end
 
+	def game_data_upload
+		@client = params[:client].upcase
+	end
+
 	def gamification
-		@all = Client.find_by(name: 'all').id
-		@ww = Client.find_by(name: 'ww').id
-		@arc = Client.find_by(name: 'arc').id
-		@fairfax = Client.find_by(name: 'fairfax').id
-		@spark = Client.find_by(name: 'spark').id
-		@hyundai = Client.find_by(name: 'hyundai').id
-		@cdc = Client.find_by(name: 'cdc').id
-		@hrsa = Client.find_by(name: 'hrsa').id
-		@clients = []
-		@clients.push(['All (Admin)', 'ALL'])
-		@clients.push(['WeightWatchers', 'WW'])
-		@clients.push(['American Red Cross', 'ARC'])	
-		@clients.push(['Fairfax', 'FAIRFAX'])
-		@clients.push(['Spark', 'SPARK'])
-		@clients.push(['Hyundai', 'HYUNDAI'])
-		@clients.push(['CDC', 'CDC'])
-		@clients.push(['HRSA', 'HRSA'])
 	end
 
 	def new_user
-		@all = Client.find_by(name: 'all').id
-		@ww = Client.find_by(name: 'ww').id
-		@arc = Client.find_by(name: 'arc').id
-		@fairfax = Client.find_by(name: 'fairfax').id
-		@spark = Client.find_by(name: 'spark').id
-		@hyundai = Client.find_by(name: 'hyundai').id
-		@cdc = Client.find_by(name: 'cdc').id
-		@hrsa = Client.find_by(name: 'hrsa').id
-		@clients = []
-		@clients.push(['All (Admin)', @all])
-		@clients.push(['WeightWatchers', @ww])
-		@clients.push(['American Red Cross', @arc])	
-		@clients.push(['Farifax', @fairfax])
-		@clients.push(['Spark', @spark])
-		@clients.push(['Hyundai', @hyundai])
-		@clients.push(['CDC', @cdc])
-		@clients.push(['HRSA', @hrsa])
 	end
 
 	def fx_edit_suburbs
@@ -419,6 +389,21 @@ class AccessibleController < ApplicationController
 		end
 	end
 
+	def get_missions
+		if params.has_key?("client")
+			client = Client.find_by(name: params[:client])
+			if client 
+				if params.has_key?("month")
+					respond({ status: 0, missions: Mission.where(month: params[:month].titlecase, client_id: client.id) })
+				end
+			else
+				respond({ status: 1, error: "Client #{params[:client]} not found." })
+			end
+		else
+			respond({ status: 1, error: "request needs a client" })
+		end
+	end
+
 	# ----- End Angular Request routes ------
 
 	#UTILITY
@@ -426,12 +411,15 @@ class AccessibleController < ApplicationController
 	private
 
 		def make_mission(mission, bb)
+			client = Client.find_by(name: mission[:client].downcase)
 			m = Mission.new(
 				bunchball_name: bb[:name],
 				badge_url: bb[:fullUrl],
 				description: bb[:description],
 				folder: bb[:folderName],
-				points: bb[:pointAward]
+				points: bb[:pointAward],
+				month: mission[:month],
+				client: client
 			)
 			case mission[:game_type]
 			when 'Jive'

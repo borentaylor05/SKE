@@ -100,7 +100,9 @@ Rails.application.routes.draw do
 
   match "/gamification/mission/new", to: "accessible#gamification", via: :get
   match "/gamification/mission", to: "accessible#get_mission", via: :get
+  match "/gamification/:client/missions", to: "accessible#get_missions", via: :get
   match "/gamification/mission/create", to: "accessible#create_mission", via: :post
+  match "/gamification/:client/upload", to: "accessible#game_data_upload", via: :get
 
   match "/clients/:client/lob-titles", to: "accessible#get_lobs_titles_for_client", via: :get
   match "/clients", to: "accessible#get_clients", via: :get

@@ -1,0 +1,77 @@
+<style>
+	.alert{
+		margin-top: 10px;
+	}
+</style>
+<script>
+		
+	var gupload = angular.module("GamificationUpload", []);
+
+	gupload.directive("text", function(){
+		return{
+			restrict: "A",
+			scope: {
+				text: "="
+			},
+			link: function(scope, el, attrs){
+				scope.text = el.text();
+			}
+		}
+	});
+
+	gupload.controller("GUpload", [ '$http', function($http){
+		var g = this;
+
+		g.getMatches = function(month){
+			if(!g.client){
+				alert("Error: Tell Taylor");
+			}
+			else{
+				$http.get("/gamification/"+g.client.toLowerCase()+"/missions?month="+month).success(function(resp){
+					g.matches = resp.missions;
+				});		
+			}
+		}
+	}]);
+
+</script>
+<div ng-app="GamificationUpload" ng-controller="GUpload as g">
+	<div class="formContainer">
+		<h1>Upload for <span text="g.client"><%= @client %><span></h1>
+		<label>What month is this for? <span class="gType"> {{ g.game.month }} </span></label>
+		<div>
+			<select ng-model="g.game.month" ng-change="g.getMatches(g.game.month)">
+				<option>January</option>
+				<option>February</option>
+				<option>March</option>
+				<option>April</option>
+				<option>May</option>
+				<option>June</option>
+				<option>July</option>
+				<option>August</option>
+				<option>September</option>
+				<option>October</option>
+				<option>November</option>
+			</select>
+		</div>
+		<div ng-show="g.game.month">
+			<div ng-show="g.matches" class="alert alert-warning">
+				<label>Missions for {{ g.game.month }}:</label>
+				<ul>
+					<li ng-repeat="match in g.matches"> {{ match.bunchball_name }} </li>
+				</ul>
+			</div>
+			<div class="alert alert-danger" ng-show="g.matches.length == 0">
+				There are no missions for {{ g.client }} for the month of {{ g.game.month }}.
+				<p>Have you created the mission in Bunchball and <a href="/gamification/mission/new">here?</a></p>
+			</div>
+			<div>
+				<h2>Import Gamification CSV for {{ g.game.month }}</h2>
+				<%= form_tag "", multipart: true do %>
+				  <%= file_field_tag :file %>
+				  <%= submit_tag "Import", class: "btn btn-md btn-success" %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
