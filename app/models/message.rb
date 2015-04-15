@@ -15,7 +15,7 @@ class Message < ActiveRecord::Base
 		recipients.each do |r|
 			t = MessageTracker.new(
 				message: self,
-				user: User.find_by(jive_id: r)
+				user: User.find_by(jive_id: r.jive_id)
 			)
 			t.save
 		end
