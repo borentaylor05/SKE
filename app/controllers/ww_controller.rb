@@ -7,7 +7,7 @@ class WwController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			logger.info(params)
+			params[:ww_promotion][:signup_date] = Date.strptime(params[:ww_promotion][:signup_date].to_s,'%Q')			
 			promo = WwPromotion.new(promo_params)
 			if promo.valid? 
 				promo.save
@@ -15,7 +15,7 @@ class WwController < ApplicationController
 				if result == 1
 					respond({ status: 0, promo: promo })
 				else
-					promo.update_attributes(invalid: true)
+					promo.update_attributes(invalid_promo: true)
 					respond({ status: 1, error: result })
 				end
 			else
@@ -41,7 +41,7 @@ class WwController < ApplicationController
 			if !signup.between?(s,e)
 				return "Thanks for your interest in our promotional kit.  Unfortunately, this promotion is only available to members who sign up for a subscription plan between 4/12 and 4/27.  You may purchase a kit from your meeting location."
 			elsif (Date.today - signup) <= 14
-				return "Your promotion kit may take up to 14 days to arrive.  If you have not received your kit by #{signup + 15.days}, please give us a call back and we can ship you a replacement kit."
+				return "Your promotion kit may take up to 14 days to arrive.  If you have not received your kit by #{(signup + 15.days).strftime("%D")}, please give us a call back and we can ship you a replacement kit."
 			else
 				return 1
 			end
