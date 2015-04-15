@@ -20,6 +20,9 @@ class MessageController < ApplicationController
 		user = User.find_by(jive_id: params[:user])
 		if user 
 			msgs = get_unread(user)
+			if user.pending_urgent
+				user.update_attributes(pending_urgent: false)
+			end
 			respond({ status: 0, messages: msgs })
 		else
 			respond({ status: 1, error: "User #{params[:user]} not found." })
@@ -43,14 +46,16 @@ class MessageController < ApplicationController
 	end
 
 	# needs Jive ID of sender and array of Jive IDs for recipients
-	# for /message -> { sender: :jive_id, body: text, recipients: [jive_ids] }
+	# for /message -> { sender: :jive_id, body: text, groups: [lobs or title for a client] }
 	def send_message
 		u = User.find_by(jive_id: params[:sender])
 		if u and params[:body].length > 0 and params[:groups] and params[:groups].count > 0
+			Rails.logger.info("URGENT ----> #{params[:urgent]}")
 			m = Message.new(
 				user: u,
 				text: params[:body],
-				client: u.client
+				client: u.client,
+				urgent: params[:urgent]
 			)
 			if m.valid?
 				m.save

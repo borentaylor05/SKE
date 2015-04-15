@@ -34,6 +34,15 @@ class UserController < ApplicationController
 		end
 	end
 
+	def check_pending
+		u = User.find_by(jive_id: params[:jive])
+		if u
+			respond({ status: 0, pending: u.pending_urgent })
+		else
+			respond({ status: 1, error: "User #{params[:jive]} not found. " })
+		end
+	end
+
 	# Params: :jive_id, :employee_id, :name, :client(as client name)
 	def create
 		if(request.method == "OPTIONS")

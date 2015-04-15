@@ -11,11 +11,14 @@ class Message < ActiveRecord::Base
 	default_scope { order('created_at DESC') }
 
 	def send_message(recipients)
-		Rails.logger.info("hererer --> #{recipients}")
 		recipients.each do |r|
+			u = User.find_by(jive_id: r.jive_id)
+			if self.urgent
+				u.update_attributes(pending_urgent: true) # helps avoid continuous scanning of messages
+			end
 			t = MessageTracker.new(
 				message: self,
-				user: User.find_by(jive_id: r.jive_id)
+				user: u
 			)
 			t.save
 		end

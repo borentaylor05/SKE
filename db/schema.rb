@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413181704) do
+ActiveRecord::Schema.define(version: 20150415200612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,7 @@ ActiveRecord::Schema.define(version: 20150413181704) do
     t.datetime "updated_at", null: false
     t.boolean  "sent"
     t.integer  "user_id"
+    t.boolean  "urgent"
   end
 
   create_table "missions", force: true do |t|
@@ -399,8 +400,8 @@ ActiveRecord::Schema.define(version: 20150413181704) do
     t.integer  "jive_id"
     t.string   "employee_id"
     t.integer  "client_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
     t.string   "password"
     t.string   "name"
     t.string   "title"
@@ -409,6 +410,7 @@ ActiveRecord::Schema.define(version: 20150413181704) do
     t.string   "region"
     t.string   "first_name"
     t.string   "last_name"
+    t.boolean  "pending_urgent"
   end
 
   add_index "users", ["employee_id"], name: "index_users_on_employee_id", using: :btree
@@ -458,8 +460,10 @@ ActiveRecord::Schema.define(version: 20150413181704) do
     t.string   "state"
     t.integer  "zip"
     t.string   "agent_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.date     "signup_date"
+    t.boolean  "invalid"
   end
 
   add_index "ww_promotions", ["member_num"], name: "index_ww_promotions_on_member_num", using: :btree

@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   match "/users/search", to: "user#search", via: :get                   # tested
   match "/users/:jive", to: "user#get", via: :get                       # tested
   match "/user/new", to: "user#new", via: :get                          # non API <-------
+  match "/user/:jive/check-pending", to: "user#check_pending", via: :get
 
   # Specialty Routes
   get "specialties/", to: "specialty#get"                                   # Not being used 
