@@ -2,8 +2,7 @@ class WwPromotion < ActiveRecord::Base
 
 	validates :first_name, presence: true
 	validates :last_name, presence: true
-	validates :member_num, presence: true
-	validates :member_num, uniqueness: true
+	validates :member_num, uniqueness: true, allow_nil: true
 	validates :gender, presence: true, length: { maximum: 1 }
 	validates :billing, presence: true
 	validates :state, presence: true

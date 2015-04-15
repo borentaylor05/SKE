@@ -7,15 +7,26 @@ class WwController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			params[:ww_promotion][:signup_date] = Date.strptime(params[:ww_promotion][:signup_date].to_s,'%Q')			
-			promo = WwPromotion.new(promo_params)
+			sud = Date.strptime(params[:ww_promotion][:signup_date].to_s,'%Q')			
+			promo = WwPromotion.new(
+				first_name: params[:ww_promotion][:first_name],
+				last_name: params[:ww_promotion][:last_name],
+				member_num: params[:ww_promotion][:member_num],
+				gender: params[:ww_promotion][:gender],
+				billing: params[:ww_promotion][:billing],
+				first_name: params[:ww_promotion][:city],
+				state: params[:ww_promotion][:state],
+				zip: params[:ww_promotion][:zip],
+				agent_name: params[:ww_promotion][:agent_name],
+				signup_date: sud
+			)
 			if promo.valid? 
 				promo.save
 				result = check_time(promo.signup_date) 
 				if result == 1
 					respond({ status: 0, promo: promo })
 				else
-					promo.update_attributes(invalid_promo: true)
+					promo.update_attributes(member_num: nil, invalid_promo: true)
 					respond({ status: 1, error: result })
 				end
 			else
@@ -38,9 +49,10 @@ class WwController < ApplicationController
 		def check_time(signup)
 			s = Date.strptime('04-12-2015', '%m-%d-%Y') # start
 			e = Date.strptime('04-27-2015', '%m-%d-%Y') # end
+			ship_time = 14
 			if !signup.between?(s,e)
 				return "Thanks for your interest in our promotional kit.  Unfortunately, this promotion is only available to members who sign up for a subscription plan between 4/12 and 4/27.  You may purchase a kit from your meeting location."
-			elsif (Date.today - signup) <= 14
+			elsif (Date.today - signup).to_i <= ship_time
 				return "Your promotion kit may take up to 14 days to arrive.  If you have not received your kit by #{(signup + 15.days).strftime("%D")}, please give us a call back and we can ship you a replacement kit."
 			else
 				return 1
