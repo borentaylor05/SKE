@@ -11,6 +11,7 @@ class Message < ActiveRecord::Base
 	default_scope { order('created_at DESC') }
 
 	def send_message(recipients)
+		Rails.logger.info("hererer --> #{recipients}")
 		recipients.each do |r|
 			t = MessageTracker.new(
 				message: self,
