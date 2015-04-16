@@ -12,15 +12,18 @@ class ApplicationController < ActionController::Base
       'http://localhost:8090', 
       'https://social.teletech.com', 
       'https://lit-inlet-2632.herokuapp.com',
-      'https://jivedemo-teletech-gtm-alliances.jiveon.com'
+      'https://jivedemo-teletech-gtm-alliances.jiveon.com',
+      'https://app-knowledge.jiveon.com'
     ]
   $wl_domains = [
       'localhost:8080', 
       'localhost:8090', 
       'social.teletech.com', 
-      'jivedemo-teletech-gtm-alliances.jiveon.com'
+      'jivedemo-teletech-gtm-alliances.jiveon.com',
+      'app-knowledge.jiveon.com'
   ]
   $wl_ips = [
+      '73.34.22.38', # jive app
       '170.65.128.6',
       '204.93.64.4', # demo site
       '::1',
