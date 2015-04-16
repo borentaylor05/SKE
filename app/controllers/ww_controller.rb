@@ -20,6 +20,11 @@ class WwController < ApplicationController
 				agent_name: params[:ww_promotion][:agent_name],
 				signup_date: sud
 			)
+			if params.has_key?("nonqual") and params["nonqual"]
+				promo.nonqual = true
+			else
+				promo.nonqual = false
+			end
 			if promo.valid? 
 				promo.save
 				result = check_time(promo.signup_date) 
@@ -43,7 +48,7 @@ class WwController < ApplicationController
 	private
 
 		def promo_params
-			params.require(:ww_promotion).permit(:first_name, :last_name, :member_num, :gender, :billing, :city, :state, :zip, :agent_name, :signup_date)
+			params.require(:ww_promotion).permit(:first_name, :last_name, :member_num, :gender, :billing, :city, :state, :zip, :agent_name, :signup_date, :nonqual)
 		end
 
 		def check_time(signup)
