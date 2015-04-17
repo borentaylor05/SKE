@@ -27,7 +27,7 @@ class WwController < ApplicationController
 			end
 			if promo.valid? 
 				promo.save
-				result = check_time(promo.signup_date) 
+				result = check_time(promo) 
 				if result == 1
 					respond({ status: 0, promo: promo })
 				else
@@ -51,16 +51,16 @@ class WwController < ApplicationController
 			params.require(:ww_promotion).permit(:first_name, :last_name, :member_num, :gender, :billing, :city, :state, :zip, :agent_name, :signup_date, :nonqual)
 		end
 
-		def check_time(signup)
+		def check_time(promo)
 			s = Date.strptime('04-12-2015', '%m-%d-%Y') # start
 			e = Date.strptime('04-27-2015', '%m-%d-%Y') # end
 			ship_time = 14
-			if !signup.between?(s,e)
+			if !promo.nonqual and !promo.signup_date.between?(s,e)
 				return "Thanks for your interest in our promotional kit.  Unfortunately, this promotion is only available to members who sign up for a subscription plan between 4/12 and 4/27.  You may purchase a kit from your meeting location."
-			elsif (Date.today - signup).to_i <= ship_time
-				return "Your promotion kit may take up to 14 days to arrive.  If you have not received your kit by #{(signup + 15.days).strftime("%D")}, please give us a call back and we can ship you a replacement kit."
+			elsif (Date.today - promo.signup_date).to_i <= ship_time
+				return "Your promotion kit may take up to 14 days to arrive.  If you have not received your kit by #{(promo.signup_date + 15.days).strftime("%D")}, please give us a call back and we can ship you a replacement kit."
 			else
-				return 1
+				return 1 
 			end
 		end
 
