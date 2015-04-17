@@ -58,6 +58,7 @@ class Bunchball
 		return get "site.getPointsLeaders&withSurroundingUsers=true&userIds=#{@user}"
 	end
 	
+	# users = employee IDs (Oracle IDs)
 	def get_leaders(users)
 		string = ""
 		url = "site.getPointsLeaders&duration=ALLTIME&userIds="
