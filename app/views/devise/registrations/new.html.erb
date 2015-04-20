@@ -21,6 +21,20 @@
       <%= f.label :password_confirmation %><br />
       <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control"%>
     </div>
+  
+    <div class="field">
+      <label> Client </label><br />
+      <select name="admin[client_id]">
+        <option value="1">All</option>
+        <option value="2">ARC</option>
+        <option value="6">CDC</option>
+        <option value="4">Fairfax</option>
+        <option value="7">HRSA</option>
+        <option value="8">Hyundai</option>
+        <option value="5">Spark</option>
+        <option value="3">WW</option>
+      </select>
+    </div>
 
     <div class="actions text-center">
       <%= f.submit "Sign up", class: "btn btn-md btn-success" %>

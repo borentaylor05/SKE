@@ -4,6 +4,7 @@ class AccessibleController < ApplicationController
 	require 'Bunchball'
 
 	before_action :authenticate_admin!
+	before_filter :is_admin?, only: :new_admin
 	
 	#VIEWS
 
@@ -48,6 +49,9 @@ class AccessibleController < ApplicationController
 	end
 
 	def fx_edit_deadlines
+	end
+
+	def new_admin
 	end
 
 	#PROCESSES
@@ -404,6 +408,15 @@ class AccessibleController < ApplicationController
 		end
 	end
 
+	def create_admin
+		a = Admin.create(admin_params) 
+		if a.valid?
+			respond({ status: 0, message: "Admin created!" })
+		else
+			respond({ error: "#{a.errors.full_messages}", status: 1 })
+		end
+	end
+
 	# ----- End Angular Request routes ------
 
 	#UTILITY
@@ -444,6 +457,10 @@ class AccessibleController < ApplicationController
 
 		def deadline_params
 			params.require(:deadline).permit(:publication, :nz_time, :mla_time, :run_day)
+		end
+
+		def admin_params
+			params.require(:admin).permit(:email, :password, :client_id)
 		end
 
 		def maintainer_update_params
@@ -488,6 +505,14 @@ class AccessibleController < ApplicationController
 				ar.file_url3 = params[:file_url3]
 			end
 			return ar
+		end
+
+		def is_admin?
+			if admin_signed_in? and current_admin.administrator
+				return true
+			else
+				redirect_to "/"
+			end
 		end
 
 end

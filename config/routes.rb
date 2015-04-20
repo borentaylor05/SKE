@@ -2,12 +2,14 @@ Rails.application.routes.draw do
 
   # disable registration, but allow for password change 
   # https://github.com/plataformatec/devise/wiki/How-To:-Allow-users-to-edit-their-password
-  devise_for :admins, :skip => [:registrations]                                          
-    as :admin do
-      get 'admins/edit' => 'devise/registrations#edit', :as => 'edit_admin_registration'    
-      put 'admins/:id' => 'devise/registrations#update', :as => 'admin_registration'            
-    end
-  get 'sessions/new'
+  # devise_for :admins, :skip => [:registrations]                                          
+  #   as :admin do
+  #     get 'admins/edit' => 'devise/registrations#edit', :as => 'edit_admin_registration'    
+  #     put 'admins/:id' => 'devise/registrations#update', :as => 'admin_registration'            
+  #   end
+  # get 'sessions/new'
+
+  devise_for :admins
 
 
   resources :update, only: [:create]
@@ -114,6 +116,8 @@ Rails.application.routes.draw do
 
   match "/ske/user/new", to: "accessible#new_user", via: :get
   match "/ske/user", to: "accessible#create_user", via: :post
+  match "/ske/admin/new", to: "accessible#new_admin", via: :get
+  match "/ske/admin", to: "accessible#create_admin", via: :post
 
   # ----- End Accessible Routes ------
 

@@ -1,0 +1,80 @@
+<script>
+	var admin_app = angular.module("AdminApp", []);
+
+	admin_app.controller("Admin", ['$scope', '$http', function($scope,$http){
+		var admin = this;
+
+		admin.create = function(a){
+			$http.post("/ske/admin", {admin: a}).success(function(resp){
+				admin.status = resp.status;
+				if(admin.status > 0)
+					admin.error = resp.error;
+			});
+		}
+
+		admin.toForm = function(){
+			if(admin.status == 1)
+				admin.status = -1;
+			else{
+				$scope.a = $scope.password_confirmation =  null;
+				$scope.newAdmin.$setPristine();
+				admin.status = -1;
+			}
+		}
+
+	}]);
+
+</script>
+
+<div class="formContainer" ng-app="AdminApp" ng-controller="Admin as admin">
+  <h2>New SKE Admin</h2>
+  	<div ng-show="admin.status >= 0">
+		<div ng-show="admin.status == 0" class="alert alert-success">
+			Admin created!
+		</div>
+		<div ng-show="admin.status == 1" class="alert alert-danger">
+			{{ admin.error }}
+		</div>
+		<button class="btn btn-md btn-primary" ng-click="admin.toForm()">Back to Form</button>
+	</div>
+ <form ng-hide="admin.status >= 0" name="newAdmin" ng-submit="admin.create(a)" novalidate>
+	<div class="alert alert-warning">
+		This will NOT create a SKE user.  This is for access to this admin interface only.  To create a SKE user, go <a href="/ske/user/new">here.</a>
+	</div>
+    <div class="field">
+      <label>Email</label><br />
+      <input class="form-control" name="email" ng-model="a.email" type="email" required>
+      <p class="help-block" ng-show="newAdmin.email.$invalid && !newAdmin.email.$pristine">Email is not valid.</p>
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input class="form-control" ng-model="a.password" type="password" required>
+    </div>
+
+    <div class="field">
+      <label>Password Confirmation</label><br />
+      <input class="form-control" ng-model="password_confirmation" type="password" required>
+      <p class="help-block" ng-show="a.password != password_confirmation">Passwords do not match.</p>
+    </div>
+  
+    <div class="field">
+      <label> Client </label><br />
+      <select ng-model="a.client_id" required>
+        <option value="1">All</option>
+        <option value="2">ARC</option>
+        <option value="6">CDC</option>
+        <option value="4">Fairfax</option>
+        <option value="7">HRSA</option>
+        <option value="8">Hyundai</option>
+        <option value="5">Spark</option>
+        <option value="3">WW</option>
+      </select>
+    </div>
+
+    <div class="actions text-center">
+      <input type="submit" class="btn btn-md btn-success" value="Create Admin" ng-disabled="a.password != password_confirmation || newAdmin.$invalid">
+    </div>
+ </form>
+
+</div>
