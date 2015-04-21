@@ -187,10 +187,14 @@ class AccessibleController < ApplicationController
 					summary: params[:summary],
 					lob: params[:lob],
 					priority: params[:priority].to_i,
-					request_type: params[:type],
-					expire_date: params[:expire_date].to_datetime,
-					pub_date: params[:pub_date].to_datetime
+					request_type: params[:type]
 				)
+				if params[:expire_date]
+					ar.expire_date = params[:expire_date].to_datetime
+				end
+				if params[:pub_date]
+					ar.pub_date = params[:pub_date].to_datetime
+				end
 				ar = get_attachments(params,ar)
 				if ar.valid?
 					ar.save
