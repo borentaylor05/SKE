@@ -1,6 +1,6 @@
 require 'Auth'
 require 'Util'
-require HTTParty
+# require 'HTTParty'
 
 class Jive2
 
