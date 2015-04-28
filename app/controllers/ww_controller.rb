@@ -14,7 +14,7 @@ class WwController < ApplicationController
 				member_num: params[:ww_promotion][:member_num],
 				gender: params[:ww_promotion][:gender],
 				billing: params[:ww_promotion][:billing],
-				first_name: params[:ww_promotion][:city],
+				city: params[:ww_promotion][:city],
 				state: params[:ww_promotion][:state],
 				zip: params[:ww_promotion][:zip],
 				agent_name: params[:ww_promotion][:agent_name],

@@ -3,7 +3,7 @@ class Jive
   require 'Auth'
   require 'Util'
   format :json
-  @@current = ENV['SKE_URL']
+  @@new_url = "https://knowledge.jiveon.com/api/core/v3"
   @@dev_url = "http://localhost:8080/api/core/v3"
   @@social = "https://social.teletech.com/api/core/v3"
   @@fairpoint = "https://fairfaqs.jiveon.com/api/core/v3"
@@ -15,8 +15,8 @@ class Jive
 #    @auth_hash = auth_hash
 #  end
   
-  def self.current
-    @@current
+  def self.new_url
+    @@new_url
   end
 
   def self.uat 
@@ -45,7 +45,11 @@ class Jive
 
   def self.grab(url, auth)
     json = self.get(url, :basic_auth => auth).body
-    self.clean(json)
+    if json 
+      self.clean(json)
+    else
+      puts json
+    end
   end
 
   def self.people_search(name, jive)
@@ -143,6 +147,7 @@ class Jive
 
    # Params: :json -> jive user from API call
    #         :user -> hash created from CSV row (user[:jive_id] is from API call)   
+   #             { :first_name, :last_name, :email, :oracle_id, :job_title, :client, :lob }
    #         :jive -> hash{ :auth, :url }              
    def self.update_user_with_csv_data(json, user, jive)
       if Util.csv_user_is_valid?(user)
@@ -154,6 +159,31 @@ class Jive
       else
          puts "Invalid user: #{user}"
       end
+   end
+
+   # Params: :json -> jive user from API call
+   #         :user -> hash created from CSV row (user[:jive_id] is from API call)   
+   #             { :first_name, :last_name, :email, :oracle_id, :job_title, :client, :lob }
+   #         :jive -> hash{ :auth, :url }              
+   def self.update_user_everywhere(json, user, jive)
+         json = Util.parse_profile(json, user)
+         json["emails"][0] = { value: user[:email], type: "work", jive_label: "Email", primary: true }
+         json["name"]['familyName'] = user[:last_name]
+         json["name"]["givenName"] = user[:first_name]
+         resp = self.update("#{jive[:url]}/people/#{json["id"]}", json, jive[:auth])
+         Rails.logger.info("#{json.to_json}")
+         if resp["error"]
+          Rails.logger.info(resp)
+          return false
+        else
+          user[:jive_id] = json["id"]
+          if Util.create_or_update_from_csv(user)
+            return true
+          else
+            Rails.logger.info(resp)
+            return false
+          end
+        end
    end
 
     # hash -> :email, :password, :employee_id, :job_title, :client, :location, :lob, :first_name, :last_name
@@ -179,4 +209,47 @@ class Jive
             }
         }
     end
+
+    # hash -> :email, :password, :employee_id, :job_title, :client, :location, :lob, :first_name, :last_name
+    def self.new_jive_person(hash)
+        return {
+            emails: [ {
+                value: hash[:email],
+                type: "work",
+                primary: true,
+                jive_label: "Email"
+            } ],
+            jive: {
+                password: hash[:password],
+                username: hash[:employee_id],
+                profile: [
+                  {
+                    jive_label: "Title",
+                    value: hash[:title]
+                  },
+                  {
+                    jive_label: "Client",
+                    value: hash[:client].titleize
+                  },
+                  {
+                    jive_label: "TeleTech Location",
+                    value: hash[:location]
+                  },
+                  {
+                    jive_label: "LOB",
+                    value: hash[:lob]
+                  },
+                  {
+                    jive_label: "Oracle ID",
+                    value: hash[:employee_id]
+                  }
+                ]
+                 
+            },
+            name: {
+                familyName: hash[:last_name],
+                givenName: hash[:first_name]
+            }
+        }
     end
+end

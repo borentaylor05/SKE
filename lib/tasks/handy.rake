@@ -1,6 +1,7 @@
 require 'csv'
 require 'Util'
 require 'Jive'
+require 'Jive2'
 require 'Auth'
 
 task clean_missions: :environment do
@@ -157,5 +158,8 @@ task cost_per_thousand_associations: :environment do
 	end
 end
 
-
+task simple_test: :environment do 
+	cdc = CDC.new('dev')
+	cdc.import_a_to_z("a_to_c.csv")
+end
 

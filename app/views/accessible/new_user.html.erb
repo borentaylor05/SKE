@@ -8,7 +8,10 @@
 		font-size: 1.4em;
 		display: block;
 	}
-
+	.alert{
+		padding: 5px;
+		margin-top: 5px;
+	}
 </style>
 <script type="text/javascript">
 	
@@ -36,15 +39,24 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 		lobs: false
 	}
 
-	u.create = function(user){
+	u.create = function(user, update){
 		u.error = null;
 		u.success = null;
-		$http.post("/ske/user", { user: user }).success(function(resp){
+		if(update)
+			params = { user: user, update: true }
+		else
+			params = { user: user }
+		$http.post("/ske/user", params).success(function(resp){
 			if(resp.status == 0){
-				u.success = resp.user.name+" created successfully!"
+				u.success = user.first_name+" "+user.last_name+" created successfully!"
 			}
 			else{
-				u.error = resp.error;
+				if(resp.error == "exists")
+					if(confirm("This user exists, would you like to update them with this info?")){
+						u.create(user, true);
+					}
+				else
+					u.error = resp.error;
 			}
 		});
 	}
@@ -75,6 +87,9 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 
 <h1 class="text-center">New User</h1>
 <div class="formContainer" ng-app="UserApp" ng-controller="NewUser as u">
+	<div class="alert alert-warning">
+		If the user exists, you will be asked if you would like to update the existing user with this information.
+	</div>
 	<div class="alert alert-danger" ng-if="u.error"> {{ u.error }} </div>
 	<div class="alert alert-success text-center" ng-if="u.success"> {{ u.success }} 
 		<button style="display:block;margin-left:auto;margin-right:auto;" class="btn btn-xs btn-default" ng-click="u.clear()">Create Another User</button> 
@@ -98,8 +113,8 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 				{{ c.name.toUpperCase() }} 
 			</option>
 		</select>
+		<div class="alert alert-info" ng-hide="u.init">Select client to see remaining options.</div>
 		<loader loading="u.loading.lobs" size="1em"></loader>
-		<br/>
 		<p ng-show="userForm.client_id == 0 && !userForm.client_id.$pristine" class="help-block">Client is required</p>
 		<div ng-if="u.init && !u.titles" class="alert alert-danger">
 			You have no users in the database. Ping Taylor.
@@ -107,10 +122,8 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 		<div ng-show="u.titles">
 			<label>Title</label>
 			<select ng-model="user.title" ng-options="t as t for t in u.titles track by t" required></select>
-			<br/>
 			<label>LOB</label>
 			<select ng-model="user.lob" ng-options="l as l for l in u.lobs track by l" required></select>
-			<br/>
 			<label>Location</label>
 			<input type="text" class="form-control" ng-model="user.location" name="location" required>
 			<p ng-show="userForm.location.$invalid && !userForm.location.$pristine" class="help-block">Location is required.</p>

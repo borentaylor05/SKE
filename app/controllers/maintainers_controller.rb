@@ -54,7 +54,7 @@ class MaintainersController < ApplicationController
 				if oc and !oc.comment_issue
 					ci = CommentIssue.new(old_comment: oc)
 					ci.save
-					m = Maintainer.new(ticket: ci, user: user)
+					m = Maintainer.new(ticket: ci, user: user, resolved: false)
 					if m.valid? 
 						m.save
 						respond({ status: 0 })

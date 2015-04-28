@@ -30,6 +30,10 @@ class Util
 		}
 	end
 
+	def self.is_number?(num)
+    	true if Float(num) rescue false
+  	end
+
 	def self.is_oracle?(num)
 		num.length == 7 and num.to_s.match(/\A[+-]?\d+?(\d+)?\Z/) == nil ? false : true
 	end
@@ -109,7 +113,14 @@ class Util
 	# Contains :jive_id, :first_name, :last_name, :email, :oracle_id, :job_title, :client, :lob, :location
 	# NOTE: :jive_id is not in CSV, must be obtained via API call
 	def self.create_or_update_from_csv(user)
-		client = Client.find_by(name: user[:client].downcase.strip)
+		# if user is being updated from /ske/user/new
+		if(user.has_key?("client_id") and self.is_number?(user[:client_id]))
+			user[:oracle_id] = user[:employee_id]
+			user[:job_title] = user[:title]
+			client = Client.find_by(id: user[:client_id])
+		else 
+			client = Client.find_by(name: user[:client].downcase.strip)
+		end
 		if !client 
 			client = Client.find_by(name: self.check_client_map(user[:client].downcase.strip))
 		end
@@ -123,7 +134,8 @@ class Util
 					location: user[:location].strip,
 					lob: user[:lob].strip,
 					first_name: user[:first_name],
-					last_name: user[:last_name]
+					last_name: user[:last_name],
+					name: "#{user[:first_name]} #{user[:last_name]}"
 				)
 				return true
 			else
@@ -152,7 +164,12 @@ class Util
 	end
 
 	def self.parse_profile(json, user)
-		title_exists = department_exists = location_exists = company_exists = false
+		if user.has_key?("client_id")
+			user[:oracle_id] = user[:employee_id]
+			user[:job_title] = user[:title]
+			user[:client] = Client.find_by(id: user[:client_id]).name
+		end
+		title_exists = department_exists = location_exists = company_exists = oid_exists = false
 		if !json["jive"]["profile"]
 			json["jive"]["profile"] = []
 		end
@@ -161,30 +178,37 @@ class Util
 			   title_exists = true
 			   p["value"] = "#{user[:job_title]}"
 			end
-			if p["jive_label"] == "Department"
+			if p["jive_label"] == "LOB"
 			   department_exists = true
 			   p["value"] = "#{user[:client].titleize}-#{user[:lob]}"
 			end
-			if p["jive_label"] == "TeleTech Location"
+			if p["jive_label"] == "Site"
 			   location_exists = true
 			   p["value"] = user[:location]
 			end
-			if p["jive_label"] == "Company"
+			if p["jive_label"] == "Client"
 				company_exists = true
 				p["value"] = user[:client].titleize
+			end
+			if p["jive_label"] == "Oracle ID"
+				oid_exists = true
+				p["value"] = user[:employee_id]
 			end
 		end
 		if !title_exists 
 			json["jive"]["profile"].push({ jive_label: "Title", value: user[:job_title] })
 		end
+		if !oid_exists 
+			json["jive"]["profile"].push({ jive_label: "Oracle ID", value: user[:employee_id] })
+		end
 		if !department_exists
-			json["jive"]["profile"].push({ jive_label: "Department", value: user[:lob] })
+			json["jive"]["profile"].push({ jive_label: "LOB", value: user[:lob] })
 		end
 		if !location_exists
-			json["jive"]["profile"].push({ jive_label: "TeleTech Location", value: user[:location] })
+			json["jive"]["profile"].push({ jive_label: "Site", value: user[:location] })
 		end
 		if !company_exists 
-			json["jive"]["profile"].push({ jive_label: "Company", value: user[:client] })
+			json["jive"]["profile"].push({ jive_label: "Client", value: user[:client].titleize })
 		end
 		return json
 	end

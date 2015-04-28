@@ -66,7 +66,7 @@ class Bunchball
 		url = "#{url}#{string}"
 		leaderboard = get(url)
 		leaderboard[:Nitro][:leaders][:Leader].each do |person|
-			j_user = Jive.grab("#{Jive.social}/people/username/#{person[:userId]}", Jive.auth)
+			j_user = Jive.grab("#{Jive.social}/people/username/#{person[:userId]}", Auth.social)
 			person[:jive] = j_user
 			person[:jive][:published] = DateTime.iso8601(j_user["published"]).strftime('%B %d, %Y')
 		end

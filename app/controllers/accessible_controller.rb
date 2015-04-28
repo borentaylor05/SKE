@@ -5,8 +5,13 @@ class AccessibleController < ApplicationController
 
 	before_action :authenticate_admin!
 	before_filter :is_admin?, only: :new_admin
+	before_filter :is_fairfax?, only: [:get_pubs, :get_deadlines_by_pub, :get_suburbs_by_condition, :fx_save_deadline, :upload_fx_classifications, :fx_edit_suburbs, :fx_edit_deadlines]
+	before_filter :is_cdc?, only: [:a_to_z_entry, :get_topic, :get_range, :cdc_search, :az_save_changes, :edit_a_to_z, :upload_a_to_z, :upload_address_book]
 	
 	#VIEWS
+
+	def cdc_home
+	end
 
 	def maintainers
 	end
@@ -296,14 +301,26 @@ class AccessibleController < ApplicationController
 	end
 
 	def create_user
+		jive = { url: Jive.new_url, auth: Auth.new_auth }
 		hash = params[:user]
+		oracle_id = hash[:employee_id]
 		hash[:email] = "#{hash[:employee_id]}@nomail.com"
 		hash[:password] = ENV['FP_PASSWORD']
+		hash[:client] = Client.find_by(id: params[:user][:client_id]).name
 		person = hash
-		hash = Jive.new_person(hash)
-		resp = Jive.create("#{Jive.dev_url}/people", hash, Auth.dev)
-		if(resp["error"])
-			respond({ status: 1, error: resp["error"] })
+		hash = Jive.new_jive_person(hash)
+		Rails.logger.info("HERE #{hash}");
+		resp = Jive.create("#{jive[:url]}/people", hash, jive[:auth])
+		if resp["error"] and resp["error"]["status"] == 409 and params.has_key?("update") and params[:update]
+			json = Jive.grab("#{jive[:url]}/people/username/#{oracle_id}", jive[:auth])
+			params[:job_title] = params[:title]
+			if Jive.update_user_everywhere(json, params[:user], jive)
+				respond({ status: 0, message: "User updated successfully!" })
+			else
+				respond({ status: 1, error: "Error updating user." })
+			end
+		elsif resp["error"] and resp["error"]["status"] == 409
+			respond({ status: 1, error: "exists" })
 		else
 			person[:jive_id] = resp["id"]
 			u = User.new(
@@ -515,7 +532,42 @@ class AccessibleController < ApplicationController
 			if admin_signed_in? and current_admin.administrator
 				return true
 			else
+				redirect_to go_home
+			end
+		end
+
+		def is_fairfax?
+			if admin_signed_in?
+				if current_admin.client.name == 'all' or current_admin.client.name == 'fairfax'
+					return true
+				else
+					redirect_to "/"
+				end
+			else
 				redirect_to "/"
+			end
+		end
+
+		def is_cdc?
+			if admin_signed_in?
+				if current_admin.client.name == 'all' or current_admin.client.name == 'cdc'
+					return true
+				else
+					redirect_to "/"
+				end
+			else
+				redirect_to "/"
+			end
+		end
+
+		def go_home
+			case current_admin.client.name
+			when 'all'
+				redirect_to '/'	
+			when 'cdc'
+
+			else
+				redirect_to '/'	
 			end
 		end
 

@@ -1,12 +1,11 @@
 class AddressBookEntry < ActiveRecord::Base
+require 'CDC'
 
+	scope :contains, -> (name) { where("lower('ProgramDescription') like ?", "%#{name.downcase}%") }
 
 	def self.import(file)
-		CSV.foreach(file.path, headers: true, 
-			:header_converters => lambda {|f| f.delete(' ')},
-			:converters=> lambda {|f| f ? f.strip : nil}) do |row|
-				AddressBookEntry.create! row.to_hash
-			end
+		cdc = CDC.new('social')
+		cdc.import_address_book(file.path)
 	end
 
 end

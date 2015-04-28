@@ -63,6 +63,7 @@ Rails.application.routes.draw do
 
   # ----- Begin Accessible Routes ------
 
+  match "/cdc", to: "accessible#cdc_home", via: :get
   match "/cdc/upload/address-book", to: "accessible#upload_address_book", via: :get
   match "/cdc/process/address-book", to: "accessible#process_address_book_upload", via: :post
   match "/cdc/upload/a-to-z", to: "accessible#upload_a_to_z", via: :get

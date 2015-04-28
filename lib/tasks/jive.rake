@@ -289,7 +289,20 @@ task get_wwc_followers: :environment do
 			end
 		end
 	end
+end
 
+task get_non_oracle_ids: :environment do 
+	jive = { url: Jive.social, auth: Auth.social }
+	CSV.foreach("ww_roster_trunc.csv", headers: true) do |row|
+		user = {
+			oracle_id: row[0],
+			name: "#{row[2]} #{row[1]}"
+		}
+		resp = Jive.grab("#{jive[:url]}/people/username/#{user[:oracle_id]}", jive[:auth])
+		if resp["error"]
+			puts "#{user[:name]} - #{user[:oracle_id]}: \t #{resp["error"]}"
+		end
+	end
 end
 
 

@@ -5,11 +5,8 @@ class AToZEntry < ActiveRecord::Base
 	scope :contains, -> (name) { where("topic like ?", "%#{name}%")}
 
 	def self.import(file)
-		CSV.foreach(file.path, headers: true, 
-			:header_converters => lambda {|f| f.delete(' ')},
-			:converters=> lambda {|f| f ? f.strip : nil}) do |row|
-				AToZEntry.create! row.to_hash
-			end
+		cdc = CDC.new('dev')
+		cdc.import_a_to_z(file.path)
 	end
 	
 end
