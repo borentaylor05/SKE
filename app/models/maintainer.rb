@@ -22,6 +22,8 @@ class Maintainer < ActiveRecord::Base
 				type: "Article Request",
 				resolved: self.resolved,
 				url: self.ticket.file_url,
+				url2: self.ticket.file_url2,
+				url3: self.ticket.file_url3,
 				title: self.ticket.title,
 				body: self.ticket.summary 
 			}
