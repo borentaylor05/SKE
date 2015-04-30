@@ -20,8 +20,8 @@ describe "Suburbs API", :type => :request do
 	
 	# For /fx/api/publications/:publication_id/suburbs -> { :publication_id }
 	it "should return suburbs" do
-		id = FxPublication.first.id 
-		num = FxPublication.first.suburbs.count
+		id = FxPublication.find_by(name: "Nor-West News").id
+		num = FxPublication.find_by(name: "Nor-West News").suburbs.count
 		get "/fx/api/publications/#{id}/suburbs"
 		expect(json["status"]).to eq(0)
 		expect(json["suburbs"]).to_not eq(nil)

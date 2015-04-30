@@ -1,14 +1,27 @@
-FactoryGirl.define do  factory :user_mission do
+FactoryGirl.define do  factory :fx_mag_pricing do
+    six_month "MyString"
+    one_year_renewal "MyString"
+    one_year_new "MyString"
+    two_year_new "MyString"
+    two_year_renewal "MyString"
+    one_year_supergold "MyString"
+    three_year_new "MyString"
+    three_year_renewal "MyString"
+  end
+
+  factory :user_mission do
     user_id 1
-mission_id 1
+    mission_id 1
   end
   factory :jive_mission do
     
   end
+
   factory :empower_mission do
     metric_name "MyString"
-target "MyString"
+    target "MyString"
   end
+
   factory :mission do
     bunchball_name "sads"
     badge_url "dfgdfg"
@@ -16,8 +29,9 @@ target "MyString"
     game_id 1
     folder "vbcb"
   end
+  
   factory :ww_promotion do
-      member_num "MyString"
+      member_num Random.new(1234).rand(100000)
       first_name "MyString"
       last_name "MyString"
       gender "M"
@@ -58,8 +72,8 @@ target "MyString"
   end
 
   factory :user do
-    jive_id User.first.jive_id
-    employee_id User.first.employee_id
+    jive_id Random.new(1234).rand(100000)
+    employee_id Random.new(14).rand(100000)
     client User.first.client
     name User.first.name
     lob "Consulting"
@@ -67,19 +81,19 @@ target "MyString"
     title "Developer"
   end
 
-  # factory :old_content do 
-  # 	api_id OldContent.first.api_id
-  # 	comments 1
-  # 	link 'http://localhost:8080/docs/DOC-1033'
-  # 	commentsUrl 'http://localhost:8080/api/core/v3/contents/1046/comments'
-  # 	title 'Bergdorf Goodman'
-  # end
+  factory :old_content do 
+  	api_id OldContent.first.api_id
+  	comments 1
+  	link 'http://localhost:8080/docs/DOC-1033'
+  	commentsUrl 'http://localhost:8080/api/core/v3/contents/1046/comments'
+  	title 'Bergdorf Goodman'
+  end
 
-  # factory :old_comment do 
-  # 	old_content_id OldContent.first.api_id
-  #   api_id OldComment.first.api_id
-  #   resolved false
-  # end
+  factory :old_comment do 
+  	old_content_id OldContent.first.api_id
+    api_id OldComment.first.api_id
+    resolved false
+  end
 
 
 end

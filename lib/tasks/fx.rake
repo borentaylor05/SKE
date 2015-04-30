@@ -38,3 +38,50 @@ task :make_fairfax_mlevel_csv => :environment do |t,args|
 	sftp = SFTP.new('mlevel')
 	sftp.send('tmp/fairfax_users_mlevel.csv')
 end
+
+task insert_mags: :environment do 
+	CSV.foreach("mag_prices.csv", headers: true) do |row|
+		pub = FxPublication.find_by(name: row[0].strip)
+		if !pub 
+			pub = FxPublication.create(name: row[0].strip, mag: true)
+			p = FxMagPricing.create(
+				six_month: row[1],
+				one_year_renewal: row[2],
+				one_year_new: row[3],
+				two_year_new: row[4],
+				two_year_renewal: row[5],
+				one_year_supergold: row[6],
+				three_year_new: row[7],
+				three_year_renewal: row[8]
+			)
+			pub.fx_mag_pricing = p
+		else
+			puts "Exists #{row[0]}"
+		end
+	end
+end
+
+task insert_ses: :environment do 
+	CSV.foreach("se.csv") do |row|
+		if !row[0].strip.blank?
+			parent = FxPublication.find_by(name: row[0].strip)
+			puts parent.name
+			if parent
+				count = 0
+				row.each do |se|
+					if se and count > 0
+						pub = FxPublication.create(name: se.strip, parent: parent.name, mag: true, se: true)
+					end
+					count += 1
+				end
+			else
+				puts "ERROR: #{row[0]}"
+			end
+		end
+	end	
+end
+
+
+
+
+

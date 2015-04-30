@@ -65,9 +65,10 @@ describe "Messages API", :type => :request do
 	end
 
 	it "should send message to recipients" do 
-		post "/message", { sender: User.first.jive_id, body: "hggfhgfhgfg", recipients: [User.first.jive_id, User.last.jive_id] }
+		post "/message", { sender: User.first.jive_id, body: "hggfhgfhgfg", groups: [{ name: 'Admins', type: 'lob' }] }
 		expect(json["status"]).to eq(0)
-		expect(json["message"]).to eq("Message Sent to 2 people.")
+		c = Client.find_by(name: 'all')
+		expect(json["message"]).to eq("Message Sent to #{User.where(client: c).count} people.")
 	end	
 
 	# for /messages/all -> { user: :jive_id }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150420150130) do
+ActiveRecord::Schema.define(version: 20150430165247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -180,11 +180,27 @@ ActiveRecord::Schema.define(version: 20150420150130) do
     t.integer  "fx_class_cat_id"
   end
 
+  create_table "fx_mag_pricings", force: true do |t|
+    t.string   "six_month"
+    t.string   "one_year_renewal"
+    t.string   "one_year_new"
+    t.string   "two_year_new"
+    t.string   "two_year_renewal"
+    t.string   "one_year_supergold"
+    t.string   "three_year_new"
+    t.string   "three_year_renewal"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "fx_publication_id"
+  end
+
   create_table "fx_publications", force: true do |t|
     t.string   "name"
     t.string   "parent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean  "mag"
+    t.boolean  "se"
   end
 
   add_index "fx_publications", ["name"], name: "index_fx_publications_on_name", using: :btree

@@ -24,3 +24,8 @@ task action: :environment do
 	bb = Bunchball.new('3170083')
 	puts bb.log_action('PollEvent-CREATED')
 end
+
+task folder_test: :environment do 
+	bb = Bunchball.new('3170083')
+	puts bb.get_missions('TaylorTest')
+end
