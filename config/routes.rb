@@ -107,6 +107,8 @@ Rails.application.routes.draw do
   match "/gamification/:client/missions", to: "accessible#get_missions", via: :get
   match "/gamification/mission/create", to: "accessible#create_mission", via: :post
   match "/gamification/:client/upload", to: "accessible#game_data_upload", via: :get
+  match "/gamification/:client/edit", to: "accessible#prioritize_missions", via: :get
+  match "/gamification/:client/edit", to: "accessible#prioritize_missions", via: :post
 
   match "/clients/:client/lob-titles", to: "accessible#get_lobs_titles_for_client", via: :get
   match "/clients", to: "accessible#get_clients", via: :get
@@ -147,6 +149,7 @@ Rails.application.routes.draw do
 
   # FX SUBURBS
   match "/fx/api/publications", to: "fx#get_all_publications", via: :get
+  match "/fx/api/publication/:publication_id", to: "fx#get_publication", via: :get
   match "/fx/api/publications/:publication_id/suburbs", to: "fx#get_suburbs_for_publication", via: :get
   match "/fx/api/suburbs/:suburb_id/publications", to: "fx#get_publications_for_suburb", via: :get
   match "/fx/api/suburbs/search", to: "fx#suburb_search", via: :get
@@ -193,6 +196,7 @@ Rails.application.routes.draw do
   # GAMIFICATION ROUTES
   match '/api/gamification/leaderboard', to: "gamification#leaderboard", via: :get
   match '/api/gamification/missions', to: "gamification#missions", via: :get
+  match '/api/gamification/:jive_id/top-three', to: "gamification#top_three", via: :get
   match '/api/gamification/missions/users/:username', to: "gamification#user_missions", via: :get
 
   # S3 Upload Route

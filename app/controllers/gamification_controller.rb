@@ -4,10 +4,20 @@ class GamificationController < ApplicationController
 	before_action :cors_set_access_control_headers
 
 	def leaderboard
-		@test_users = %w{ 3170083 3151641 3151232 3149422 2121597 2124496 3130922 3131893 3108626 }
-		bb = Bunchball.new('3170083')
-		leaders = bb.get_leaders(@test_users)
-		respond({ status: 0, leaders: leaders })
+		if params.has_key?("user")
+			user = User.find_by(jive_id: params[:user])
+			if user 					
+				@test_users = %w{ 3170083 3151641 3151232 3149422 2121597 2124496 3130922 3131893 3108626 }
+			#	leaders = User.where(client: user.client, lob: user.lob)
+				bb = Bunchball.new('3170083')
+				leaders = bb.get_leaders(@test_users)
+				respond({ status: 0, leaders: leaders })
+			else
+				respond({ status: 1, error: "Jive ID #{params[:user]} not found." })
+			end
+		else
+			respond({ status: 1, error: "No user parameter." })
+		end
 	end
 
 	def missions
@@ -20,6 +30,19 @@ class GamificationController < ApplicationController
 		bb = Bunchball.new(params[:username])
 		missions = bb.get_user_missions
 		respond({ status: 0, missions: missions })
+	end
+
+	def top_three
+		if params.has_key?("jive_id")
+			user = User.find_by(jive_id: params[:jive_id])
+			if user
+				respond({ status: 0, missions: user.top_three_missions })
+			else
+				respond({ status: 1, error: "User with jive ID #{params[:jive_id]} not found." })	
+			end
+		else
+			respond({ status: 1, error: "You must specify a user (Jive ID) with this request." })
+		end	
 	end
 
 end

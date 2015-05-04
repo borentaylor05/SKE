@@ -9,6 +9,8 @@ class Mission < ActiveRecord::Base
 	has_many :user_missions
 	has_many :users, through: :user_missions
 
+	default_scope { order('priority ASC') }
+
 	def assign_to_users(users)
 		c = 0
 		users.each do |u|
@@ -26,4 +28,5 @@ class Mission < ActiveRecord::Base
 		end
 		return c
 	end
+
 end

@@ -81,7 +81,18 @@ task insert_ses: :environment do
 	end	
 end
 
-
+task insert_has_se: :environment do 
+	FxPublication.all.each do |p|
+		if p.se 
+			parent = FxPublication.find_by(name: p.parent)
+			if parent
+				parent.update_attributes(has_se: true)
+			else
+				puts "ERROR: #{p.name}"
+			end
+		end
+	end
+end
 
 
 

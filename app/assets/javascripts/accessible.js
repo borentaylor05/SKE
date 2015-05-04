@@ -47,8 +47,8 @@ app.factory("maintainers", ['$http', function($http){
 	maintainers.save = function(m){
 		return $http.post("/maintainers/"+m.maintainer.id+"/update", m);
 	}
-	maintainers.all = function(){
-		return $http.get("/maintainers/all");
+	maintainers.all = function(resolved){
+		return $http.get("/maintainers/all?resolved="+resolved);
 	}
 	maintainers.toggleResolved = function(m){
 		return $http.post("/maintainers/"+m.id+"/toggle");
@@ -62,11 +62,11 @@ app.controller("Maintainer", ['$timeout', 'maintainers', function($timeout, main
 	var main = this;
 	main.current = {},
 	main.expandCurrent = false,
+	main.resolved = false,
 		main.loading = true;
 
-	main.getAll = function(){
-		maintainers.all().success(function(resp){
-		//	console.log(resp);
+	main.getAll = function(resolved){
+		maintainers.all(resolved).success(function(resp){
 			main.all = resp.m;
 		});
 	}
@@ -78,7 +78,6 @@ app.controller("Maintainer", ['$timeout', 'maintainers', function($timeout, main
 	main.submitChanges = function(m){
 		var data = { maintainer: m };
 		maintainers.save(data).success(function(resp){
-		//	console.log(resp);
 			main.getAll();
 		});
 	}
@@ -95,7 +94,11 @@ app.controller("Maintainer", ['$timeout', 'maintainers', function($timeout, main
 
 	// on page load
 	angular.element(document).ready(function () {
-        main.getAll();
+		main.resolved = getURLParameter('resolved') == 'true' ? true : false;
+		if(main.resolved)
+			main.getAll(true);
+		else
+			main.getAll(false);
         $timeout(function(){ main.loading = false; }, 1000);
     });
 	

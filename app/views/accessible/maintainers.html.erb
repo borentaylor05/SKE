@@ -1,5 +1,8 @@
 <div ng-app="MaintainersApp" ng-controller="Maintainer as main">
-	<h1> {{ main.welcome }} </h1>
+	<h3> Showing <%= @resolved.titleize %> Requests 
+		<a ng-hide="main.resolved" class="btn btn-xs btn-info" href="/maintainers?resolved=true">Show Resolved</a> 
+		<a ng-show="main.resolved" class="btn btn-xs btn-info" href="/maintainers?resolved=false">Show Unresolved</a> 
+	</h3>
 	<div class="row headerRow" >
 		<div class="col-xs-1">Admin Status</div>
 		<div class="col-xs-1">Request Details</div>

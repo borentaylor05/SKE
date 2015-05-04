@@ -1,0 +1,98 @@
+<style>
+	td{
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	th{
+		padding-left: 20px;
+	}
+	.form-control{
+		width: 50px !important;
+	}
+	.h{
+		width: 50px;
+		display: inline-block;
+		margin-right: 20px;
+	}
+</style>
+<script>
+	
+	var app = angular.module("App", []);
+
+	app.controller("MissionsCtrl", ['$http', function($http){
+		var mission = this;
+		mission.error = null;
+		mission.changed = [];
+
+		mission.get = function(){
+			var path = window.location.pathname;
+			path = path.split("/");
+			path[path.length - 1] = "missions";
+			url = path.join("/");
+			$http.get(url).success(function(resp){
+				console.log(resp);
+				if(resp.status == 1){
+					mission.error = resp.error;
+					console.log(mission.error);
+				}
+				else{
+					mission.all = resp.missions;
+				}
+			});
+		}
+		mission.pushChanged = function(m){
+			if(mission.changed.indexOf(m) == -1)
+				mission.changed.push(m);
+		}
+		mission.hasChanged = function(m){
+			if(mission.changed.indexOf(m) > -1)
+				return true;
+			else
+				return false;
+		}
+		mission.save = function(m){
+			var index = mission.changed.indexOf(m);
+			mission.changed.splice(index, 1);
+			console.log(mission.changed);
+			$http.post(window.location.pathname, { mission: m }).success(function(resp){
+				if(resp.status == 0)
+					mission.success = "Mission "+m.bunchball_name+" updated successfully!";
+				else
+					mission.error = resp.error;
+			});
+		}
+
+		mission.get();
+	}]);
+
+</script>
+<div class="container" ng-app="App" ng-controller="MissionsCtrl as mission">
+	<h1>Edit Mission Priorities for <%= @client %></h1>
+	<div class="alert alert-danger" ng-if="mission.error"> {{ mission.error }} </div>
+	<div class="alert alert-success" ng-if="mission.success"> {{ mission.success }} </div>
+	<table>
+		<tr>
+			<th class="h"></th>
+			<th>Priority</th>
+			<th>Name</th>
+			<th>LOB</th>
+			<th>Type</th>
+			<th>Month</th>
+			<th>Description</th>
+		</tr>
+		<tr ng-repeat="m in mission.all">
+			<td class="h"><button ng-click="mission.save(m)" ng-show="mission.hasChanged(m)" class="btn btn-sm btn-success">Save</button></td>
+			<td><input ng-change="mission.pushChanged(m)" ng-model="m.priority" class="form-control"></td>
+			<td>{{ m.bunchball_name }}</td>
+			<td>{{ m.lob }}</td>
+			<td>{{ m.game_type }}</td>
+			<td>{{ m.montd ? m.montd : "N/A" }}</td>
+			<td>{{ m.description }}</td>
+		</tr>
+	</table>
+</div>
+
+
+

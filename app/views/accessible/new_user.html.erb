@@ -22,12 +22,16 @@ user_app.directive("loader", function(){
 		restrict: "E",
 		scope: {
 			loading: "=", // boolean that determines whether to show spinner
+			text: "@",
 			size: "@"
 		},
-		template: '<i ng-show="loading" class="fa fa-circle-o-notch fa-spin"></i>',
+		template: '<span ng-show="loading"><i class="fa fa-circle-o-notch fa-spin"></i><span ng-if="text">{{text}}</span></span>',
 		link: function(scope, el, attrs){
-			console.log("Loading", scope.loading);
-			el.css("font-size", scope.size);
+			el.find("i").css({
+				"font-size": scope.size,
+				"margin-right": "10px",
+				"margin-left": "10px"
+			});
 		}
 	}
 });
@@ -36,10 +40,12 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 	var u = this;
 	u.init = false;
 	u.loading = {
-		lobs: false
-	}
+		lobs: false,
+		create: false
+	};
 
 	u.create = function(user, update){
+		u.loading.create = true;
 		u.error = null;
 		u.success = null;
 		if(update)
@@ -47,8 +53,9 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 		else
 			params = { user: user }
 		$http.post("/ske/user", params).success(function(resp){
+			console.log(resp);
 			if(resp.status == 0){
-				u.success = user.first_name+" "+user.last_name+" created successfully!"
+				u.success = u.user.first_name+" "+u.user.last_name+" has been created and assigned to "+resp.missionCount+" gamification missions."
 			}
 			else{
 				if(resp.error == "exists")
@@ -58,6 +65,7 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 				else
 					u.error = resp.error;
 			}
+		//	u.loading.create = false;
 		});
 	}
 	u.getLobTitles = function(client){
@@ -94,21 +102,21 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 	<div class="alert alert-success text-center" ng-if="u.success"> {{ u.success }} 
 		<button style="display:block;margin-left:auto;margin-right:auto;" class="btn btn-xs btn-default" ng-click="u.clear()">Create Another User</button> 
 	</div>
-	<form ng-hide="u.success" ng-submit="u.create(user)" name="userForm" novalidate>
+	<form ng-hide="u.success" ng-submit="u.create(u.user)" name="userForm" novalidate>
 		<label>First Name</label>
-		<input type="text" class="form-control" ng-model="user.first_name" name="first_name" required>
+		<input type="text" class="form-control" ng-model="u.user.first_name" name="first_name" required>
 		<p ng-show="userForm.first_name.$invalid && !userForm.first_name.$pristine" class="help-block">First Name is required.</p>
 
 		<label>Last Name</label>
-		<input type="text" class="form-control" ng-model="user.last_name" name="last_name" required>
+		<input type="text" class="form-control" ng-model="u.user.last_name" name="last_name" required>
 		<p ng-show="userForm.last_name.$invalid && !userForm.last_name.$pristine" class="help-block">Last Name is required.</p>
 
 		<label>Oracle ID</label>
-		<input type="text" class="form-control" ng-model="user.employee_id" name="oracle_id" required>
+		<input type="text" class="form-control" ng-model="u.user.employee_id" name="oracle_id" required>
 		<p ng-show="userForm.oracle_id.$invalid && !userForm.oracle_id.$pristine" class="help-block">Oracle ID is required.</p>
 
 		<label>Client</label>
-		<select name="client_id" ng-model="user.client_id" ng-change="u.getLobTitles(user.client_id)" required>
+		<select name="client_id" ng-model="u.user.client_id" ng-change="u.getLobTitles(u.user.client_id)" required>
 			<option ng-repeat="c in u.clients" ng-value="{{c.id}}"> 
 				{{ c.name.toUpperCase() }} 
 			</option>
@@ -121,16 +129,17 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 		</div>
 		<div ng-show="u.titles">
 			<label>Title</label>
-			<select ng-model="user.title" ng-options="t as t for t in u.titles track by t" required></select>
+			<select ng-model="u.user.title" ng-options="t as t for t in u.titles track by t" required></select>
 			<label>LOB</label>
-			<select ng-model="user.lob" ng-options="l as l for l in u.lobs track by l" required></select>
+			<select ng-model="u.user.lob" ng-options="l as l for l in u.lobs track by l" required></select>
 			<label>Location</label>
-			<input type="text" class="form-control" ng-model="user.location" name="location" required>
+			<input type="text" class="form-control" ng-model="u.user.location" name="location" required>
 			<p ng-show="userForm.location.$invalid && !userForm.location.$pristine" class="help-block">Location is required.</p>
 
 			<div class="text-center">
 				<p class="help-block" style="margin-top:10px;">Note: All fields are required!</p>
 				<input type="submit" style="margin-top:4px;margin-bottom: 15px;" class="btn btn-sm btn-success" value="Create User" ng-disabled="userForm.$invalid"> 
+				<loader loading="u.loading.create" size="1.4em" text="Creating user and assigning missions..."></loader>
 			</div>
 		</div>
 	</form>

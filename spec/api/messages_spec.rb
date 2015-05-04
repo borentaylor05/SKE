@@ -83,7 +83,7 @@ describe "Messages API", :type => :request do
 	end
 
 	it "should respond with messages if user exists" do 
-		get "/messages/all", { user: User.first.jive_id }
+		get "/messages/all", { user: 1 }
 		expect(json["status"]).to eq(0)
 		expect(json["messages"].count).to be > 0
 	end

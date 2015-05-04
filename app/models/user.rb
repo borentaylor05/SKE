@@ -19,4 +19,32 @@ class User < ActiveRecord::Base
 	has_many :user_missions
 	has_many :missions, through: :user_missions
 
+	def top_three_missions
+		missions = [];
+		Mission.joins(:user_missions).where("user_missions.times_completed" => 0, "user_missions.user_id" => self.id).uniq.limit(3).order("priority ASC").each do |m|
+			ma = m.attributes 
+			ma[:game] = m.game
+			missions.push(ma)
+		end
+		return missions
+	end
+
+	def assign_missions
+		c = 0
+		Mission.where(client_id: self.client_id, lob: self.lob).each do |m|
+			um = UserMission.new(
+				mission: m,
+				user: self,
+				times_completed: 0,
+				progress: 0,
+				notify_complete: false
+			)
+			if um.valid? 
+				um.save
+				c += 1
+			end
+		end
+		return c
+	end
+
 end

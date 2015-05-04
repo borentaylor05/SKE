@@ -13,7 +13,8 @@ class AccessibleController < ApplicationController
 	def cdc_home
 	end
 
-	def maintainers
+	def maintainers 
+		@resolved = params['resolved'] == 'true' ? 'resolved' : 'unresolved'
 	end
 
 	def game_data_upload
@@ -21,6 +22,19 @@ class AccessibleController < ApplicationController
 	end
 
 	def gamification
+	end
+
+	def prioritize_missions
+		@client = params[:client].titleize
+		if request.method == "POST"
+			m = Mission.find(params[:mission][:id])
+			m.update_attributes(mission_params)
+			if m
+				respond({ status: 0, mission: m })
+			else
+				respond({ status: 1, error: "Error saving mission." })
+			end
+		end
 	end
 
 	def new_user
@@ -218,8 +232,13 @@ class AccessibleController < ApplicationController
 	end
 
 	def get_maintainers
-		ms = []
-		Maintainer.where(resolved: false).limit(50).each do |m|
+		ms = []		
+		resolved = false
+		if params.has_key?("resolved") and params[:resolved] == "true"
+			resolved = true
+		end
+		Rails.logger.info("RESOLVED = #{resolved} -> #{params[:resolved]}")
+		Maintainer.where(resolved: resolved).limit(50).each do |m|
 			if m.do_delete == true
 				m.destroy
 				m.ticket.destroy
@@ -336,7 +355,8 @@ class AccessibleController < ApplicationController
 				)
 			if u.valid?
 				u.save
-				respond({ status: 0, user: u })
+				missionCount = u.assign_missions
+				respond({ status: 0, user: u, missionCount: missionCount })
 			else
 				respond({ status: 1, error: u.errors.full_messages })
 			end
@@ -357,10 +377,6 @@ class AccessibleController < ApplicationController
 		else
 			respond({ status: 1, error: "Request needs name parameter" })
 		end
-	end
-
-	def create_mission
-		respond(params)
 	end
 
 	def get_clients
@@ -396,7 +412,7 @@ class AccessibleController < ApplicationController
 					hash[:game].save
 					hash[:mission].game = hash[:game]
 					hash[:mission].save
-					users = User.where(client: client, lob: params[:mission][:lob])
+					users = User.where(client: client, lob: params[:mission][:lob].strip)
 					count = hash[:mission].assign_to_users(users)
 					if users.count == count
 						respond({ status: 0, assigned_to: users.count })
@@ -420,9 +436,11 @@ class AccessibleController < ApplicationController
 			if client 
 				if params.has_key?("month")
 					respond({ status: 0, missions: Mission.where(month: params[:month].titlecase, client_id: client.id) })
+				else
+					respond({ status: 0, missions: Mission.where(client_id: client.id) })
 				end
 			else
-				respond({ status: 1, error: "Client #{params[:client]} not found." })
+				respond({ status: 1, error: "Client #{params[:client].titleize} not found." })
 			end
 		else
 			respond({ status: 1, error: "request needs a client" })
@@ -448,11 +466,12 @@ class AccessibleController < ApplicationController
 			client = Client.find_by(name: mission[:client].downcase)
 			m = Mission.new(
 				bunchball_name: bb[:name],
-				badge_url: bb[:fullUrl],
+				badge_url: bb[:fullUrl] ? bb[:fullUrl] : bb[:thumbUrl],
 				description: bb[:description],
 				folder: bb[:folderName],
 				points: bb[:pointAward],
 				month: mission[:month],
+				lob: mission[:lob].strip,
 				client: client
 			)
 			case mission[:game_type]
@@ -486,6 +505,10 @@ class AccessibleController < ApplicationController
 
 		def maintainer_update_params
 			params.require(:maintainer).permit(:pcf, :resolved, :training_impact, :response, :decision)
+		end
+
+		def mission_params
+			params.require(:mission).permit(:badge_url, :bunchball_name, :id, :game_type, :game_id, :lob, :month, :folder, :description, :client_id, :created_at, :updated_at, :points, :priority)
 		end
 
 		def determine_type(maintainer, message)

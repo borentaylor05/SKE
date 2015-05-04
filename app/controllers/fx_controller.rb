@@ -10,6 +10,23 @@ class FxController < ApplicationController
 		respond({ status: 0, pubs: pubs })
 	end
 
+	def get_publication
+		if params.has_key?("publication_id")
+			pub = FxPublication.find_by(id: params[:publication_id])
+			if pub 
+				if pub.has_se
+					respond({ status: 0, publication: pub, pricing: pub.fx_mag_pricing, ses: FxPublication.where(parent: pub.name) })
+				else
+					respond({ status: 0, publication: pub, pricing: pub.fx_mag_pricing })
+				end
+			else
+				respond({ status: 1, error: "Publication #{params[:publication_id]} not found." })
+			end
+		else
+			respond({ status: 1, error: "No publication specified." })
+		end
+	end
+
 	def get_suburbs_for_publication
 		pub = FxPublication.find_by(id: params[:publication_id])
 		if pub 
@@ -26,7 +43,7 @@ class FxController < ApplicationController
 						suburbs.push(b)
 					end
 				end
-				respond({ status: 0, suburbs: suburbs })
+				respond({ status: 0, suburbs: suburbs, publication: pub })
 			end
 		else
 			respond({ status: 1, error: "Publication not found." })

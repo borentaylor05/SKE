@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150430165247) do
+ActiveRecord::Schema.define(version: 20150501150607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -201,6 +201,7 @@ ActiveRecord::Schema.define(version: 20150430165247) do
     t.datetime "updated_at", null: false
     t.boolean  "mag"
     t.boolean  "se"
+    t.boolean  "has_se"
   end
 
   add_index "fx_publications", ["name"], name: "index_fx_publications_on_name", using: :btree
@@ -278,12 +279,14 @@ ActiveRecord::Schema.define(version: 20150430165247) do
     t.string   "game_type"
     t.integer  "game_id"
     t.string   "folder"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.string   "description"
     t.integer  "points"
     t.string   "month"
     t.integer  "client_id"
+    t.string   "lob"
+    t.integer  "priority",       default: 99
   end
 
   create_table "old_comments", force: true do |t|

@@ -90,8 +90,17 @@
 		}
 		g.valid = function(game){
 			if(g.found){
-				return true;
+				if(g.game.game_type == 'Jive' && g.game.lob)
+					return true;
+				else{
+					if(g.game.metric_name && g.game.units && g.game.target)
+						return true;
+					else
+						return false;
+				}
 			}
+			else
+				return false;
 
 		}
 		g.clear = function(){
@@ -111,7 +120,7 @@
 	</div>
 	<form ng-hide="g.created" name="missionForm" novalidate>
 		<label>Bunchball Mission Name</label>
-		<input ng-model="g.game.bunchball_name" class="form-control" name="bunchball_name" >
+		<input ng-model="g.game.bunchball_name" class="form-control" name="bunchball_name" required>
 		<button class="btn btn-sm btn-info" ng-click="g.check(g.game.bunchball_name)">Check Mission Name</button>
 		<span id="checking" ng-show="g.checking">Checking...</span>
 		<br/>
@@ -121,7 +130,7 @@
 			<label>Points Awarded:</label>
 			<span class="gType"> {{ g.found.pointAward }} points </span>
 			<label>Which System should this mission use? <span class="gType"> {{ g.game.game_type }} </span> </label>
-			<select id="type" ng-model="g.game.game_type">
+			<select id="type" ng-model="g.game.game_type" required>
 				<option value="Jive">Jive</option>
 				<option value="Empower">Empower</option>
 				<option value="SalesForce">SalesForce</option>
