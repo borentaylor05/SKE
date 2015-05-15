@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
   $wl_ips = [
       '73.34.22.38', # jive app
       '170.65.128.6',
+      '170.65.101.6',
       '204.93.64.4', # demo site
       '::1',
       '127.0.0.1',

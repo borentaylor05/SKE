@@ -10,6 +10,23 @@ class Jive
   @@ww_coaches = "https://weightwatchers.jiveon.com/api/core/v3"
   @@uat = "https://uat-social.teletech.com/api/core/v3"
 
+  @@user_template = {
+    emails: [ {
+      value: "",
+      type: "work",
+      primary: true,
+      jive_label: "Email"
+    } ],
+    jive: {
+      password: "",
+      username: ""
+    },
+    name: {
+      familyName: "",
+      givenName: ""
+    }
+  }
+
 #  def initialize(base_url, auth_hash)
 #    @base_url = base_url
 #    @auth_hash = auth_hash
@@ -17,6 +34,10 @@ class Jive
   
   def self.new_url
     @@new_url
+  end
+
+  def self.user_template
+    @@user_template
   end
 
   def self.uat 
@@ -109,7 +130,6 @@ class Jive
   end
 
     def self.create(url, params, auth)
-        puts url
         headers 'Content-Type' => 'application/json'
         options = { body: params.to_json, basic_auth: auth }
         json = self.post(url, options).parsed_response
@@ -208,6 +228,36 @@ class Jive
                 givenName: hash[:first_name]
             }
         }
+    end
+
+    # u -> User hash from CSV
+    # to_db -> boolean that determines whether to save to env db
+    def self.create_user(u, to_db, to_bb_group = false)
+      template = self.user_template
+      template[:emails][0][:value] = u[:email]
+      template[:jive][:password] = "Welcome1"
+      template[:jive][:username] = u[:oracle_id]
+      template[:name][:givenName] = u[:first_name]
+      template[:name][:familyName] = u[:last_name]
+      resp = Jive.create("#{Jive.dev_url}/people", template, Auth.dev)
+      if resp["error"]
+        puts "ERROR --------------> #{resp["error"]}"
+      elsif resp["id"]
+        u[:jive_id] = resp["id"]
+        if to_db
+          if Util.create_or_update_from_csv(u)
+            puts "Created in Both:  #{resp["id"]}"
+          else
+            puts "Error: #{u[:first_name]} #{u[:last_name]}"
+          end
+        else
+          puts puts "Created in Jive:  #{resp["id"]}"
+        end
+        if to_bb_group
+          bb = Bunchball.new('98086')
+          puts bb.add_user_to_group(to_bb_group, u[:jive_id])
+        end
+      end
     end
 
     # hash -> :email, :password, :employee_id, :job_title, :client, :location, :lob, :first_name, :last_name

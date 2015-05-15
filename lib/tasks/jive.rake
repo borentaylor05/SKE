@@ -13,36 +13,11 @@ task :move_doc => :environment do
 end
 
 task create_users: :environment do 
-	users = TempUser.all
-	template = {
-		emails: [ {
-			value: "",
-			type: "work",
-			primary: true,
-			jive_label: "Email"
-		} ],
-		jive: {
-			password: "",
-			username: ""
-		},
-		name: {
-			familyName: "",
-			givenName: ""
-		}
-	}
-	users.each do |u|
-		template[:emails][0][:value] = u.email
-		template[:jive][:password] = "Welcome1"
-		template[:jive][:username] = u.username
-		template[:name][:givenName] = u.first_name
-		template[:name][:familyName] = u.last_name
-#		puts template
-		resp = Jive.create("#{Jive.social}/people", template, Auth.social)
-		if resp["error"]
-			puts "ERROR --------------> #{resp["error"]}"
-		elsif resp["id"]
-			puts "Created:  #{resp["id"]}"
-		end
+	# users = TempUser.all
+	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
+		user = Util.parse_csv_user(row)
+		# create_user params -> user: user hash, to_db: boolean (do you want user saved to local db, to_bb_group: bunchball group to save user to (default = false))
+		Jive.create_user(user, false, 'TelstraAllUsers') 
 	end
 end
 

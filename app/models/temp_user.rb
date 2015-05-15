@@ -3,6 +3,7 @@ class TempUser < ActiveRecord::Base
 	require 'Jive'
 	require 'Util'
 	require 'Auth'
+	require 'Bunchball'
 
 	def self.import_db_only(file)
 		results = {

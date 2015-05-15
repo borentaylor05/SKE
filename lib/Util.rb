@@ -153,12 +153,12 @@ class Util
 					u.save
 					return true
 				else
-					Rails.logger.info("ERROR: #{u.errors.full_messages}")
+					puts("ERROR: #{u.errors.full_messages}")
 					return false
 				end
 			end
 		else
-			Rails.logger.info("Error -> User #{user} is invalid")
+			puts("Error -> User #{user} is invalid")
 			return false
 		end
 	end

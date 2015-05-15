@@ -6,10 +6,10 @@ class Bunchball
 
    	def initialize(user)
        # Required Parameters
-       @test_users = %w{ 3170083 3151641 3151232 ecampagna 3149422 2121597 2124496 williamcrosslin 3130922 3131893 3108626 }
+       @test_users = %w{  }
        @baseURL = "https://solutions.nitro.bunchball.net/nitro/json"
-       @secretKey = "6c5d3cb1dcea4cf4b88f33b9c328264d"                # Use your secretKey to connect to the API
-       @apiKey = "5c4b9534bf9d460994b35f648ba63caa"                   # Use your apiKey to connect to the API
+       @secretKey = "45b7f425bff64a0d8041437753fe7e60"                # Use your secretKey to connect to the API
+       @apiKey = "814a39fc7e5f43118553997519f44f41"                   # Use your apiKey to connect to the API
        @user = user
        @sessionKey = login
        @url1 = "#{@baseURL}?method="
@@ -25,6 +25,7 @@ class Bunchball
 
 	def get(method, json = false)
 		url = "#{@url1}#{method}#{@url2}"
+		puts url
 		if json 
 			return HTTParty.get(url).body
 		else
@@ -37,21 +38,6 @@ class Bunchball
        	request = "#{@baseURL}?method=user.login&apiKey=#{@apiKey}&userId=#{@user}&ts=#{ts}&sig=#{getSignature}";
 		hash = JSON.parse(HTTParty.get(request).body, symbolize_names: true)
        	@sessionKey = hash[:Nitro][:Login][:sessionKey]
-	end
-	
-	def logAction
-		sessionKey = @sessionKey
-		request = @baseURL + "method=user.logAction" + "&sessionKey=" + sessionKey + "&userId="+ @user + "&tags=" + @actionTag + "&value=" + @value               
-		print "Logging an action... \n";
-		xml_data = Net::HTTP.get_response(URI.parse(request)).body              
-		               doc = REXML::Document.new(xml_data)             
-		doc.elements.each('Nitro') do |ele|
-		       @response = ele.attributes['res']
-		end
-		print @response         
-		if @response.eql? "ok"
-		       print "logAction successful!\n"
-		end     
 	end
 
 	def getUserRank
@@ -74,7 +60,7 @@ class Bunchball
 	end
 
 	def get_missions(folder)
-		return get("user.getChallengeProgress&folder=#{URI.encode(folder)}")
+		return get("user.getChallengeProgress&folder=#{URI.encode(folder)}&showOnlyTrophies=false")
 	end
 
 	def get_user_missions
@@ -87,6 +73,14 @@ class Bunchball
 
 	def get_mission(name)
 		return get("user.getChallengeProgress&challengeName=#{URI.encode(name)}")
+	end
+
+	def add_user_to_group(group, user_id)
+		return get("site.addUsersToGroup&groupName=#{group}&userIds=#{user_id}")
+	end
+
+	def get_group_users(group)
+		return get("group.getUsers&groupName=#{group}")
 	end
 
 end
