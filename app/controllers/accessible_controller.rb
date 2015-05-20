@@ -363,7 +363,7 @@ class AccessibleController < ApplicationController
 	end
 
 	def create_user
-		jive = { url: Jive.dev_url, auth: Auth.dev }
+		jive = { url: Jive.new_url, auth: Auth.new_auth }
 		hash = params[:user]
 		oracle_id = hash[:employee_id]
 		hash[:email] = "#{hash[:employee_id]}@nomail.com"
