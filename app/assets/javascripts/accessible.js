@@ -176,6 +176,14 @@ app.controller("AZ", ['$http', '$scope', function($http, $scope){
 		});
 		
 	}
+	az.make = function(naz){
+		$http.post("/cdc/a-to-z/create", naz).success(function(resp){
+			if(resp.status == 0)
+				az.success = "Entry "+naz.topic+" created successfully!";
+			else
+				az.error = resp.error;
+		});
+	}
 	az.isBeingEdited = function(topic){
 		if(topic == az.currentlyEditing)
 			return true;

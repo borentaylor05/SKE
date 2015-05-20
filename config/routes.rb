@@ -73,6 +73,7 @@ Rails.application.routes.draw do
   match "/cdc/a-to-z/search", to: "accessible#cdc_search", via: :get
   match "/cdc/a-to-z/get-range", to: "accessible#get_range", via: :get
   match "/cdc/a-to-z/topic", to: "accessible#get_topic", via: :get
+  match "/cdc/a-to-z/create", to: "accessible#new_a_to_z", via: :post
   match "/cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
   # End A-Z Accessible
 
@@ -109,6 +110,8 @@ Rails.application.routes.draw do
   match "/gamification/:client/upload", to: "accessible#game_data_upload", via: :get
   match "/gamification/:client/edit", to: "accessible#prioritize_missions", via: :get
   match "/gamification/:client/edit", to: "accessible#prioritize_missions", via: :post
+  match "/gamification/upload/:client", to: "accessible#gamification_upload", via: :get
+  match "/gamification/upload/:client/process", to: "accessible#gamification_upload_process", via: :post
 
   match "/clients/:client/lob-titles", to: "accessible#get_lobs_titles_for_client", via: :get
   match "/clients", to: "accessible#get_clients", via: :get

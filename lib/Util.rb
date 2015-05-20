@@ -182,7 +182,7 @@ class Util
 			   department_exists = true
 			   p["value"] = "#{user[:client].titleize}-#{user[:lob]}"
 			end
-			if p["jive_label"] == "Site"
+			if p["jive_label"] == "TeleTech Location"
 			   location_exists = true
 			   p["value"] = user[:location]
 			end
@@ -192,20 +192,20 @@ class Util
 			end
 			if p["jive_label"] == "Oracle ID"
 				oid_exists = true
-				p["value"] = user[:employee_id]
+				p["value"] = user[:oracle_id]
 			end
 		end
 		if !title_exists 
 			json["jive"]["profile"].push({ jive_label: "Title", value: user[:job_title] })
 		end
 		if !oid_exists 
-			json["jive"]["profile"].push({ jive_label: "Oracle ID", value: user[:employee_id] })
+			json["jive"]["profile"].push({ jive_label: "Oracle ID", value: user[:oracle_id] })
 		end
 		if !department_exists
 			json["jive"]["profile"].push({ jive_label: "LOB", value: user[:lob] })
 		end
 		if !location_exists
-			json["jive"]["profile"].push({ jive_label: "Site", value: user[:location] })
+			json["jive"]["profile"].push({ jive_label: "TeleTech Location", value: user[:location] })
 		end
 		if !company_exists 
 			json["jive"]["profile"].push({ jive_label: "Client", value: user[:client].titleize })

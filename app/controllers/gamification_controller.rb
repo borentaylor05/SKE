@@ -7,11 +7,7 @@ class GamificationController < ApplicationController
 		if params.has_key?("user")
 			user = User.find_by(jive_id: params[:user])
 			if user 					
-				@test_users = %w{ 3170083 3151641 3151232 3149422 2121597 2124496 3130922 3131893 3108626 }
-			#	leaders = User.where(client: user.client, lob: user.lob)
-				bb = Bunchball.new('3170083')
-				leaders = bb.get_leaders(@test_users)
-				respond({ status: 0, leaders: leaders })
+				respond({ status: 0, leaders: user.leaderboard, user: user })
 			else
 				respond({ status: 1, error: "Jive ID #{params[:user]} not found." })
 			end

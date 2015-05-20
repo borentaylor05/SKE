@@ -76,6 +76,7 @@ class Bunchball
 	end
 
 	def add_user_to_group(group, user_id)
+		group = URI.encode(group)
 		return get("site.addUsersToGroup&groupName=#{group}&userIds=#{user_id}")
 	end
 

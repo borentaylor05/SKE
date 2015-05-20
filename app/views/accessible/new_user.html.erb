@@ -62,6 +62,8 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 					if(confirm("This user exists, would you like to update them with this info?")){
 						u.create(user, true);
 					}
+					else
+						location.reload();
 				else
 					u.error = resp.error;
 			}
@@ -85,6 +87,7 @@ user_app.controller("NewUser", ['$scope','$http', function($scope,$http){
 	u.clear = function(){
 		u.success = null;
 		u.error = null;
+		u.loading.create = false;
 		$scope.user = null;
 		$scope.userForm.$setPristine();
 	}

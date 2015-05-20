@@ -16,8 +16,8 @@ task create_users: :environment do
 	# users = TempUser.all
 	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
 		user = Util.parse_csv_user(row)
-		# create_user params -> user: user hash, to_db: boolean (do you want user saved to local db, to_bb_group: bunchball group to save user to (default = false))
-		Jive.create_user(user, false, 'TelstraAllUsers') 
+		# create_user params -> user: user hash, to_db: boolean (do you want user saved to local db)
+	 	Jive.create_user(user, false) 
 	end
 end
 
@@ -280,7 +280,54 @@ task get_non_oracle_ids: :environment do
 	end
 end
 
+task hash_test: :environment do 
+	hash = {}
+	string = "a test"
+	hash[string] = "HELLO WORLD"
+end 
 
+task add_to_sec_group: :environment do 
+	ids = []
+	jive = { url: Jive.social, auth: Auth.social }
+	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
+		user = Util.parse_csv_user(row)	
+		if user[:lob] == "NA"
+			resp = Jive.grab("#{jive[:url]}/people/username/#{user[:oracle_id]}", jive[:auth])
+			if resp["id"]				
+				puts "Added #{user[:oracle_id]}"
+				ids.push(resp["id"])
+			else
+				puts resp
+			end
+		end
+	end
+	puts Jive.add_to_sec_group(2630,ids)
+end
 
+task check_oids: :environment do 
+	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
+		user = Util.parse_csv_user(row)	
+		Jive.check_user(user[:oracle_id])
+	end
+end
 
+task check_sec_group: :environment do 
+	puts Jive.grab("#{Jive.social}/securityGroups/2630/members", Auth.social)["list"].count
+end
 
+task set_telstra_passwords: :environment do 
+	jive = { url: Jive.social, auth: Auth.social }
+	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
+		user = Util.parse_csv_user(row)	
+		json = Jive.grab("#{jive[:url]}/people/username/#{user[:oracle_id]}", jive[:auth])
+		if json["id"]
+			if Jive.update_user_everywhere(json, user, jive)
+				puts "Created #{user[:oracle_id]}"
+			else
+				puts "ERROR ---> #{user[:oracle_id]}"
+			end
+		else
+			puts "ERROR --------> #{json}"
+		end
+	end
+end

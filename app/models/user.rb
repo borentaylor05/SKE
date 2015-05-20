@@ -19,6 +19,11 @@ class User < ActiveRecord::Base
 	has_many :user_missions
 	has_many :missions, through: :user_missions
 
+
+	def leaderboard
+		return User.where(client: self.client, lob: self.lob).where("rank > 0").limit(20).order("rank ASC")
+	end
+
 	def top_three_missions
 		missions = [];
 		Mission.joins(:user_missions).where("user_missions.times_completed" => 0, "user_missions.user_id" => self.id).uniq.limit(3).order("priority ASC").each do |m|

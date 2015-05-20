@@ -65,6 +65,7 @@ class Jive
   end
 
   def self.grab(url, auth)
+    puts url
     json = self.get(url, :basic_auth => auth).body
     if json 
       self.clean(json)
@@ -133,6 +134,7 @@ class Jive
         headers 'Content-Type' => 'application/json'
         options = { body: params.to_json, basic_auth: auth }
         json = self.post(url, options).parsed_response
+        return json
     end
 
     def self.clean(json)
@@ -191,19 +193,25 @@ class Jive
          json["name"]['familyName'] = user[:last_name]
          json["name"]["givenName"] = user[:first_name]
          resp = self.update("#{jive[:url]}/people/#{json["id"]}", json, jive[:auth])
-         Rails.logger.info("#{json.to_json}")
          if resp["error"]
-          Rails.logger.info(resp)
+          puts(resp)
           return false
         else
           user[:jive_id] = json["id"]
           if Util.create_or_update_from_csv(user)
             return true
           else
-            Rails.logger.info(resp)
+            puts(resp)
             return false
           end
         end
+   end
+
+   def self.add_to_sec_group(group_id, jive_ids)
+      jive = { url: Jive.social, auth: Auth.social }
+      jive_ids.map! { |id| id = "#{jive[:url]}/people/#{id}" }
+      puts jive_ids
+      return self.create("#{jive[:url]}/securityGroups/#{group_id}/members", jive_ids, jive[:auth])
    end
 
     # hash -> :email, :password, :employee_id, :job_title, :client, :location, :lob, :first_name, :last_name
@@ -232,14 +240,15 @@ class Jive
 
     # u -> User hash from CSV
     # to_db -> boolean that determines whether to save to env db
-    def self.create_user(u, to_db, to_bb_group = false)
+    def self.create_user(u, to_db)
+      jive = { url: Jive.social, auth: Auth.social }
       template = self.user_template
       template[:emails][0][:value] = u[:email]
       template[:jive][:password] = "Welcome1"
       template[:jive][:username] = u[:oracle_id]
       template[:name][:givenName] = u[:first_name]
       template[:name][:familyName] = u[:last_name]
-      resp = Jive.create("#{Jive.dev_url}/people", template, Auth.dev)
+      resp = Jive.create("#{jive[:url]}/people", template, jive[:auth])
       if resp["error"]
         puts "ERROR --------------> #{resp["error"]}"
       elsif resp["id"]
@@ -251,12 +260,22 @@ class Jive
             puts "Error: #{u[:first_name]} #{u[:last_name]}"
           end
         else
-          puts puts "Created in Jive:  #{resp["id"]}"
+          puts puts "Created in Jive:  #{u[:oracle_id]}"
         end
-        if to_bb_group
-          bb = Bunchball.new('98086')
-          puts bb.add_user_to_group(to_bb_group, u[:jive_id])
-        end
+        # if to_bb_group
+        #   bb = Bunchball.new('98086')
+        #   puts bb.add_user_to_group(to_bb_group, u[:jive_id])
+        # end
+      end
+    end
+
+    def self.check_user(oracle_id)
+      jive = { url: Jive.social, auth: Auth.social }
+      resp = Jive.grab("#{jive[:url]}/people/username/#{oracle_id}", jive[:auth])
+      if resp["id"]
+        puts "Created #{oracle_id}"
+      else
+        puts "#{oracle_id} ---> #{resp[:error]}"
       end
     end
 

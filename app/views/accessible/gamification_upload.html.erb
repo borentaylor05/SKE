@@ -1,0 +1,7 @@
+<div class="container">
+	<h2>Import Gamification Data for <%= params[:client].upcase %></h2>
+	<%= form_tag "/gamification/upload/#{params[:client]}/process", multipart: true do %>
+	  <%= file_field_tag :file %>
+	  <%= submit_tag "Import", class: "btn btn-md btn-success" %>
+	<% end %>
+</div>

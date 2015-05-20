@@ -2,6 +2,7 @@ class AccessibleController < ApplicationController
 	require 'Jive'
 	require 'Auth'
 	require 'Bunchball'
+	require 'CDC'
 
 	before_action :authenticate_admin!
 	before_filter :is_admin?, only: :new_admin
@@ -22,6 +23,22 @@ class AccessibleController < ApplicationController
 	end
 
 	def gamification
+	end
+
+	def gamification_upload		
+	end
+
+	def gamification_upload_process
+		case params[:client]
+		when 'cdc'
+			cdc = CDC.new('dev')
+			errors = cdc.import_gamification(params[:file])
+			if errors.count == 0
+				respond({ status: 0, message: "Success!" })
+			else
+				respond({ status: 1, errors: errors })
+			end
+		end
 	end
 
 	def prioritize_missions
@@ -126,6 +143,32 @@ class AccessibleController < ApplicationController
 			respond({ status: 0, entry: entry })
 		else
 			respond({ status: 1, error: "Entry Not Found" })
+		end
+	end
+
+	def new_a_to_z
+		if params[:scope]
+			params[:scope] = params[:scope].upcase
+		end
+		if params[:topic]
+			params[:topic] = params[:topic].upcase
+		end
+		az = AToZEntry.new(
+			aka: params[:aka],
+			owner: params[:owner],
+			cdc_link: params[:cdc_link],
+			spanish: params[:spanish],
+			pr: params[:pr],
+			topic: params[:topic],
+			program_flow: params[:program_flow],
+			notes: params[:notes],
+			scope: params[:scope].upcase
+		)
+		if az.valid?
+			az.save
+			respond({ status: 0, az: az })
+		else
+			respond({ status: 1, error: az.errors.full_messages })
 		end
 	end
 
@@ -320,7 +363,7 @@ class AccessibleController < ApplicationController
 	end
 
 	def create_user
-		jive = { url: Jive.new_url, auth: Auth.new_auth }
+		jive = { url: Jive.dev_url, auth: Auth.dev }
 		hash = params[:user]
 		oracle_id = hash[:employee_id]
 		hash[:email] = "#{hash[:employee_id]}@nomail.com"
@@ -328,8 +371,8 @@ class AccessibleController < ApplicationController
 		hash[:client] = Client.find_by(id: params[:user][:client_id]).name
 		person = hash
 		hash = Jive.new_jive_person(hash)
-		Rails.logger.info("HERE #{hash}");
 		resp = Jive.create("#{jive[:url]}/people", hash, jive[:auth])
+		Rails.logger.info(resp)
 		if resp["error"] and resp["error"]["status"] == 409 and params.has_key?("update") and params[:update]
 			json = Jive.grab("#{jive[:url]}/people/username/#{oracle_id}", jive[:auth])
 			params[:job_title] = params[:title]

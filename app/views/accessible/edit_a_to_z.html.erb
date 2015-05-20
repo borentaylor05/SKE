@@ -1,6 +1,11 @@
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.min.js"></script>
 <div class="container" ng-app="AToZ" ng-controller="AZ as az">
-	<h1> Search For Topic To Edit </h1>
+	<h1> 
+		Search For Topic To Edit 
+		<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">
+  			<i class="glyphicon glyphicon-plus"></i> Add New Topic
+		</button>
+	</h1>
 	<div class="rangeContainer">
 		<span class="heading">Choose Range:</span>
 		<span class="range btn btn-md btn-primary" ng-click="az.getTopics('A','E')">A-D</span>
@@ -90,5 +95,43 @@
 				</ul>
 			</li>
 		</ul>
+	</div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h1 class="modal-title text-center" id="myModalLabel">Create New A-Z Entry</h1>
+	      </div>
+	      <div class="modal-body formContainer">
+	      	<div class="alert alert-danger" ng-show="az.error">{{ az.error }}</div>
+	      	<div class="alert alert-success" ng-show="az.success">{{ az.success }}</div>
+	        <form ng-hide="az.success || az.error" ng-submit="az.make(naz)">
+	        	<label>Topic</label>
+	        	<input type="text" class="form-control" ng-model="naz.topic">
+	        	<label>AKA</label>
+	        	<input type="text" class="form-control" ng-model="naz.aka">
+	        	<label>Owner</label>
+	        	<input type="text" class="form-control" ng-model="naz.owner">
+	        	<label>Scope</label>
+	        	<input type="text" class="form-control" ng-model="naz.scope">
+	        	<label>Notes</label>
+	        	<input type="text" class="form-control" ng-model="naz.notes">
+	        	<label>Program Flow</label>
+	        	<input type="text" class="form-control" ng-model="naz.program_flow">
+	        	<label>PR Available?</label>
+	        	<input type="checkbox" ng-model="naz.pr" style="margin: 10px;">{{ naz.pr ? 'Yes' : 'No' }}<br/>
+	        	<label>CDC Link</label>
+	        	<input type="text" class="form-control" ng-model="naz.cdc_link">
+	        	<label>Spanish? </label>
+	        	<input type="checkbox" ng-model="naz.spanish" style="margin: 10px;">{{ naz.spanish ? 'Yes' : 'No' }}<br/>
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary" ng-click="az.make(naz)">Save changes</button>
+	      </div>
+	    </div>
+	  </div>
 	</div>
 </div>
