@@ -32,7 +32,7 @@ class GamificationController < ApplicationController
 		if params.has_key?("jive_id")
 			user = User.find_by(jive_id: params[:jive_id])
 			if user
-				Rails.logger.info("USER --> #{user}")
+				Rails.logger.info("USER --> #{user.inspect}")
 				respond({ status: 0, missions: user.top_three_missions })
 			else
 				respond({ status: 1, error: "User with jive ID #{params[:jive_id]} not found." })	
