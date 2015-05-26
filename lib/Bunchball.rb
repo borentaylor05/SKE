@@ -1,5 +1,6 @@
 require 'digest/md5'
 require 'Jive'
+require 'Jive2'
 
 class Bunchball
 	include HTTParty  
@@ -24,7 +25,7 @@ class Bunchball
 	end
 
 	def get(method, json = false)
-		url = "#{@url1}#{method}#{@url2}"
+		url = URI.encode("#{@url1}#{method}#{@url2}")
 		puts url
 		if json 
 			return HTTParty.get(url).body
@@ -82,6 +83,17 @@ class Bunchball
 
 	def get_group_users(group)
 		return get("group.getUsers&groupName=#{group}")
+	end
+
+	def complete_mission(oracle_id, challenge)
+		jive = Jive2.new('social')
+		resp = jive.grab("/people/username/#{oracle_id}")
+		if resp["id"]
+			url = URI.encode("#{@baseURL}?method=user.awardChallenge&sessionKey=#{@sessionKey}&userId=#{resp["id"]}&challenge=#{challenge}")
+		else
+			puts resp
+		end
+		return HTTParty.get(url).body
 	end
 
 end

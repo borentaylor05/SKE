@@ -88,6 +88,8 @@ Rails.application.routes.draw do
   match "/fx/publications", to: "accessible#get_pubs", via: :get
   match "/fx/suburbs", to: "accessible#fx_edit_suburbs", via: :get
   match "/fx/suburbs/condition", to: "accessible#get_suburbs_by_condition", via: :get
+  match "/fx/upload/redelivery", to: "accessible#fx_upload_redelivery", via: :get
+  match "/fx/process/redelivery", to: "accessible#process_fx_redelivery_upload", via: :post
   # End FX Dl and classifications
   match "/fx/request-article", to: "accessible#fx_request_article", via: :get
   match "/temp/upload", to: "accessible#temp_upload", via: :get

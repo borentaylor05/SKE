@@ -1,5 +1,6 @@
 require 'Util'
 require 'SFTP'
+require 'FX'
 
 task import_redelivery: :environment do 
 	CSV.foreach('nz_redelivery.csv', headers: true) do |row|
@@ -94,5 +95,8 @@ task insert_has_se: :environment do
 	end
 end
 
-
+task check_red: :environment do 
+	fx = FX.new('dev')
+	fx.upload_redelivery("red.csv")
+end
 

@@ -5,7 +5,7 @@ class AToZEntry < ActiveRecord::Base
 	scope :contains, -> (name) { where("topic like ?", "%#{name}%")}
 
 	def self.import(file)
-		cdc = CDC.new('dev')
+		cdc = CDC.new('social')
 		cdc.import_a_to_z(file.path)
 	end
 	

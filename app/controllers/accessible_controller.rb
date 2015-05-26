@@ -31,7 +31,7 @@ class AccessibleController < ApplicationController
 	def gamification_upload_process
 		case params[:client]
 		when 'cdc'
-			cdc = CDC.new('dev')
+			cdc = CDC.new('social')
 			errors = cdc.import_gamification(params[:file])
 			if errors.count == 0
 				respond({ status: 0, message: "Success!" })
@@ -72,6 +72,9 @@ class AccessibleController < ApplicationController
 	def upload_fx_classifications
 	end
 
+	def fx_upload_redelivery		
+	end
+
 	def temp_upload
 	end
 
@@ -104,6 +107,11 @@ class AccessibleController < ApplicationController
 
 	def process_address_book_upload
 		AddressBookEntry.import(params[:file])
+		respond({ status: 0, message: "Upload Successful" })
+	end
+
+	def process_fx_redelivery_upload
+		Redelivery.import(params[:file])
 		respond({ status: 0, message: "Upload Successful" })
 	end
 

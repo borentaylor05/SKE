@@ -26,9 +26,10 @@ task action: :environment do
 	puts bb.log_action('PollEvent-CREATED')
 end
 
-task folder_test: :environment do 
+task group_test: :environment do 
 	bb = Bunchball.new('98086')
-	puts bb.get_missions('TaylorTest')
+	puts bb.get("site.getPointsLeaders&groupName=Telstra Agents&duration=ALLTIME&returnCount=100")
+	#puts bb.get("group.getUsers&groupName=Telstra GA&returnCount=100")
 end
 
 task add_to_group: :environment do 
@@ -58,3 +59,51 @@ task add_user: :environment do
 	bb = Bunchball.new('98086')
 	puts bb.add_user_to_group('Telstra Agents', '101211')
 end
+
+task :complete_missions_telstra, [:day] => :environment do |t,args|
+	bb = Bunchball.new('98086')
+	cur_missions = nil
+	goals = {
+		assessment: 80,
+		qa: 85,
+		attendance: 20
+	}
+	missions = {
+		one: ['1st Day Assessment', '1st Day Attendance', '1st Day QA'],
+		two: ['2nd Day Assessment', '2nd Day Attendance', '2nd Day QA'],
+		three: ['3rd Day Assessment', '3rd Day Attendance', '3rd Day QA']
+	}
+	if args[:day]
+		case args[:day]
+		when 'one'
+			cur_missions = missions[:one]
+		when 'two'
+			cur_missions = missions[:two]
+		when 'three'
+			cur_missions = missions[:three]
+		end 
+		CSV.foreach('filename', headers: true) do |row| 
+			if row[0]
+				if row[1].to_i >= goals[:qa]
+					bb.complete_mission(row[0].trim, cur_missions[2])
+				end
+				if row[2].to_i >= goals[:assessment]
+					bb.complete_mission(row[0].trim, cur_missions[0])
+				end
+				if row[3].to_i >= goals[:attendance]
+					bb.complete_mission(row[0].trim, cur_missions[1])
+				end
+			else
+				puts "First column is empty."
+				break
+			end
+		end
+	else
+		puts "You must specify a day"
+	end
+	# bb.get_missions('TaylorTest').to_json
+	# puts bb.complete_mission('3170083', 'Test Challenge')
+end
+
+
+

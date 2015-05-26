@@ -1,9 +1,17 @@
 class Redelivery < ActiveRecord::Base
 
+	require 'FX'
+
 	belongs_to :fx_publication
 
 	def self.search(term)
-		self.where("lower(town) like ? or lower(round_id) like ?", "%#{term.downcase}%", "%#{term.downcase}%")
+		self.where("upper(town) like ? or upper(round_id) like ?", "%#{term.upper}%", "%#{term.upper}%")
+	end
+
+	def self.import(file)
+		Redelivery.destroy_all
+		fx = FX.new('social')
+		fx.upload_redelivery(file)
 	end
 
 end
