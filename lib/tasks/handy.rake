@@ -175,3 +175,9 @@ task get_jive_ids: :environment do
 		end
 	end
 end
+
+task test_whitelist: :environment do 
+	jive = Jive2.new('social')
+	resp = jive.grab("/people/username/3170083")
+	puts resp
+end

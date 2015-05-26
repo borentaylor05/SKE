@@ -36,7 +36,11 @@ class Jive2
 	end
 
 	def clean(json)
-        return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
+		if json 
+        	return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
+        else
+        	return false
+        end
     end
 
 	def people_search(name)

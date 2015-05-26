@@ -96,15 +96,16 @@ class AccessibleController < ApplicationController
 
 	def workaround
 		jive = Jive2.new('social')
-		User.where(jive_id: 0).each do |u|
-			resp = jive.grab("/people/username/#{u.employee_id}")
-			if resp and resp["id"]
-				puts resp["id"]
-				u.update_attributes(jive_id: resp["id"])
-			else
-				puts "#{u.employee_id} - #{resp}"
-			end
-		end
+		@resp = jive.grab("/people/username/3170083")
+		# User.where(jive_id: 0).each do |u|
+		# 	resp = jive.grab("/people/username/#{u.employee_id}")
+		# 	if resp and resp["id"]
+		# 		puts resp["id"]
+		# 		u.update_attributes(jive_id: resp["id"])
+		# 	else
+		# 		puts "#{u.employee_id} - #{resp}"
+		# 	end
+		# end
 	end
 
 	#PROCESSES
