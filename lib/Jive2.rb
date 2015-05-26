@@ -20,15 +20,15 @@ class Jive2
 			@url = "https://social.teletech.com/api/core/v3"
 			@auth = Auth.social
 		end
+		@options[:basic_auth] = @auth
+		@options[:headers] = {'Content-Type' => 'application/json'}
 	end
 
 	def test_grab(url)
-		@options[:basic_auth] = @auth
 		return HTTParty.get("#{url}", @options).body
 	end
 
 	def grab(resource)
-		@options[:basic_auth] = @auth
 	    json = HTTParty.get("#{@url}#{resource}", @options).body
 	    if json 
 	      clean(json)
@@ -39,12 +39,19 @@ class Jive2
 
 	def update(resource, params)
 		#  puts url
-		options = { body: params.to_json, basic_auth: @auth }
-		return HTTParty.put("#{@url}#{@resource}", options, headers: {'Content-Type' => 'application/json'})
+		@options[:body] = params.to_json
+		@options = { body: params.to_json, basic_auth: @auth }
+		return HTTParty.put("#{@url}#{@resource}", @options)
 	end
 
+	def create(resource, params)
+        @options[:body] = params.to_json
+        json = HTTParty.post("#{@url}#{resource}", @options).parsed_response
+        return json
+    end
+
 	def remove(resource)
-		json = HTTParty.delete("#{@url}#{resource}", basic_auth: @auth, headers: {'Content-Type' => 'application/json'})
+		json = HTTParty.delete("#{@url}#{resource}", @options)
 	end
 
 	def clean(json)
@@ -58,5 +65,25 @@ class Jive2
 	def people_search(name)
     	grab("#{@url}/search/people?filter=search(#{name.gsub(/\s+/, ",")})", @auth)
   	end
+
+  	def update_user_everywhere(json, user)
+	     json = Util.parse_profile(json, user)
+	     json["emails"][0] = { value: user[:email], type: "work", jive_label: "Email", primary: true }
+	     json["name"]['familyName'] = user[:last_name]
+	     json["name"]["givenName"] = user[:first_name]
+	     resp = update("/people/#{json["id"]}", json)
+	     if resp["error"]
+	      puts(resp)
+	      return false
+	    else
+	      user[:jive_id] = json["id"]
+	      if Util.create_or_update_from_csv(user)
+	        return true
+	      else
+	        puts(resp)
+	        return false
+	      end
+	    end
+   end
 
 end

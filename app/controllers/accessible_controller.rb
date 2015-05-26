@@ -94,20 +94,6 @@ class AccessibleController < ApplicationController
 	def new_admin
 	end
 
-	def workaround
-		jive = Jive2.new('social')
-		@resp = jive.grab("/people/username/3170083")
-		# User.where(jive_id: 0).each do |u|
-		# 	resp = jive.grab("/people/username/#{u.employee_id}")
-		# 	if resp and resp["id"]
-		# 		puts resp["id"]
-		# 		u.update_attributes(jive_id: resp["id"])
-		# 	else
-		# 		puts "#{u.employee_id} - #{resp}"
-		# 	end
-		# end
-	end
-
 	#PROCESSES
 
 	def temp_upload_process
@@ -386,7 +372,7 @@ class AccessibleController < ApplicationController
 	end
 
 	def create_user
-		jive = { url: Jive.new_url, auth: Auth.new_auth }
+		jive = Jive2.new('social')
 		hash = params[:user]
 		oracle_id = hash[:employee_id]
 		hash[:email] = "#{hash[:employee_id]}@nomail.com"
@@ -394,12 +380,12 @@ class AccessibleController < ApplicationController
 		hash[:client] = Client.find_by(id: params[:user][:client_id]).name
 		person = hash
 		hash = Jive.new_jive_person(hash)
-		resp = Jive.create("#{jive[:url]}/people", hash, jive[:auth])
+		resp = jive.create("/people", hash)
 		Rails.logger.info(resp)
 		if resp["error"] and resp["error"]["status"] == 409 and params.has_key?("update") and params[:update]
-			json = Jive.grab("#{jive[:url]}/people/username/#{oracle_id}", jive[:auth])
+			json = jive.grab("/people/username/#{oracle_id}")
 			params[:job_title] = params[:title]
-			if Jive.update_user_everywhere(json, params[:user], jive)
+			if jive.update_user_everywhere(json, params[:user])
 				respond({ status: 0, message: "User updated successfully!" })
 			else
 				respond({ status: 1, error: "Error updating user." })
