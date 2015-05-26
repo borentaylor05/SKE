@@ -184,8 +184,8 @@ task test_whitelist: :environment do
 end
 
 task get_ip: :environment do 
-	puts ENV["PROXIMO_URL"]
-	RestClient.proxy = ENV["PROXIMO_URL"] if ENV["PROXIMO_URL"]
-	res = RestClient.get("http://ip.jsontest.com")
-	puts "Your Static IP is: #{res.body}"
+	puts ENV["QUOTAGUARDSTATIC_URL"]
+	jive = Jive2.new('social')
+	resp = jive.test_grab("http://icanhazip.com")
+	puts "Your Static IP is: #{resp}"
 end

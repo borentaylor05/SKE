@@ -1,11 +1,10 @@
 require 'Auth'
 require 'Util'
-require "rest-client"	
 
 class Jive2
-	RestClient.proxy = ENV["PROXIMO_URL"] if ENV["PROXIMO_URL"]
-	# include HTTParty
-	# http_proxy = ENV["PROXIMO_URL"] if ENV["PROXIMO_URL"]
+
+	include HTTParty
+	http_proxy ENV["QUOTAGUARDSTATIC_URL"] if ENV["QUOTAGUARDSTATIC_URL"]
 
 	def initialize(instance)
 		case instance
@@ -18,18 +17,16 @@ class Jive2
 		end
 	end
 
+	def test_grab(url)
+		return HTTParty.get("#{url}", :basic_auth => @auth).body
+	end
+
 	def grab(resource)
-		resp = RestClient::Request.new(
-		    :method => :get,
-		    :url => "#{@url}#{resource}",
-		    :user => @auth[:username],
-		    :password => @auth[:password],
-		    :headers => { :accept => :json,:content_type => :json }
-		).execute
-	    if resp 
-	      clean(resp)
+	    json = HTTParty.get("#{@url}#{resource}", :basic_auth => @auth).body
+	    if json 
+	      clean(json)
 	    else
-	      puts resp
+	      puts json
 	    end
 	end
 
