@@ -4,9 +4,14 @@ require 'Util'
 class Jive2
 
 	include HTTParty
-	http_proxy ENV["QUOTAGUARDSTATIC_URL"] if ENV["QUOTAGUARDSTATIC_URL"]
+	
 
 	def initialize(instance)
+		@proxy = URI(ENV["QUOTAGUARDSTATIC_URL"]) if ENV["QUOTAGUARDSTATIC_URL"]
+		@options = {}
+		if @proxy
+			@options = {http_proxyaddr: @proxy.host,http_proxyport: @proxy.port, http_proxyuser: @proxy.user, http_proxypass: @proxy.password}
+		end
 		case instance
 		when 'dev'
 			@url = "http://localhost:8080/api/core/v3"
@@ -18,11 +23,13 @@ class Jive2
 	end
 
 	def test_grab(url)
-		return HTTParty.get("#{url}", :basic_auth => @auth).body
+		@options[:basic_auth] = @auth
+		return HTTParty.get("#{url}", @options).body
 	end
 
 	def grab(resource)
-	    json = HTTParty.get("#{@url}#{resource}", :basic_auth => @auth).body
+		@options[:basic_auth] = @auth
+	    json = HTTParty.get("#{@url}#{resource}", @options).body
 	    if json 
 	      clean(json)
 	    else
