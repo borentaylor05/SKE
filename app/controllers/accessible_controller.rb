@@ -576,7 +576,7 @@ class AccessibleController < ApplicationController
 		end
 
 		def get_client_lobs(client_id)
-			return User.where(client_id: client_id).uniq.pluck(:lob).sort_by(&:to_s)
+			return User.where(client_id: client_id).where.not("users.lob" => nil).uniq.pluck(:lob).sort_by(&:to_s)
 		end
 
 		def get_client_titles(client_id)

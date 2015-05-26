@@ -49,7 +49,8 @@ class UserController < ApplicationController
 			respond({status: 1})
 		elsif request.method == "POST"
 			user = parse_user(params)
-			if !User.exists?(jive_id: user[:jive_id])
+			u = User.find_by(jive_id: user[:jive_id])
+			if !u
 				u = User.new(jive_id: user[:jive_id], 
 							 employee_id: user[:employee_id], 
 							 client_id: user[:client_id],
@@ -65,7 +66,7 @@ class UserController < ApplicationController
 				if !params[:client].blank?
 					update_user_client(params)
 				end
-				response = { status: 0, message: "User Exists.", user: user }
+				response = { status: 0, message: "User Exists.", user: u }
 			end
 			respond(response)
 		end

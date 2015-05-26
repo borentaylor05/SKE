@@ -13,9 +13,16 @@
         <nav>
           <ul class="nav navbar-nav navbar-right pull-right">
         			<% if admin_signed_in? %>
+                <% if current_admin.client.name == 'all' or current_admin.client.name == 'fairfax' %>
                 <li><%= link_to "Article Request", "/" %></li>
                 <li><%= link_to "View Requests", "/maintainers" %></li>
-                <li><%= link_to "Change your password", edit_admin_registration_path %></li>
+                <% end %>
+                <% if current_admin.client.name == 'all' or current_admin.client == 'cdc' %>
+                <li><%= link_to "A-Z List", "/cdc/a-to-z" %></li>
+                <% end %>
+                <li><%= link_to "New Mission", "/gamification/mission/new" %></li>
+                <li><%= link_to "New SKE User", "/ske/user/new" %></li>
+                <li><%= link_to "Change Password", edit_admin_registration_path %></li>
         				<li><%= link_to "Log out", destroy_admin_session_path, :method => :delete %></li>
         			<% else %>
             	<li><%= link_to "Log in", '/admins/sign_in' %></li>

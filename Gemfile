@@ -14,7 +14,6 @@ gem 'unicorn'
 gem 'pg',             '0.17.1'
 gem 'newrelic_rpm'
 gem 'httparty'
-gem 'rest-client'
 gem 'twitter'
 gem 'bootstrap-sass',       '3.2.0.0'
 gem "sinatra"
