@@ -1,5 +1,6 @@
 class AccessibleController < ApplicationController
 	require 'Jive'
+	require 'Jive2'
 	require 'Auth'
 	require 'Bunchball'
 	require 'CDC'
@@ -91,6 +92,19 @@ class AccessibleController < ApplicationController
 	end
 
 	def new_admin
+	end
+
+	def workaround
+		jive = Jive2.new('social')
+		User.where(jive_id: 0).each do |u|
+			resp = jive.grab("/people/username/#{u.employee_id}")
+			if resp and resp["id"]
+				puts resp["id"]
+				u.update_attributes(jive_id: resp["id"])
+			else
+				puts "#{u.employee_id} - #{resp}"
+			end
+		end
 	end
 
 	#PROCESSES

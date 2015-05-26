@@ -127,6 +127,8 @@ Rails.application.routes.draw do
   match "/ske/admin/new", to: "accessible#new_admin", via: :get
   match "/ske/admin", to: "accessible#create_admin", via: :post
 
+  match "/taylor/workaround", to: "accessible#workaround", via: :get
+
   # ----- End Accessible Routes ------
 
   # ----- CDC Routes ------  
