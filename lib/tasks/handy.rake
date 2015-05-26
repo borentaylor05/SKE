@@ -163,3 +163,15 @@ task simple_test: :environment do
 	cdc.import_a_to_z("a_to_c.csv")
 end
 
+task get_jive_ids: :environment do 
+	jive = Jive2.new('social')
+	User.where(jive_id: 0).each do |u|
+		resp = jive.grab("/people/username/#{u.employee_id}")
+		if resp["id"]
+			puts resp["id"]
+			u.update_attributes(jive_id: resp["id"])
+		else
+			puts resp
+		end
+	end
+end
