@@ -288,4 +288,33 @@ class Util
 		}
 	end
 
+	def self.import_simple_gamification(file)
+		errors = []
+		CSV.foreach(file.path, headers: true) do |row|
+			row.each do |r|
+				if r == "---"
+					r = nil
+				end
+			end
+			if row.count == 5 and row[0]
+				user = User.find_by(employee_id: row[0])
+				Rails.logger.info(row[0])
+				if user 
+					if !user.update_attributes(comp_score: row[2], rank: row[3], tier: row[4])
+						Rails.logger.info("Error updating.")
+						errors.push row[0]
+					end
+				else
+					Rails.logger.info "User #{row[0]} not found."
+					errors.push row[0]
+				end
+			else
+				Rails.logger.info("CSV wrong format")
+				errors.push "Wrong format at #{row[0]}! - #{row.count} -  "
+				return errors
+			end
+		end
+		return errors
+	end
+
 end

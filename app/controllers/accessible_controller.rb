@@ -30,9 +30,9 @@ class AccessibleController < ApplicationController
 
 	def gamification_upload_process
 		case params[:client]
-		when 'cdc'
+		when 'cdc', 'fairfax'
 			cdc = CDC.new('social')
-			errors = cdc.import_gamification(params[:file])
+			errors = Util.import_simple_gamification(params[:file])
 			if errors.count == 0
 				respond({ status: 0, message: "Success!" })
 			else
@@ -389,8 +389,10 @@ class AccessibleController < ApplicationController
 			else
 				respond({ status: 1, error: "Error updating user." })
 			end
-		elsif resp["error"] and resp["error"]["status"] == 409
+		elsif (resp["error"] and resp["error"]["status"] == 409)
 			respond({ status: 1, error: "exists" })
+		elsif !resp["id"]
+			respond({ status: 1, error: "Error creating user: #{resp} " })	
 		else
 			person[:jive_id] = resp["id"]
 			u = User.new(
