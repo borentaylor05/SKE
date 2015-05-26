@@ -4,6 +4,7 @@ require 'Jive'
 require 'Jive2'
 require 'Auth'
 
+
 task clean_missions: :environment do
 	UserMission.destroy_all
 	Mission.destroy_all
@@ -179,5 +180,5 @@ end
 task test_whitelist: :environment do 
 	jive = Jive2.new('social')
 	resp = jive.grab("/people/username/3170083")
-	puts resp
+	puts resp["id"]
 end
