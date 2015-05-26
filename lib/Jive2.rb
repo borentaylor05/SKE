@@ -4,6 +4,7 @@ require 'Util'
 class Jive2
 
 	include HTTParty
+	http_proxy = ENV["PROXIMO_URL"] if ENV["PROXIMO_URL"]
 
 	def initialize(instance)
 		case instance
