@@ -182,3 +182,10 @@ task test_whitelist: :environment do
 	resp = jive.grab("/people/username/3170083")
 	puts resp["id"]
 end
+
+task get_ip: :environment do 
+	puts ENV["PROXIMO_URL"]
+	RestClient.proxy = ENV["PROXIMO_URL"] if ENV["PROXIMO_URL"]
+	res = RestClient.get("http://ip.jsontest.com")
+	puts "Your Static IP is: #{res.body}"
+end
