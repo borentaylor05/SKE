@@ -5,7 +5,7 @@ class Redelivery < ActiveRecord::Base
 	belongs_to :fx_publication
 
 	def self.search(term)
-		self.where("upper(town) like ? or upper(round_id) like ?", "%#{term.upper}%", "%#{term.upper}%")
+		self.where("upper(town) like ? or upper(round_id) like ?", "%#{term.upcase}%", "%#{term.upcase}%")
 	end
 
 	def self.import(file)

@@ -61,7 +61,7 @@ class Bunchball
 	end
 
 	def get_missions(folder)
-		return get("user.getChallengeProgress&folder=#{URI.encode(folder)}&showOnlyTrophies=false")
+		return get("user.getChallengeProgress&folder=#{URI.encode(folder)}")
 	end
 
 	def get_user_missions

@@ -7,6 +7,11 @@ task bb_login: :environment do
 	bb.login
 end
 
+task get_mission: :environment do 
+	bb = Bunchball.new('98086')
+	puts bb.get_mission("Demo Mission")
+end
+
 desc "Get User Points balance"
 task bb_get_balance: :environment do
 	bb = Bunchball.new('98086')
