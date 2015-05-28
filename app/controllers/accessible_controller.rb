@@ -15,6 +15,10 @@ class AccessibleController < ApplicationController
 	def cdc_home
 	end
 
+	def admins_home
+		redirect_to "/"
+	end
+
 	def maintainers 
 		@resolved = params['resolved'] == 'true' ? 'resolved' : 'unresolved'
 	end

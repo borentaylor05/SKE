@@ -147,6 +147,10 @@ class ApplicationController < ActionController::Base
       true if Float(string) rescue false
   end
 
+  def after_update_path_for(resource)
+      return "/"
+  end
+
 end
 
 
