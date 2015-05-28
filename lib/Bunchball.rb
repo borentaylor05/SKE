@@ -61,7 +61,7 @@ class Bunchball
 	end
 
 	def get_missions(folder)
-		return get("user.getChallengeProgress&folder=#{URI.encode(folder)}")
+		return get("user.getChallengeProgress&folder=#{folder}")
 	end
 
 	def get_user_missions
@@ -73,11 +73,10 @@ class Bunchball
 	end
 
 	def get_mission(name)
-		return get("user.getChallengeProgress&challengeName=#{URI.encode(name)}")
+		return get("user.getChallengeProgress&challengeName=#{name}&showOnlyTrophies=false")
 	end
 
 	def add_user_to_group(group, user_id)
-		group = URI.encode(group)
 		return get("site.addUsersToGroup&groupName=#{group}&userIds=#{user_id}")
 	end
 
