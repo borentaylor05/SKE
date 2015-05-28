@@ -470,7 +470,13 @@ class AccessibleController < ApplicationController
 					hash[:game].save
 					hash[:mission].game = hash[:game]
 					hash[:mission].save
-					users = User.where(client: client, lob: params[:mission][:lob].strip)
+					if params[:mission][:all_lobs]
+						Rails.logger.info("HEEEEERE <----------- All LOBs Checked")
+						users = User.where(client: client)
+					else
+						Rails.logger.info("HEEEEERE <----------- NOOOO")
+						users = User.where(client: client, lob: params[:mission][:lob].strip)
+					end
 					count = hash[:mission].assign_to_users(users)
 					if users.count == count
 						respond({ status: 0, assigned_to: users.count })
@@ -522,6 +528,11 @@ class AccessibleController < ApplicationController
 
 		def make_mission(mission, bb)
 			client = Client.find_by(name: mission[:client].downcase)
+			if mission[:all_lobs]
+				mission[:lob] = 'all'				
+			else
+				mission[:lob] = mission[:lob].strip
+			end
 			m = Mission.new(
 				bunchball_name: bb[:name],
 				badge_url: bb[:fullUrl] ? bb[:fullUrl] : bb[:thumbUrl],
@@ -529,7 +540,7 @@ class AccessibleController < ApplicationController
 				folder: bb[:folderName],
 				points: bb[:pointAward],
 				month: mission[:month],
-				lob: mission[:lob].strip,
+				lob: mission[:lob],
 				client: client
 			)
 			case mission[:game_type]

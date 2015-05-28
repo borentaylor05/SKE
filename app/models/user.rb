@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
 	def assign_missions
 		c = 0
-		Mission.where(client_id: self.client_id, lob: self.lob).each do |m|
+		Mission.where(client_id: self.client_id, lob: [self.lob, 'all']).each do |m|
 			um = UserMission.new(
 				mission: m,
 				user: self,

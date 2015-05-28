@@ -90,7 +90,7 @@
 		}
 		g.valid = function(game){
 			if(g.found){
-				if(g.game.game_type == 'Jive' && g.game.lob)
+				if(g.game.game_type == 'Jive' && (g.game.lob || g.game.all_lobs))
 					return true;
 				else{
 					if(g.game.metric_name && g.game.units && g.game.target)
@@ -133,7 +133,7 @@
 			<select id="type" ng-model="g.game.game_type" required>
 				<option value="Jive">Jive</option>
 				<option value="Empower">Empower</option>
-				<option value="SalesForce">SalesForce</option>
+				<!-- <option value="SalesForce">SalesForce</option> -->
 			</select>
 			<label>Which client is this for?</label>
 			<select name="client_id" ng-model="g.game.client" ng-change="g.getLobTitles(g.game.client)" required>
@@ -143,6 +143,7 @@
 			</select>
 			<div ng-show="g.game.client">
 				<label>Which LOB is this for?</label>
+				<input style="margin-bottom: 10px;" type="checkbox" ng-model="g.game.all_lobs"> All LOBs? {{ g.game.all_lobs ? "Yes" : "No" }}
 				<select ng-model="g.game.lob" ng-options="l as l for l in g.lobs track by l" required></select>
 			</div>
 			<button ng-click="g.checkFolder()" class="btn btn-sm btn-info">Check Folder Name</button>
