@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
       'localhost:8090', 
       'social.teletech.com', 
       'jivedemo-teletech-gtm-alliances.jiveon.com',
-      'app-knowledge.jiveon.com'
+      'app-social.teletech.com'
   ]
   $wl_ips = [
       '73.34.22.38', # jive app
@@ -33,7 +33,8 @@ class ApplicationController < ActionController::Base
       '10.170.67.44', # node
       '10.170.67.43', # node
       '10.170.67.42', # node
-      '10.170.67.45'  # node
+      '10.170.67.45',  # node
+      '50.141.113.19'
   ]
 
   $cloud_ip = IPAddr.new ENV['CLOUD_IP']
