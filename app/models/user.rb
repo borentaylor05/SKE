@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
-	
+	require 'Jive'
+	require 'Util'
+
 	scope :contains, -> (name) { where("lower(employee_id) like ? or lower(name) like ? or CAST(jive_id AS TEXT) like ?", "%#{name.downcase}%", "%#{name.downcase}%", "%#{name.downcase}%")}
 
 	belongs_to :client
@@ -50,6 +52,21 @@ class User < ActiveRecord::Base
 			end
 		end
 		return c
+	end
+
+	def self.import(file)
+		created = []
+		errors = []
+		CSV.foreach(file.path, headers: true) do |row|
+			user = Util.parse_csv_user(row)
+			# create_user params -> user: user hash, to_db: boolean (do you want user saved to local db)
+		 	if Jive.create_user(user, true) 
+		 		created.push(user[:oracle_id])
+		 	else
+		 		errors.push(user[:oracle_id])
+		 	end
+		end
+		return { created_count: created.count, error_count: errors.count, created: created, errors: errors }
 	end
 
 end

@@ -114,6 +114,7 @@ class Util
 	# NOTE: :jive_id is not in CSV, must be obtained via API call
 	def self.create_or_update_from_csv(user)
 		# if user is being updated from /ske/user/new
+		Rails.logger.info(user)
 		if(user.has_key?("client_id") and self.is_number?(user[:client_id]))
 			user[:oracle_id] = user[:employee_id]
 			user[:job_title] = user[:title]
@@ -153,12 +154,12 @@ class Util
 					u.save
 					return true
 				else
-					puts("ERROR: #{u.errors.full_messages}")
+					Rails.logger.info("ERROR: #{u.errors.full_messages}")
 					return false
 				end
 			end
 		else
-			puts("Error -> User #{user} is invalid")
+			Rails.logger.info("Error -> User #{user} is invalid")
 			return false
 		end
 	end

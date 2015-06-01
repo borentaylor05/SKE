@@ -250,21 +250,25 @@ class Jive
       template[:name][:familyName] = u[:last_name]
       resp = Jive.create("#{jive[:url]}/people", template, jive[:auth])
       if resp["error"]
-        puts "ERROR --------------> #{resp["error"]}"
+        Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
+        return false
       elsif resp["id"]
         u[:jive_id] = resp["id"]
         if to_db
           if Util.create_or_update_from_csv(u)
-            puts "Created in Both:  #{resp["id"]}"
+            Rails.logger.info "Created in Both:  #{resp["id"]}"
+            return true
           else
-            puts "Error: #{u[:first_name]} #{u[:last_name]}"
+            Rails.logger.info "Error: #{u[:first_name]} #{u[:last_name]}"
+            return false
           end
         else
-          puts puts "Created in Jive:  #{u[:oracle_id]}"
+          Rails.logger.info Rails.logger.info "Created in Jive:  #{u[:oracle_id]}"
+          return false
         end
         # if to_bb_group
         #   bb = Bunchball.new('98086')
-        #   puts bb.add_user_to_group(to_bb_group, u[:jive_id])
+        #   Rails.logger.info bb.add_user_to_group(to_bb_group, u[:jive_id])
         # end
       end
     end

@@ -98,7 +98,15 @@ class AccessibleController < ApplicationController
 	def new_admin
 	end
 
+	def bulk_upload_users
+	end
+
 	#PROCESSES
+
+	def bulk_upload_users_process
+		results = User.import(params[:file])
+		respond({ status: 0, results: results })		
+	end
 
 	def temp_upload_process
 		results = TempUser.import(params[:file])

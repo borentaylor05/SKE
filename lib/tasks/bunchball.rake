@@ -9,7 +9,7 @@ end
 
 task get_mission: :environment do 
 	bb = Bunchball.new('98086')
-	puts bb.get_mission("Demo Mission")
+	puts bb.get_mission("Old Buddy Old Pal")
 end
 
 desc "Get User Points balance"
@@ -40,24 +40,20 @@ end
 task add_to_group: :environment do 
 	bb = Bunchball.new('98086')
 	jive = Jive2.new('social')
-	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
-		resp = jive.grab("/people/username/#{row[3]}")
+	users = [20268370, 2058883, 2065398, 2071982, 2075725, 2077720, 2099200, 2114029, 2119372]
+	users.each do |user|
+		resp = jive.grab("/people/username/#{user}")
 		if resp["id"]
-			case row[6]
-			when "NA"
-				puts "Added to GA - #{bb.add_user_to_group('Telstra Agents', resp["id"])}"
-			when "Telstra Cebu Consumer"
-				puts "Added to Agents - #{bb.add_user_to_group('Telstra GA', resp["id"])}"
-			end
+			bb.add_user_to_group('Telstra Training Demo', resp["id"])
 		else
-			puts "User #{row[3]} not found."
+			puts "User #{user} not found."
 		end
 	end
 end
 
 task get_group_users: :environment do 
 	bb = Bunchball.new('98086')
-	puts bb.get_group_users('TelstraAllUsers')
+	puts bb.get_group_users('Telstra Training Demo')
 end
 
 task add_user: :environment do 
@@ -109,6 +105,7 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 	# bb.get_missions('TaylorTest').to_json
 	# puts bb.complete_mission('3170083', 'Test Challenge')
 end
+
 
 
 

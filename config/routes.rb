@@ -117,6 +117,9 @@ Rails.application.routes.draw do
   match "/clients", to: "accessible#get_clients", via: :get
 
   match "ske/users", to: "accessible#users", via: :get
+  match "/ske/users/bulk-upload", to: "accessible#bulk_upload_users", via: :get
+  match "/ske/users/bulk-upload/process", to: "accessible#bulk_upload_users_process", via: :post
+
 
   # USERS 
 

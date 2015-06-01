@@ -81,7 +81,7 @@ class Bunchball
 	end
 
 	def get_group_users(group)
-		return get("group.getUsers&groupName=#{group}")
+		return get("group.getUsers&groupName=#{group}&returnCount=100")
 	end
 
 	def complete_mission(oracle_id, challenge)
