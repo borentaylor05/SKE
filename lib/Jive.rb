@@ -252,13 +252,20 @@ class Jive
       if resp["error"]
         eUser = User.find_by(employee_id: u[:oracle_id])
         if eUser
-          u[:jive_id] = eUser.jive_id
-          json = self.grab("#{jive[:url]}/people/#{u[:jive_id]}", jive[:auth])
-          if self.update_user_everywhere(json, u, jive)
-            return true
+          json = self.grab("#{jive[:url]}/people/username/#{u[:oracle_id]}", jive[:auth])
+          if json["id"] 
+            if eUser.jive_id == 0
+              eUser.update_attributes(jive_id: json["id"])
+            end
+            u[:jive_id] = eUser.jive_id
+            if self.update_user_everywhere(json, u, jive)
+              return true
+            else
+              Rails.logger.info "ERROR - user #{u[:oracle_id]} could not be saved in db."
+              return false
+            end
           else
-            Rails.logger.info "ERROR - user #{u[:oracle_id]} could not be saved in db."
-            return false
+            Rails.logger.info("NOJIVEUSER -- #{u[:oracle_id]}")
           end
         else          
            Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
