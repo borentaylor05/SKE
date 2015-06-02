@@ -289,19 +289,21 @@ end
 task add_to_sec_group: :environment do 
 	ids = []
 	jive = { url: Jive.social, auth: Auth.social }
-	CSV.foreach("telstra_roster_051515.csv", headers: true) do |row|
-		user = Util.parse_csv_user(row)	
-		if user[:lob] == "NA"
-			resp = Jive.grab("#{jive[:url]}/people/username/#{user[:oracle_id]}", jive[:auth])
+	CSV.foreach("ww_sec_groups.csv", headers: true) do |row|
+	#	user = Util.parse_csv_user(row)	
+		if row[0]
+		#	resp = Jive.grab("#{jive[:url]}/people/username/#{user[:oracle_id]}", jive[:auth])
+		resp = Jive.grab("#{jive[:url]}/people/username/#{row[0]}", jive[:auth])
 			if resp["id"]				
-				puts "Added #{user[:oracle_id]}"
+	#			puts "Added #{user[:oracle_id]}"
+				puts "Added #{row[0]}"
 				ids.push(resp["id"])
 			else
 				puts resp
 			end
 		end
 	end
-	puts Jive.add_to_sec_group(2630,ids)
+	puts Jive.add_to_sec_group(2636,ids)
 end
 
 task check_oids: :environment do 

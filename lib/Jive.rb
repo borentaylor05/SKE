@@ -250,8 +250,20 @@ class Jive
       template[:name][:familyName] = u[:last_name]
       resp = Jive.create("#{jive[:url]}/people", template, jive[:auth])
       if resp["error"]
-        Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
-        return false
+        eUser = User.find_by(employee_id: u[:oracle_id])
+        if eUser
+          u[:jive_id] = eUser.jive_id
+          json = self.grab("#{jive[:url]}/people/#{u[:jive_id]}", jive[:auth])
+          if self.update_user_everywhere(json, u, jive)
+            return true
+          else
+            Rails.logger.info "ERROR - user #{u[:oracle_id]} could not be saved in db."
+            return false
+          end
+        else          
+           Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
+          return false
+        end
       elsif resp["id"]
         u[:jive_id] = resp["id"]
         if to_db
