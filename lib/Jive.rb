@@ -138,7 +138,9 @@ class Jive
     end
 
     def self.clean(json)
-        return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
+        if json 
+          return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
+        end
     end
 
     def self.getTags(relative_url, auth)
