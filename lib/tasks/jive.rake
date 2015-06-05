@@ -308,7 +308,7 @@ end
 
 task add_clients_to_sec_group: :environment do 
 	ids = []
-	jive = { url: Jive.dev_url, auth: Auth.dev }
+	jive = { url: Jive.social, auth: Auth.social }
 	clients = Client.where(name: ["cdc", "fairfax", "all"])
 	User.where(client: clients).each do |u|
 		if u.employee_id

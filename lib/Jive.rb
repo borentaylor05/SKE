@@ -66,7 +66,13 @@ class Jive
 
   def self.grab(url, auth)
     puts url
-    json = self.get(url, :basic_auth => auth).body
+    proxy = URI(ENV["QUOTAGUARDSTATIC_URL"]) if ENV["QUOTAGUARDSTATIC_URL"]
+    options = {}
+    if proxy
+      options = {http_proxyaddr: @proxy.host,http_proxyport: @proxy.port, http_proxyuser: @proxy.user, http_proxypass: @proxy.password}
+    end
+    options[:basic_auth] = auth
+    json = self.get(url, options).body
     if json 
       self.clean(json)
     else
