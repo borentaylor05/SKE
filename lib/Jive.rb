@@ -207,8 +207,7 @@ class Jive
         end
    end
 
-   def self.add_to_sec_group(group_id, jive_ids)
-      jive = { url: Jive.social, auth: Auth.social }
+   def self.add_to_sec_group(group_id, jive_ids, jive)
       jive_ids.map! { |id| id = "#{jive[:url]}/people/#{id}" }
       puts jive_ids
       return self.create("#{jive[:url]}/securityGroups/#{group_id}/members", jive_ids, jive[:auth])

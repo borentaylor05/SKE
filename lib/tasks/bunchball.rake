@@ -9,7 +9,7 @@ end
 
 task get_mission: :environment do 
 	bb = Bunchball.new('98086')
-	puts bb.get_mission("Old Buddy Old Pal")
+	puts bb.get_mission("2 Days of Attendance")
 end
 
 desc "Get User Points balance"
@@ -24,11 +24,6 @@ task leaderboard: :environment do
 	@test_users = %w{  }
 	bb = Bunchball.new('98086')
 	bb.get_leaders(@test_users)
-end
-
-task action: :environment do 
-	bb = Bunchball.new('98086')
-	puts bb.log_action('PollEvent-CREATED')
 end
 
 task group_test: :environment do 
@@ -53,12 +48,17 @@ end
 
 task get_group_users: :environment do 
 	bb = Bunchball.new('98086')
-	puts bb.get_group_users('Telstra Training Demo')
+	puts bb.get_group_users('Telstra Agents')
 end
 
 task add_user: :environment do 
 	bb = Bunchball.new('98086')
 	puts bb.add_user_to_group('Telstra Agents', '101211')
+end
+
+task mission_test: :environment do 
+	bb = Bunchball.new('98086')
+	puts bb.get_mission('1 Day of Attendance')
 end
 
 task :complete_missions_telstra, [:day] => :environment do |t,args|
@@ -70,9 +70,9 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 		attendance: 20
 	}
 	missions = {
-		one: ['1st Day Assessment', '1st Day Attendance', '1st Day QA'],
-		two: ['2nd Day Assessment', '2nd Day Attendance', '2nd Day QA'],
-		three: ['3rd Day Assessment', '3rd Day Attendance', '3rd Day QA']
+		one: ['1 Day of Attendance', '1st Day Assessment', '1st Day QA'],
+		two: ['2 Days of Attendance', '2nd Day Assessment', '2nd Day QA'],
+		three: ['3 Days of Attendance', '3rd Day Assessment', '3rd Day QA']
 	}
 	if args[:day]
 		case args[:day]
@@ -83,16 +83,25 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 		when 'three'
 			cur_missions = missions[:three]
 		end 
-		CSV.foreach('filename', headers: true) do |row| 
+		CSV.foreach('telstra_day_two.csv', headers: true) do |row| 
 			if row[0]
 				if row[1].to_i >= goals[:qa]
-					bb.complete_mission(row[0].trim, cur_missions[2])
+					bb.complete_mission(row[0].strip, cur_missions[2])
 				end
 				if row[2].to_i >= goals[:assessment]
-					bb.complete_mission(row[0].trim, cur_missions[0])
+					bb.complete_mission(row[0].strip, cur_missions[1])
 				end
-				if row[3].to_i >= goals[:attendance]
-					bb.complete_mission(row[0].trim, cur_missions[1])
+				if row[3].to_i >= 20
+					puts "trying #{row[0]}" and args[:day] == "one"
+					puts bb.complete_mission(row[0].strip, "1 Day of Attendance")
+				end
+				if row[4].to_i >= 20
+					puts "trying #{row[0]}" and args[:day] == "two"
+					puts bb.complete_mission(row[0].strip, "2 Days of Attendance")
+				end
+				if row[5].to_i >= 20 and args[:day] == "three"
+					puts "trying #{row[0]}"
+					puts bb.complete_mission(row[0].strip, "3 Days of Attendance")
 				end
 			else
 				puts "First column is empty."

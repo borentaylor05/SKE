@@ -87,7 +87,7 @@ class Bunchball
 	def complete_mission(oracle_id, challenge)
 		jive = Jive2.new('social')
 		resp = jive.grab("/people/username/#{oracle_id}")
-		if resp["id"]
+		if resp and resp["id"]
 			url = URI.encode("#{@baseURL}?method=user.awardChallenge&sessionKey=#{@sessionKey}&userId=#{resp["id"]}&challenge=#{challenge}")
 		else
 			puts resp

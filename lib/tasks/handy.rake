@@ -160,8 +160,8 @@ task cost_per_thousand_associations: :environment do
 end
 
 task simple_test: :environment do 
-	cdc = CDC.new('dev')
-	cdc.import_a_to_z("a_to_c.csv")
+	jive = Jive2.new('social')
+	puts jive.grab("/people/98086")
 end
 
 task get_jive_ids: :environment do 
