@@ -69,7 +69,7 @@ class Jive
     proxy = URI(ENV["QUOTAGUARDSTATIC_URL"]) if ENV["QUOTAGUARDSTATIC_URL"]
     options = {}
     if proxy
-      options = {http_proxyaddr: @proxy.host,http_proxyport: @proxy.port, http_proxyuser: @proxy.user, http_proxypass: @proxy.password}
+      options = {http_proxyaddr: proxy.host,http_proxyport: proxy.port, http_proxyuser: proxy.user, http_proxypass: proxy.password}
     end
     options[:basic_auth] = auth
     json = self.get(url, options).body
