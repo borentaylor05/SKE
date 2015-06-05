@@ -314,7 +314,7 @@ task add_clients_to_sec_group: :environment do
 		if u.employee_id
 			resp = Jive.grab("#{jive[:url]}/people/username/#{u.employee_id}", jive[:auth])
 			if resp["id"]				
-			#	puts "Added #{row[0]}"
+				puts "Added #{u.employee_id}"
 				ids.push(resp["id"])
 			else
 				puts resp
