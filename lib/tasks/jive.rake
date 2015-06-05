@@ -1,4 +1,5 @@
 require 'Jive'
+require 'Jive2'
 require 'Util'
 require 'Auth'
 require 'csv'
@@ -308,11 +309,11 @@ end
 
 task add_clients_to_sec_group: :environment do 
 	ids = []
-	jive = { url: Jive.social, auth: Auth.social }
+	jive = Jive2.new('social')
 	clients = Client.where(name: ["cdc", "fairfax", "all"])
 	User.where(client: clients).each do |u|
 		if u.employee_id
-			resp = Jive.grab("#{jive[:url]}/people/username/#{u.employee_id}", jive[:auth])
+			resp = jive.grab("/people/username/#{u.employee_id}")
 			if resp and resp["id"]				
 				puts "Added #{u.employee_id}"
 				ids.push(resp["id"])
@@ -321,7 +322,7 @@ task add_clients_to_sec_group: :environment do
 			end
 		end
 	end
-	puts Jive.add_to_sec_group(2637,ids, jive)
+	puts jive.add_to_sec_group(2637,ids)
 end
 
 task check_oids: :environment do 

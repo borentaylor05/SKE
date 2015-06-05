@@ -66,6 +66,12 @@ class Jive2
     	grab("#{@url}/search/people?filter=search(#{name.gsub(/\s+/, ",")})", @auth)
   	end
 
+  	def add_to_sec_group(group_id, jive_ids)
+  		jive_ids.map! { |id| id = "#{@url}/people/#{id}" }
+      	puts jive_ids
+      	return self.create("/securityGroups/#{group_id}/members", jive_ids)
+  	end
+
   	def update_user_everywhere(json, user)
 	     json = Util.parse_profile(json, user)
 	     json["emails"][0] = { value: user[:email], type: "work", jive_label: "Email", primary: true }
