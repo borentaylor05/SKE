@@ -22,6 +22,22 @@ class Jive2
 		end
 		@options[:basic_auth] = @auth
 		@options[:headers] = {'Content-Type' => 'application/json'}
+		@user_template = {
+		    emails: [ {
+		      value: "",
+		      type: "work",
+		      primary: true,
+		      jive_label: "Email"
+		    } ],
+		    jive: {
+		      password: "",
+		      username: ""
+		    },
+		    name: {
+		      familyName: "",
+		      givenName: ""
+		    }
+		}
 	end
 
 	def test_grab(url)
@@ -91,5 +107,56 @@ class Jive2
 	      end
 	    end
    end
+
+   def create_user(u, to_db)
+      template = @user_template
+      template[:emails][0][:value] = u[:email]
+      template[:jive][:password] = "Welcome1"
+      template[:jive][:username] = u[:oracle_id]
+      template[:name][:givenName] = u[:first_name]
+      template[:name][:familyName] = u[:last_name]
+      resp = create("/people", template)
+      if resp and resp["error"]
+        eUser = User.find_by(employee_id: u[:oracle_id])
+        if eUser
+          json = grab("/people/username/#{u[:oracle_id]}")
+          if json["id"] 
+            if eUser.jive_id == 0
+              eUser.update_attributes(jive_id: json["id"])
+            end
+            u[:jive_id] = eUser.jive_id
+            if update_user_everywhere(json, u)
+              return true
+            else
+              Rails.logger.info "ERROR - user #{u[:oracle_id]} could not be saved in db."
+              return false
+            end
+          else
+            Rails.logger.info("NOJIVEUSER -- #{u[:oracle_id]}")
+          end
+        else          
+           Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
+          return false
+        end
+      elsif resp and resp["id"]
+        u[:jive_id] = resp["id"]
+        if to_db
+          if Util.create_or_update_from_csv(u)
+            Rails.logger.info "Created in Both:  #{resp["id"]}"
+            return true
+          else
+            Rails.logger.info "Error: #{u[:first_name]} #{u[:last_name]}"
+            return false
+          end
+        else
+          Rails.logger.info Rails.logger.info "Created in Jive:  #{u[:oracle_id]}"
+          return false
+        end
+        # if to_bb_group
+        #   bb = Bunchball.new('98086')
+        #   Rails.logger.info bb.add_user_to_group(to_bb_group, u[:jive_id])
+        # end
+      end
+    end
 
 end
