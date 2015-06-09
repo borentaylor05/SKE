@@ -189,6 +189,12 @@ Rails.application.routes.draw do
   match "/ww/api/promotions", to: "ww#create_promotion_entry", via: [:post, :options]   #tested
 
   # ----- END WW Routes ------ 
+
+  # ----- Begin ARC Routes ------ 
+
+  match "/arc/api/rco", to: "arc#create_rco", via: [:post, :options]
+
+  # ----- End ARC Routes ------ 
   
   # TWITTER ROUTES
   match "tweets/multiple-users", to: "twitter#get_tweets_from_multiple", via: :get

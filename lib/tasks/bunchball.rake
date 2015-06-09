@@ -83,29 +83,49 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 		when 'three'
 			cur_missions = missions[:three]
 		end 
-		CSV.foreach('telstra_day_three.csv', headers: true) do |row| 
+		CSV.foreach('telstra_day_four.csv', headers: true) do |row| 
 			if row[0]
-				if row[2].to_i >= 20
+				if row[1].to_i >= goals[:qa]
+					puts "trying #{row[0]}" 
+					puts bb.complete_mission(row[0].strip, "1st Day QA")
+				end
+				if row[2].to_i >= goals[:qa]
+					puts "trying #{row[0]}" 
+					puts bb.complete_mission(row[0].strip, "2nd Day QA")
+				end
+				if row[3].to_i >= goals[:qa]
+					puts "trying #{row[0]}" 
+					puts bb.complete_mission(row[0].strip, "3rd Day QA")
+				end
+				if row[4].to_i >= goals[:assessment]
 					puts "trying #{row[0]}" 
 					puts bb.complete_mission(row[0].strip, "1st Day Assessment")
 				end
-				if row[3].to_i >= 20
+				if row[5].to_i >= goals[:assessment]
 					puts "trying #{row[0]}" 
 					puts bb.complete_mission(row[0].strip, "2nd Day Assessment")
 				end
-				if row[4].to_i >= 20
+				if row[6].to_i >= goals[:assessment]
 					puts "trying #{row[0]}" 
 					puts bb.complete_mission(row[0].strip, "3rd Day Assessment")
 				end
-				if row[5].to_i >= 20
+				if row[7].to_i >= goals[:assessment]
+					puts "trying #{row[0]}" 
+					puts bb.complete_mission(row[0].strip, "Final Assessment")
+				end
+				if row[7].to_i >= 100
+					puts "trying #{row[0]}" 
+					puts bb.complete_mission(row[0].strip, "Perfect score on Assessment")
+				end
+				if row[8].to_i >= 20
 					puts "trying #{row[0]}" 
 					puts bb.complete_mission(row[0].strip, "1 Day of Attendance")
 				end
-				if row[6].to_i >= 20
+				if row[9].to_i >= 20
 					puts "trying #{row[0]}"
 					puts bb.complete_mission(row[0].strip, "2 Days of Attendance")
 				end
-				if row[7].to_i >= 20
+				if row[10].to_i >= 20
 					puts "trying #{row[0]}"
 					puts bb.complete_mission(row[0].strip, "3 Days of Attendance")
 				end
