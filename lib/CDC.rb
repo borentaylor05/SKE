@@ -20,12 +20,31 @@ class CDC
 
 	def import_a_to_z(file)
 		CSV.foreach(file, headers: true) do |row|
-			row[0] = row[0].strip # row[0] is Topic
+			row[0] = row[0].strip if row[0] # row[0] is Topic
 			entry = AToZEntry.find_by(topic: row[0])
 			if entry
-				entry.update_attributes(row.to_hash)
+				entry.update_attributes(
+					aka: row[1],
+					owner: row[2],
+					scope: row[3],
+					notes: row[4],
+					program_flow: row[5],
+					pr: row[6],
+					cdc_link: row[7],
+					spanish: row[8]
+				)
 			else
-				AToZEntry.create! row.to_hash
+				AToZEntry.create!(
+					topic: row[0],
+					aka: row[1],
+					owner: row[2],
+					scope: row[3],
+					notes: row[4],
+					program_flow: row[5],
+					pr: row[6],
+					cdc_link: row[7],
+					spanish: row[8]
+				)
 			end
 		end
 	end
