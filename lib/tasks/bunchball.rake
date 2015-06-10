@@ -83,7 +83,7 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 		when 'three'
 			cur_missions = missions[:three]
 		end 
-		CSV.foreach('telstra_day_five.csv', headers: true) do |row| 
+		CSV.foreach('telstra_day_six.csv', headers: true) do |row| 
 			if row[0]
 				if row[1].to_i >= goals[:qa]
 					puts "trying #{row[0]}" 
