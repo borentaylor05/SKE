@@ -8,7 +8,7 @@ class CDC
 
 	def import_address_book(file)
 		CSV.foreach(file, headers: true) do |row|
-			row[0] = row[0].strip # row[0] is Program Description
+			row[0] = row[0].strip if row[0] # row[0] is Program Description
 			entry = AddressBookEntry.find_by(ProgramDescription: row[0])
 			if entry
 				entry.update_attributes(row.to_hash)
