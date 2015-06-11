@@ -4,6 +4,10 @@ class ArcController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 
+	def get_rcos
+		respond({ status: 0, rcos: apify(RcoOrder.where(["created_at > ?", 2.days.ago])) })
+	end
+
 	def create_rco
 		if(request.method == "OPTIONS")
 			respond({status: 0})

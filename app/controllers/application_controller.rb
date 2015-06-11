@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   $instance = "http://localhost:8080"
   $current_url = "http://localhost:8080/api/core/v3"
   $current_auth = Jive.auth
+  $eastern_tz = 'Eastern Time (US & Canada)'
   $whitelist = [
       'http://localhost:8080', 
       'http://localhost:8090', 
@@ -150,6 +151,21 @@ class ApplicationController < ActionController::Base
 
   def after_update_path_for(resource)
       return "/"
+  end
+
+  def apify(array, timezone = nil)
+    newArray = []
+    Rails.logger.info(array)
+    array.each do |a|
+      na = a.attributes
+      if timezone
+        na[:created_at] = a.created_at.in_time_zone(timezone).strftime("%m/%d/%Y at %I:%M%p")
+      else
+        na[:created_at] = a.created_at.strftime("%m/%d/%Y at %I:%M%p")
+      end
+      newArray.push(na)
+    end
+    return newArray
   end
 
 end

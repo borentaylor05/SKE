@@ -189,3 +189,4 @@ task get_ip: :environment do
 	resp = jive.test_grab("http://icanhazip.com")
 	puts "Your Static IP is: #{resp}"
 end
+
