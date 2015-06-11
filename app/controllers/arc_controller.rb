@@ -5,7 +5,7 @@ class ArcController < ApplicationController
 	after_filter :cors_set_access_control_headers
 
 	def get_rcos
-		respond({ status: 0, rcos: apify(RcoOrder.where(["created_at > ?", 2.days.ago])) })
+		respond({ status: 0, rcos: apify(RcoOrder.where(["created_at > ?", 2.days.ago]), $eastern_tz) })
 	end
 
 	def create_rco
