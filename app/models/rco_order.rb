@@ -6,4 +6,6 @@ class RcoOrder < ActiveRecord::Base
 	validates :num_registrations, presence: true
 	validates :agent_name, presence: true
 
+	default_scope { order('updated_at DESC') }
+
 end

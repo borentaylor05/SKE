@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609172855) do
+ActiveRecord::Schema.define(version: 20150611181302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -332,9 +332,6 @@ ActiveRecord::Schema.define(version: 20150609172855) do
     t.integer  "num_registrations"
     t.string   "coupon"
     t.boolean  "paypal"
-    t.boolean  "knows_lms"
-    t.boolean  "need_dir"
-    t.boolean  "attch_sent"
     t.text     "comments"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false

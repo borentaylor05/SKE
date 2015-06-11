@@ -27,10 +27,7 @@ class ArcController < ApplicationController
 					lms_num: params[:lms_num],
 					num_registrations: params[:num_registrations],
 					coupon: params[:coupon],
-					paypal: params[:paypal] ? true : false,
-					knows_lms: params[:knows_lms] ? true : false,
-					need_dir: params[:need_dir] ? true : false,
-					attch_sent: params[:attch_sent] ? true : false,
+					paypal: params[:paypal] ? true : false,					
 					comments: params[:comments]
 				)
 				if rco.valid?
