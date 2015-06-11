@@ -140,6 +140,7 @@ class Util
 				)
 				return true
 			else
+				user[:jive_id] = 0 if !user[:jive_id]
 				u = User.new(
 					jive_id: user[:jive_id].strip,
 					employee_id: user[:oracle_id].strip,

@@ -134,9 +134,16 @@ class Jive2
           else
             Rails.logger.info("NOJIVEUSER -- #{u[:oracle_id]}")
           end
-        else          
-           Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
-          return false
+        else
+        	json = grab("/people/username/#{u[:oracle_id]}")
+        	u[:jive_id] = json["id"]
+        	if Util.create_or_update_from_csv(u)
+        		Rails.logger.info "ERROR (#{u[:oracle_id]}) created in DB but not Jive"
+          		return false
+        	else
+        		Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
+          		return false
+        	end                     
         end
       elsif resp and resp["id"]
         u[:jive_id] = resp["id"]

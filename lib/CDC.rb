@@ -30,8 +30,8 @@ class CDC
 					notes: row[4],
 					program_flow: row[5],
 					pr: row[6],
-					cdc_link: row[7],
-					spanish: row[8]
+					cdc_link: row[7] == "YES" ? true : false,
+					spanish: row[8] == "Y" ? true : false
 				)
 			else
 				AToZEntry.create!(
@@ -42,8 +42,8 @@ class CDC
 					notes: row[4],
 					program_flow: row[5],
 					pr: row[6],
-					cdc_link: row[7],
-					spanish: row[8]
+					cdc_link: row[7] == "YES" ? true : false,
+					spanish: row[8] == "Y" ? true : false
 				)
 			end
 		end
