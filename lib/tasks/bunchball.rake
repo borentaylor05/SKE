@@ -83,7 +83,7 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 		when 'three'
 			cur_missions = missions[:three]
 		end 
-		CSV.foreach('telstra_day_six.csv', headers: true) do |row| 
+		CSV.foreach('telstra_day_seven.csv', headers: true) do |row| 
 			if row[0]
 				if row[1].to_i >= goals[:qa]
 					puts "trying #{row[0]}" 
@@ -128,6 +128,14 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 				if row[10].to_i >= 20
 					puts "trying #{row[0]}"
 					puts bb.complete_mission(row[0].strip, "3 Days of Attendance")
+				end
+				if row[11].to_i >= 20
+					puts "trying #{row[0]}"
+					puts bb.complete_mission(row[0].strip, "4 Days of Attendance")
+				end
+				if row[12].to_i >= goals[:qa]
+					puts "trying #{row[0]}"
+					puts bb.complete_mission(row[0].strip, "4th Day QA")
 				end
 			else
 				puts "First column is empty."

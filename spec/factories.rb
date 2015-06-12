@@ -1,4 +1,12 @@
-FactoryGirl.define do  factory :rco_order do
+FactoryGirl.define do  factory :arc_blackout_date do
+    date "MyString"
+notes "MyString"
+  end
+  factory :arc_city_state do
+    city "MyString"
+state "MyString"
+  end
+  factory :rco_order do
     agent_name "MyString"
 created false
 acct_with_password false
