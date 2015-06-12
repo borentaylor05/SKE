@@ -85,9 +85,8 @@ class MessageController < ApplicationController
 		end
 		if client
 			lobs = get_client_lobs(client.id)
-			titles = get_client_titles(client.id)
 			if lobs.count > 0
-				respond({ status: 0, lobs: lobs, titles: titles })
+				respond({ status: 0, lobs: lobs })
 			else
 				respond({ status: 1, error: "No LOBS found.  Need to upload users." })
 			end
