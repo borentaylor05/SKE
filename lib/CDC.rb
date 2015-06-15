@@ -22,6 +22,8 @@ class CDC
 		CSV.foreach(file, headers: true) do |row|
 			row[0] = row[0].strip if row[0] # row[0] is Topic
 			entry = AToZEntry.find_by(topic: row[0])
+			pr = row[6].strip if row[6]
+			spanish = row[8].strip if row[8]
 			if entry
 				entry.update_attributes(
 					aka: row[1],
@@ -29,8 +31,8 @@ class CDC
 					scope: row[3],
 					notes: row[4],
 					program_flow: row[5],
-					pr: row[6],
-					cdc_link: row[7] == "YES" ? true : false,
+					pr: pr == "YES" ? true : false,
+					cdc_link: row[7],
 					spanish: row[8] == "Y" ? true : false
 				)
 			else
@@ -41,8 +43,8 @@ class CDC
 					scope: row[3],
 					notes: row[4],
 					program_flow: row[5],
-					pr: row[6],
-					cdc_link: row[7] == "YES" ? true : false,
+					pr: pr == "YES" ? true : false,
+					cdc_link: row[7],
 					spanish: row[8] == "Y" ? true : false
 				)
 			end

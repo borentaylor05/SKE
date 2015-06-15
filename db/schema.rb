@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150612154252) do
+ActiveRecord::Schema.define(version: 20150615181015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,16 +72,22 @@ ActiveRecord::Schema.define(version: 20150612154252) do
   create_table "arc_blackout_dates", force: true do |t|
     t.string   "date"
     t.string   "notes"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "arc_blackout_trackers", force: true do |t|
+    t.integer  "arc_blackout_date_id"
     t.integer  "arc_city_state_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
   create_table "arc_city_states", force: true do |t|
     t.string   "city"
-    t.string   "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "state_id"
   end
 
   create_table "article_requests", force: true do |t|
@@ -392,6 +398,13 @@ ActiveRecord::Schema.define(version: 20150612154252) do
 
   add_index "specialties_users", ["specialty_id", "user_id"], name: "index_specialties_users_on_specialty_id_and_user_id", using: :btree
   add_index "specialties_users", ["user_id", "specialty_id"], name: "index_specialties_users_on_user_id_and_specialty_id", using: :btree
+
+  create_table "states", force: true do |t|
+    t.string   "name"
+    t.string   "abbreviation"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "suburb_fx_publications", force: true do |t|
     t.integer  "fx_publication_id"

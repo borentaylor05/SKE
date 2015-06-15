@@ -190,3 +190,8 @@ task get_ip: :environment do
 	puts "Your Static IP is: #{resp}"
 end
 
+task test_az: :environment do 
+	CSV.foreach('cdc_test.csv', headers: true) do |row|
+		puts "#{row[0]} --- #{row[8]}"
+	end	
+end

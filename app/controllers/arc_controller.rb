@@ -5,13 +5,27 @@ class ArcController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
+	def get_blackout_dates
+		city = ArcCityState.find_by(city: params[:city], state: State.find_by(name: params[:state]))
+		if city
+			respond({ status: 0, dates: city.arc_blackout_dates })
+		else
+			respond({ status: 1, error: "City / State combo not found..." })
+		end
+	end
+
+	def get_all_cities
+		respond({ status: 0, cities: city_states(ArcCityState.all) })
+	end
+
 	def check_cities
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
 			cities = []
 			params[:cities].each do |c|
-				city = ArcCityState.find_by(city: c.downcase, state: params[:state].upcase)
+				c = c.strip
+				city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state].upcase))
 				if city 
 					resp = { name: c, exists: true }
 				else
@@ -19,6 +33,7 @@ class ArcController < ApplicationController
 				end
 				cities.push(resp)
 			end
+
 			respond({ status: 0, cities: cities })
 		end		
 	end
@@ -30,26 +45,40 @@ class ArcController < ApplicationController
 			cities = params[:cities].split(",")
 			base = cities.size
 			created = 0
+			duplicate = false
+			bo = ArcBlackoutDate.find_by(date: params[:date], notes: params[:notes])
+			if !bo
+				bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes])
+				if bo.valid?
+					bo.save	
+				else
+					Rails.logger.info bo.errors.full_messages 
+				end	
+			end			
 			cities.each do |c|
 				c = c.strip if c
-				city = ArcCityState.find_by(city: c.downcase, state: params[:state][:abbreviation].upcase)
+				city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
 				if !city 
-					city = ArcCityState.new(city: c.downcase, state: params[:state][:abbreviation].upcase)
+					city = ArcCityState.new(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
 					if city.valid?
-						city.save
+						city.save							
 					else
 						Rails.logger.info city.errors.full_messages 
 					end
 				end
-				bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes], arc_city_state: city)
-				if bo.valid?
-					bo.save
-					created += 1
+				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
+					tracker = ArcBlackoutTracker.new( arc_city_state: city, arc_blackout_date: bo )
+					if tracker.valid?
+						tracker.save
+						created += 1
+					else
+						Rails.logger.info tracker.errors.full_messages 
+					end
 				else
-					Rails.logger.info bo.errors.full_messages 
+					duplicate = true
 				end
 			end
-			respond({ status: 0, message: "#{created} of #{base} saved successfully." })
+			respond({ status: 0, message: "#{created} of #{base} saved successfully.", duplicate: duplicate })
 		end
 	end
 
@@ -88,5 +117,17 @@ class ArcController < ApplicationController
 			end
 		end
 	end
+
+	private
+
+		def city_states(cities)
+			combo = []
+			cities.each do |c|
+				hash = c.attributes
+				hash[:state] = c.state.name
+				combo.push(hash)
+			end
+			return combo
+		end
 
 end

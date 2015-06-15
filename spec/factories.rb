@@ -1,4 +1,12 @@
-FactoryGirl.define do  factory :arc_blackout_date do
+FactoryGirl.define do  factory :state do
+    name "MyString"
+abbreviation "MyString"
+  end
+  factory :arc_blackout_tracker do
+    arc_blackout_date_id 1
+arc_city_state_id 1
+  end
+  factory :arc_blackout_date do
     date "MyString"
 notes "MyString"
   end

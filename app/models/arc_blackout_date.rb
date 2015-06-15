@@ -2,6 +2,7 @@ class ArcBlackoutDate < ActiveRecord::Base
 
 	validates :date, presence: true
 
-	belongs_to :arc_city_state
+	has_many :arc_blackout_trackers
+	has_many :arc_city_states, through: :arc_blackout_trackers
 
 end
