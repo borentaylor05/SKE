@@ -213,4 +213,8 @@ State.create([
     name: "Wyoming",
     abbreviation: "WY"
   },
+  {
+    name: "District of Columbia",
+    abbreviation: "D.C."
+  }
 ])
