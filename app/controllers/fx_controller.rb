@@ -14,7 +14,7 @@ class FxController < ApplicationController
 		if params.has_key?("publication_id")
 			pub = FxPublication.find_by(id: params[:publication_id])
 			if pub 
-				if pub.has_se
+				if pub.mag
 					respond({ status: 0, publication: pub, pricing: pub.fx_mag_pricing, ses: FxPublication.where(parent: pub.name) })
 				else
 					respond({ status: 0, publication: pub, pricing: pub.fx_mag_pricing })

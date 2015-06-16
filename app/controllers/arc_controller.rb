@@ -45,7 +45,7 @@ class ArcController < ApplicationController
 			cities = params[:cities].split(",")
 			base = cities.size
 			created = 0
-			duplicate = false
+			duplicate = 0
 			bo = ArcBlackoutDate.find_by(date: params[:date], notes: params[:notes])
 			if !bo
 				bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes])
@@ -75,7 +75,7 @@ class ArcController < ApplicationController
 						Rails.logger.info tracker.errors.full_messages 
 					end
 				else
-					duplicate = true
+					duplicate +=1
 				end
 			end
 			respond({ status: 0, message: "#{created} of #{base} saved successfully.", duplicate: duplicate })

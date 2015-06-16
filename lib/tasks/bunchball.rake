@@ -14,8 +14,8 @@ end
 
 desc "Get User Points balance"
 task bb_get_balance: :environment do
-	bb = Bunchball.new('98086')
-	resp = bb.get('site.getPointsLeaders&returnCount=100')
+	bb = Bunchball.new('101052')
+	resp = bb.get('user.getPointsBalance')
 	puts resp
 end
 
@@ -83,7 +83,7 @@ task :complete_missions_telstra, [:day] => :environment do |t,args|
 		when 'three'
 			cur_missions = missions[:three]
 		end 
-		CSV.foreach('telstra_day_seven.csv', headers: true) do |row| 
+		CSV.foreach('telstra_day_eight.csv', headers: true) do |row| 
 			if row[0]
 				if row[1].to_i >= goals[:qa]
 					puts "trying #{row[0]}" 
