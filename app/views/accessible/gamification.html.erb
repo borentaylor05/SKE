@@ -146,18 +146,6 @@
 				<input style="margin-bottom: 10px;" type="checkbox" ng-model="g.game.all_lobs"> All LOBs? {{ g.game.all_lobs ? "Yes" : "No" }}
 				<select ng-model="g.game.lob" ng-options="l as l for l in g.lobs track by l" required></select>
 			</div>
-			<button ng-click="g.checkFolder()" class="btn btn-sm btn-info">Check Folder Name</button>
-			<span id="check"> <i class="fa fa-long-arrow-left"></i> You must click this to see remaining fields</span>
-			<div ng-show="g.folderChecked">
-				<div class="alert alert-danger" ng-hide="g.correctFolder(g.game.client, g.game.lob, g.folder)">
-					Error: Bunchball folder name should be 
-					<strong>{{ g.game.client }}-{{ g.game.lob }}</strong> but is
-					<strong> {{ g.found.folderName }}</strong>
-				</div>
-				<div class="alert alert-success" ng-show="g.correctFolder(g.game.client, g.game.lob, g.folder)">
-					Folder name is correct!
-				</div>
-			</div>
 		</div>
 		<div ng-show="g.found && g.game.client && g.folderChecked" ng-switch="g.game.game_type">
 			<div ng-switch-when="Empower">

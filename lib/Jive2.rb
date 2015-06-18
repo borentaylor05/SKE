@@ -19,6 +19,10 @@ class Jive2
 		when 'social'
 			@url = "https://social.teletech.com/api/core/v3"
 			@auth = Auth.social
+		when 'wwc'
+			@url = "https://weightwatchers.jiveon.com/api/core/v3"
+			@auth = Auth.ww_coaches
+			@options = {}
 		end
 		@options[:basic_auth] = @auth
 		@options[:headers] = {'Content-Type' => 'application/json'}
@@ -107,6 +111,21 @@ class Jive2
 	      end
 	    end
    end
+
+   def get_all_users
+   		si = 0
+   		count = 0
+		json = grab("/people?count=100&startIndex=#{si}")
+		while json["list"] && json["list"].count > 0
+			users = json["list"]
+			users.each do |u|
+				count += 1
+			end
+			si = si + 100
+			json = grab("/people?count=100&startIndex=#{si}")
+		end
+		puts count
+	end
 
    def create_user(u, to_db)
       template = @user_template

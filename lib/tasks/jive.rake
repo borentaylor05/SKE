@@ -180,7 +180,6 @@ task :get_users => :environment do
 		si = si + 100
 		json = Jive.grab("#{Jive.social}/people?count=100&startIndex=#{si}", Auth.social)
 	end
-
 end
 
 task :create_user_csv, [:file] => :environment do |t,args|
@@ -352,3 +351,10 @@ task set_telstra_passwords: :environment do
 		end
 	end
 end
+
+task :get_all_users => :environment do 
+	jive = Jive2.new('wwc')
+	jive.get_all_users
+end
+
+
