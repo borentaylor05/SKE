@@ -34,15 +34,20 @@ class AccessibleController < ApplicationController
 	end
 
 	def gamification_upload_process
+		info = nil
 		case params[:client]
 		when 'cdc', 'fairfax'
-			cdc = CDC.new('social')
-			errors = Util.import_simple_gamification(params[:file])
-			if errors.count == 0
-				respond({ status: 0, message: "Success!" })
-			else
-				respond({ status: 1, errors: errors })
+			User.where(client: Client.find_by(name: params[:client])).each do |u|
+				u.update_attributes(rank: nil, tier: nil, comp_score: nil)
 			end
+		else 
+			info = "Client #{params[:client]} not found."
+		end
+		errors = Util.import_simple_gamification(params[:file])
+		if errors.count == 0
+			respond({ status: 0, message: "Success!", info: info })
+		else
+			respond({ status: 1, errors: errors, info: info })
 		end
 	end
 
