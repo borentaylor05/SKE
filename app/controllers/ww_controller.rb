@@ -7,33 +7,23 @@ class WwController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			sud = Date.strptime(params[:ww_promotion][:signup_date].to_s,'%Q')			
 			promo = WwPromotion.new(
 				first_name: params[:ww_promotion][:first_name],
 				last_name: params[:ww_promotion][:last_name],
 				member_num: params[:ww_promotion][:member_num],
-				gender: params[:ww_promotion][:gender],
 				billing: params[:ww_promotion][:billing],
 				city: params[:ww_promotion][:city],
 				state: params[:ww_promotion][:state],
 				zip: params[:ww_promotion][:zip],
 				agent_name: params[:ww_promotion][:agent_name],
-				signup_date: sud
+				description: params[:ww_promotion][:description],
+				member_phone: params[:ww_promotion][:member_phone],
+				meet_city: params[:ww_promotion][:meet_city],
+				meet_state: params[:ww_promotion][:meet_state]
 			)
-			if params.has_key?("nonqual") and params["nonqual"]
-				promo.nonqual = true
-			else
-				promo.nonqual = false
-			end
 			if promo.valid? 
-				promo.save
-				result = check_time(promo) 
-				if result == 1
-					respond({ status: 0, promo: promo })
-				else
-					promo.update_attributes(member_num: nil, invalid_promo: true)
-					respond({ status: 1, error: result })
-				end
+				promo.save				
+				respond({ status: 0, promo: promo })				
 			else
 				if promo.errors.full_messages.include?("Member num has already been taken")
 					p = WwPromotion.find_by(member_num: params[:ww_promotion][:member_num])
@@ -48,7 +38,7 @@ class WwController < ApplicationController
 	private
 
 		def promo_params
-			params.require(:ww_promotion).permit(:first_name, :last_name, :member_num, :gender, :billing, :city, :state, :zip, :agent_name, :signup_date, :nonqual)
+			params.require(:ww_promotion).permit(:first_name, :last_name, :member_num, :billing, :city, :state, :zip, :agent_name, :member_phone, :meet_state, :meet_city, :description)
 		end
 
 		def check_time(promo)

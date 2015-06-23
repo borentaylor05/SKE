@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150615181015) do
+ActiveRecord::Schema.define(version: 20150623164328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -521,17 +521,17 @@ ActiveRecord::Schema.define(version: 20150615181015) do
     t.string   "member_num"
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "gender"
     t.string   "billing"
     t.string   "city"
     t.string   "state"
     t.integer  "zip"
     t.string   "agent_name"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.date     "signup_date"
-    t.boolean  "invalid_promo"
-    t.boolean  "nonqual"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.string   "member_phone"
+    t.text     "description"
+    t.string   "meet_city"
+    t.string   "meet_state"
   end
 
   add_index "ww_promotions", ["member_num"], name: "index_ww_promotions_on_member_num", using: :btree
