@@ -60,6 +60,28 @@ class FX
 		end
 	end
 
+	def upload_newsagents(file)
+		count = 0
+		CSV.foreach(file.path, headers: true) do |row|
+			if row[0]
+				na = FxNewsAgent.new(
+					code: row[0],
+					agent: row[1],
+					fax_email: row[2]
+				)
+				if na.valid?
+					count += 1
+					na.save
+				else
+					Rails.logger.info(na.errors.full_messages)
+				end
+			else
+				Rails.logger.info "No code for #{row[1]}"
+			end
+		end
+		return count
+	end
+
 	private 
 
 		def dollar_to_decimal(num)

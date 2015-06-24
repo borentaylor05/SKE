@@ -4,6 +4,7 @@ class AccessibleController < ApplicationController
 	require 'Auth'
 	require 'Bunchball'
 	require 'CDC'
+	require 'FX'
 
 	before_action :authenticate_admin!
 	before_filter :is_admin?, only: :new_admin
@@ -28,6 +29,15 @@ class AccessibleController < ApplicationController
 	end
 
 	def gamification
+	end
+
+	def temp_util_upload		
+	end
+
+	def temp_util_upload_process
+		fx = FX.new('dev')
+		created = fx.upload_newsagents(params[:file])
+		respond({ created: created })
 	end
 
 	def gamification_upload		

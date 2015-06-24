@@ -82,3 +82,8 @@ task upload_code_rates: :environment do
 	fx.upload_code_rates('smh_rates.csv', 'Sydney Morning Herald')
 end
 
+task upload_newsagents: :environment do 
+	fx = FX.new('dev')
+	fx.upload_newsagents
+end
+

@@ -1,4 +1,9 @@
-FactoryGirl.define do  factory :fx_code_rate do
+FactoryGirl.define do  factory :fx_news_agent do
+    code "MyString"
+agent "MyString"
+fax_email "MyString"
+  end
+  factory :fx_code_rate do
     schedule "MyString"
 month_code "MyString"
 month_rate "9.99"

@@ -94,6 +94,8 @@ Rails.application.routes.draw do
   match "/temp/upload/db-only", to: "accessible#temp_upload_db_only", via: :get
   match "/temp/upload/process/db-only", to: "accessible#temp_upload_process_db_only", via: :post
   match "/temp/upload/process", to: "accessible#temp_upload_process", via: :post
+  match "/temp/util/upload", to: "accessible#temp_util_upload", via: :get
+  match "/temp/util/upload/process", to: "accessible#temp_util_upload_process", via: :post
   # Maintainers
   match "/maintainers/all", to: "accessible#get_maintainers", via: :get
   match "/maintainers/:id/update", to: "accessible#update_maintainer", via: :post
