@@ -1,9 +1,36 @@
 require 'Jive2'
 
 class FX
+	include ActionView::Helpers::NumberHelper
 
 	def initialize(instance)
 		@jive = Jive2.new(instance)
+	end
+
+	def upload_code_rates(file,name)
+		CSV.foreach(file, headers: true) do |row|
+			pub = FxPublication.find_by(name: name)
+			if row[0] and pub
+			 	fxcr = FxCodeRate.new(
+			 		fx_publication: pub,
+			 		schedule: row[0].strip,
+			 		month_code: row[1].strip,
+			 		month_rate: dollar_to_decimal(row[2]),
+			 		year_code: row[3].strip,
+			 		year_rate: dollar_to_decimal(row[4]),
+			 		other: row[5] ||= nil,
+			 		three_day: row[6].strip == "1" ? true : false
+			 	)
+			 	if fxcr.valid?
+			 		fxcr.save
+			 		puts "Good #{name}"
+			 	else
+			 		puts fxcr.errors.full_messages
+			 	end
+			else
+				puts "Row empty or pub not found - #{name}"
+			end
+		end
 	end
 
 	def upload_redelivery(file)
@@ -11,7 +38,7 @@ class FX
 		CSV.foreach(file.path, headers: true) do |row|
 			if row[0]
 				pub = FxPublication.find_by(name: row[0].strip)
-				if pub
+				if pfb
 					red = Redelivery.new(
 						fx_publication: pub,
 						round_id: row[1].upcase,
@@ -32,5 +59,11 @@ class FX
 			end
 		end
 	end
+
+	private 
+
+		def dollar_to_decimal(num)
+			return number_with_precision(num.gsub!('$', ''), precision: 2)
+		end
 
 end

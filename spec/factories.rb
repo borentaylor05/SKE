@@ -1,4 +1,22 @@
-FactoryGirl.define do  factory :state do
+FactoryGirl.define do  factory :fx_code_rate do
+    schedule "MyString"
+month_code "MyString"
+month_rate "9.99"
+year_code "MyString"
+year_rate "9.99"
+other "MyString"
+three_day false
+  end
+  factory :fx_codes_rate do
+    schedule "MyString"
+month_code "MyString"
+month_rate 1
+year_code "MyString"
+year_rate 1
+other "MyString"
+three_day false
+  end
+  factory :state do
     name "MyString"
 abbreviation "MyString"
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150623164328) do
+ActiveRecord::Schema.define(version: 20150624154438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,6 +199,19 @@ ActiveRecord::Schema.define(version: 20150623164328) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.integer  "fx_class_cat_id"
+  end
+
+  create_table "fx_code_rates", force: true do |t|
+    t.string   "schedule"
+    t.string   "month_code"
+    t.decimal  "month_rate"
+    t.string   "year_code"
+    t.decimal  "year_rate"
+    t.string   "other"
+    t.boolean  "three_day"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.integer  "fx_publication_id"
   end
 
   create_table "fx_mag_pricings", force: true do |t|

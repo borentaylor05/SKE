@@ -76,3 +76,9 @@ task import_redelivery: :environment do
 	fx.upload_redelivery("red.csv")
 end
 
+task upload_code_rates: :environment do 
+	fx = FX.new('dev')
+	fx.upload_code_rates('the_age_rates.csv', 'The Age')
+	fx.upload_code_rates('smh_rates.csv', 'Sydney Morning Herald')
+end
+
