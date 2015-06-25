@@ -173,6 +173,12 @@ Rails.application.routes.draw do
   match "/fx/api/redelivery/:id", to: "fx#get_redelivery", via: :get
   match "/fx/api/search/redeliveries", to: "fx#redelivery_search", via: :get
 
+  # CODE-RATES
+  match "/fx/api/code-rates", to: "fx#get_code_rates", via: :get
+
+  # NEWS AGENT
+  match "/fx/api/newsagent", to: "fx#get_news_agent", via: :get
+
   # ----- END Fairfax Routes ------ 
 
   # ----- BEGIN WW Routes ------ 

@@ -120,4 +120,30 @@ class FxController < ApplicationController
 		respond({ status: 0, matches: all })
 	end
 
+	def get_code_rates
+		if params.has_key?("pub")
+			pub = FxPublication.find_by(id: params[:pub])
+			if pub 
+				respond({ status: 0, rates: FxCodeRate.where(fx_publication: pub) })
+			else
+				respond({ status: 1, error: "No pub with ID: #{params[:pub]}." })	
+			end
+		else
+			respond({ status: 1, error: "Request needs 'pub' parameter." })
+		end
+	end
+
+	def get_news_agent
+		if params.has_key?("code")
+			na = FxNewsAgent.find_by(code: params[:code])
+			if na
+				respond({ status: 0, na: na })
+			else
+				respond({ status: 1, error: "No News Agent with code: #{params[:code]}" })
+			end
+		else
+			respond({ status: 1, error: "Request needs 'code' parameter." })
+		end
+	end
+
 end
