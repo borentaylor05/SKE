@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   resources :content, only: [:create]
   match "content/feature", to: "content#feature", via: :post
   match "content/attach-message", to: "content#attach_message", via: :post
-  match "content/update-client", to: "content#update_client", via: :post
+  match "content/update-client", to: "content#update_client", via: [:post, :options]
   match "content/get-message", to: "content#get_message", via: :get
   match "webhooks/content", to: "content#webhooks_content", via: :post
   match "test", to: "content#test", via: :get
@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   match "posts", to: "post#all", via: :get
 
   # User Routes
-  match "/user/update-client", to: "user#update_client", via: :post     # tested
+  match "/user/update-client", to: "user#update_client", via: [:post, :options]     # tested
   match "/user/check", to: "user#check_init", via: :get                 # tested
   match "/user", to: "user#create", via: [:post, :options]              # tested 
   match "/users", to: "user#get_all", via: :get                         # tested        
@@ -88,6 +88,8 @@ Rails.application.routes.draw do
   match "/fx/suburbs/condition", to: "accessible#get_suburbs_by_condition", via: :get
   match "/fx/upload/redelivery", to: "accessible#fx_upload_redelivery", via: :get
   match "/fx/process/redelivery", to: "accessible#process_fx_redelivery_upload", via: :post
+  match "/fx/upload/pricing", to: "accessible#fx_upload_mag_pricing", via: :get
+  match "/fx/process/pricing", to: "accessible#fx_upload_mag_pricing_process", via: :post
   # End FX Dl and classifications
   match "/fx/request-article", to: "accessible#fx_request_article", via: :get
   match "/temp/upload", to: "accessible#temp_upload", via: :get

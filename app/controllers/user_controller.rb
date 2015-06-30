@@ -74,7 +74,11 @@ class UserController < ApplicationController
 
 	# Params: :jive_id, :client -> name of client
 	def update_client
-		respond(update_user_client(params))
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			respond(update_user_client(params))
+		end
 	end
 
 	def get

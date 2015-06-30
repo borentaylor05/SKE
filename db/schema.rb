@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624161217) do
+ActiveRecord::Schema.define(version: 20150630210114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,16 +216,17 @@ ActiveRecord::Schema.define(version: 20150624161217) do
 
   create_table "fx_mag_pricings", force: true do |t|
     t.string   "six_month"
-    t.string   "one_year_renewal"
-    t.string   "one_year_new"
-    t.string   "two_year_new"
-    t.string   "two_year_renewal"
-    t.string   "one_year_supergold"
-    t.string   "three_year_new"
-    t.string   "three_year_renewal"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.integer  "fx_publication_id"
+    t.string   "pay_type"
+    t.decimal  "one_year"
+    t.decimal  "one_year_aus"
+    t.decimal  "one_year_row"
+    t.decimal  "two_years"
+    t.decimal  "three_years"
+    t.decimal  "bank"
+    t.decimal  "credit"
   end
 
   create_table "fx_news_agents", force: true do |t|

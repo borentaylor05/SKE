@@ -34,6 +34,15 @@ class AccessibleController < ApplicationController
 	def temp_util_upload		
 	end
 
+	def fx_upload_mag_pricing
+	end
+
+	def fx_upload_mag_pricing_process
+		fx = FX.new('dev')
+		results = fx.upload_mag_pricing(params[:file])
+		respond({ results: results })
+	end
+
 	def temp_util_upload_process
 		fx = FX.new('dev')
 		created = fx.upload_newsagents(params[:file])
