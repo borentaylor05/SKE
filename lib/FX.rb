@@ -38,7 +38,7 @@ class FX
 		CSV.foreach(file.path, headers: true) do |row|
 			if row[0]
 				pub = FxPublication.find_by(name: row[0].strip)
-				if pfb
+				if pub
 					red = Redelivery.new(
 						fx_publication: pub,
 						round_id: row[1].upcase,
