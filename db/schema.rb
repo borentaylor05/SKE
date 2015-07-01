@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630210114) do
+ActiveRecord::Schema.define(version: 20150701155710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,24 @@ ActiveRecord::Schema.define(version: 20150630210114) do
     t.integer  "arc_city_state_id"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+  end
+
+  create_table "arc_check_trackers", force: true do |t|
+    t.integer  "check_num"
+    t.decimal  "check_amount"
+    t.string   "check_date"
+    t.string   "org"
+    t.string   "check_name"
+    t.string   "state"
+    t.string   "tsc_received"
+    t.string   "order_num"
+    t.string   "crs"
+    t.string   "notes"
+    t.string   "sent_back_by"
+    t.string   "agent_name"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "case_id"
   end
 
   create_table "arc_city_states", force: true do |t|

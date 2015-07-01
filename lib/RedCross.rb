@@ -6,7 +6,7 @@ class RedCross
 	def initialize(instance)
 		@jive = Jive2.new(instance)
 	end
-
+	
 	def bo_dates
 		current_state = ""
 		current_city = ""

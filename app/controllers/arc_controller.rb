@@ -5,6 +5,33 @@ class ArcController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
+	def create_check
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			check = ArcCheckTracker.new(
+				check_num: params[:check_num],
+				check_date: params[:check_date],
+				check_amount: params[:check_amount],
+				case_id: params[:case_id],
+				org: params[:org],
+				check_name: params[:check_name],
+				state: params[:state],
+				tsc_received: params[:tsc_received],
+				order_num: params[:order_num],
+				crs: params[:crs],
+				notes: params[:notes],
+				sent_back_by: params[:sent_back_by],
+				agent_name: params[:agent_name]
+			)
+			if check.valid?
+				respond({ status: 0, check: check })
+			else
+				respond({ status: 1, error: check.errors.full_messages })
+			end
+		end
+	end
+
 	def get_blackout_dates
 		city = ArcCityState.find_by(city: params[:city], state: State.find_by(name: params[:state]))
 		if city
