@@ -25,6 +25,7 @@ class ArcController < ApplicationController
 				agent_name: params[:agent_name]
 			)
 			if check.valid?
+				check.save
 				respond({ status: 0, check: check })
 			else
 				respond({ status: 1, error: check.errors.full_messages })
