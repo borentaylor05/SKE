@@ -42,7 +42,7 @@ class FX
 			if row[0]
 				pub = FxPublication.find_by(name: row[0].strip)
 				if pub 
-					FxMagPricing.new(
+					pricing = FxMagPricing.new(
 						pay_type: row[1],
 						six_month: row[2],
 						one_year: row[3],
@@ -51,12 +51,14 @@ class FX
 						two_years: row[6],
 						three_years: row[7],
 						bank: row[8],
-						credit: row[9]
+						credit: row[9],
+						fx_publication: pub
 					)
-					if pub.valid?
+					if pricing.valid?
+						pricing.save
 						created += 1
 					else
-						errors.push "#{row[0]} - pub.errors.full_messages"
+						errors.push "#{row[0]} - #{pub.errors.full_messages}"
 					end
 				else
 					errors.push "Pub #{row[0]} not found"
