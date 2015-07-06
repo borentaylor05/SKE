@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150701155710) do
+ActiveRecord::Schema.define(version: 20150706165036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20150701155710) do
 
   create_table "arc_check_trackers", force: true do |t|
     t.integer  "check_num"
-    t.decimal  "check_amount"
+    t.decimal  "check_amount", precision: 10, scale: 2
     t.string   "check_date"
     t.string   "org"
     t.string   "check_name"
@@ -96,8 +96,8 @@ ActiveRecord::Schema.define(version: 20150701155710) do
     t.string   "notes"
     t.string   "sent_back_by"
     t.string   "agent_name"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.integer  "case_id"
   end
 

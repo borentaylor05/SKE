@@ -5,6 +5,52 @@ class ArcController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
+	def get_checks
+		if params.has_key?("search")
+			if numeric?(params["search"])
+				respond({ status: 0, checks: apify(ArcCheckTracker.search_numeric(params[:search]).limit(25), $eastern_tz) })
+			else
+				respond({ status: 0, checks: apify(ArcCheckTracker.search_string(params[:search]).limit(25), $eastern_tz) })
+			end			
+		elsif params.has_key?("name")
+			respond({ status: 0, checks: apify(ArcCheckTracker.where(agent_name: params[:name]), $eastern_tz) })
+		else
+			respond({ status: 0, checks: apify(ArcCheckTracker.where(["updated_at > ?", 2.days.ago]), $eastern_tz) })
+		end
+	end
+
+	def update_check
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			check = ArcCheckTracker.find_by(id: params[:check_id])
+			if check
+				check.update_attributes(
+					check_num: params[:check_num],
+					check_date: params[:check_date],
+					check_amount: params[:check_amount],
+					case_id: params[:case_id],
+					org: params[:org],
+					check_name: params[:check_name],
+					state: params[:state],
+					tsc_received: params[:tsc_received],
+					order_num: params[:order_num],
+					crs: params[:crs],
+					notes: params[:notes],
+					sent_back_by: params[:sent_back_by],
+					agent_name: params[:agent_name]
+				)
+				respond({ status: 0, check: check })
+			else
+				respond({ status: 1, error: "Check not found. Contact Nicole Nordlund." })		
+			end
+		end
+	end
+
+	def get_check_agents
+		respond({ status: 0, agents: ArcCheckTracker.find_by_sql("SELECT DISTINCT agent_name FROM arc_check_trackers") })
+	end
+
 	def create_check
 		if(request.method == "OPTIONS")
 			respond({status: 0})
@@ -16,7 +62,7 @@ class ArcController < ApplicationController
 				case_id: params[:case_id],
 				org: params[:org],
 				check_name: params[:check_name],
-				state: params[:state],
+				state: params[:state][:abbreviation],
 				tsc_received: params[:tsc_received],
 				order_num: params[:order_num],
 				crs: params[:crs],
