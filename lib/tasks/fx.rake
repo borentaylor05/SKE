@@ -87,3 +87,11 @@ task upload_newsagents: :environment do
 	fx.upload_newsagents
 end
 
+task replace_ampersands: :environment do 
+	FxPublication.all.each do |pub|
+		if pub.name.include? "&"
+			pub.update_attributes(name: pub.name.gsub!("&", "and"))
+		end
+	end
+end
+
