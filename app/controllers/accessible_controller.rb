@@ -5,6 +5,7 @@ class AccessibleController < ApplicationController
 	require 'Bunchball'
 	require 'CDC'
 	require 'FX'
+	require 'RedCross'
 
 	before_action :authenticate_admin!
 	before_filter :is_admin?, only: :new_admin
@@ -44,9 +45,9 @@ class AccessibleController < ApplicationController
 	end
 
 	def temp_util_upload_process
-		fx = FX.new('dev')
-		created = fx.upload_newsagents(params[:file])
-		respond({ created: created })
+		arc = RedCross.new('dev')
+		created = arc.upload_check_tracker(params[:file])
+		respond({ good: created[:good], errors: created[:errors] })
 	end
 
 	def gamification_upload		

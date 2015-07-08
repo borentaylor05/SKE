@@ -6,6 +6,37 @@ class RedCross
 	def initialize(instance)
 		@jive = Jive2.new(instance)
 	end
+
+	def upload_check_tracker(file)
+		good = 0
+		errors = []
+		CSV.foreach(file.path, headers: true) do |row|
+			if row[0]
+				check = ArcCheckTracker.new(
+					check_num: row[0].strip,
+					check_amount: row[1].to_s.gsub(/[$,]/,'').to_f,
+					check_date: row[2],
+					org: row[3],
+					case_id: row[4],
+					check_name: row[5],
+					state: row[6],
+					tsc_received: row[7],
+					order_num: row[8],
+					crs: row[9],
+					notes: row[10],
+					sent_back_by: row[11],
+					agent_name: "OLD DATA"
+				)
+				if check.valid?
+					good += 1
+					check.save
+				else
+					errors.push(check.errors.full_messages)
+				end
+			end
+		end
+		return { good: good, errors: errors }
+	end
 	
 	def bo_dates
 		current_state = ""
