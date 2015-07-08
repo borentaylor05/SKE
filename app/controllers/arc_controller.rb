@@ -13,7 +13,7 @@ class ArcController < ApplicationController
 				respond({ status: 0, checks: apify(ArcCheckTracker.search_string(params[:search]).limit(25), $eastern_tz) })
 			end			
 		elsif params.has_key?("name")
-			respond({ status: 0, checks: apify(ArcCheckTracker.where(agent_name: params[:name]), $eastern_tz) })
+			respond({ status: 0, checks: apify(ArcCheckTracker.where(agent_name: params[:name]).limit(25), $eastern_tz) })
 		else
 			respond({ status: 0, checks: apify(ArcCheckTracker.where(["updated_at > ?", 2.days.ago]), $eastern_tz) })
 		end
