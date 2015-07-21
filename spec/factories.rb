@@ -1,4 +1,31 @@
-FactoryGirl.define do  factory :arc_check_tracker do
+FactoryGirl.define do  factory :cdc_apg_subheader do
+    title "MyString"
+cdc_apg_section_id 1
+  end
+  factory :cdc_apg_note do
+    cdc_apg_subheader_id 1
+text "MyText"
+  end
+  factory :cdc_apg_paragraph do
+    cdc_apg_subheader_id 1
+text "MyText"
+  end
+  factory :cdc_apg do
+    Subheader "MyString"
+title "MyString"
+  end
+  factory :cdc_apg_section do
+    title "MyString"
+  end
+  factory :fx_se_pricing do
+    fx_publication_id 1
+nz_delivery "9.99"
+au_delivery "9.99"
+row_delivery "9.99"
+subscribers "9.99"
+standard "9.99"
+  end
+  factory :arc_check_tracker do
     check_num 1
 check_amount "9.99"
 check_date "MyString"

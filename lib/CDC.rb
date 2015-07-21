@@ -1,4 +1,7 @@
 require 'Jive2'
+require 'rubygems'
+require 'nokogiri'
+require 'open-uri'
 
 class CDC
 
@@ -78,6 +81,52 @@ class CDC
 			end
 		end
 		return errors
+	end
+
+	def parse_apg	
+		page_sections = []	
+		page = Nokogiri::HTML(open("cdc.html"))   
+		page.css('h1').each do |h|
+			section = { main_header: h.text, subheaders: [ ] }
+			next_el_h1 = h.next_element
+			while next_el_h1 and next_el_h1.name != 'h1'
+				if next_el_h1.name == 'h2' 
+					h2 = next_el_h1					
+					if h2.text.length < 3 
+						next_el_h1 = next_el_h1.next_element
+						next
+					end
+					puts h2.text
+					subheader = { name: h2.text, paragraphs: [], notes: [] }
+					next_el_h2 = h2.next_element
+					while next_el_h2 and next_el_h2.name != 'h2'
+						case next_el_h2.name
+						when 'p', 'h3'
+							subheader[:paragraphs].push(next_el_h2.to_s) if next_el_h2.text.length > 1
+						when 'table'
+							subheader[:notes].push(next_el_h2.to_s) if next_el_h2.text.length > 1
+						end
+						next_el_h2 = next_el_h2.next_element
+					end
+					section[:subheaders].push(subheader)					
+				end
+				next_el_h1 = next_el_h1.next_element
+			end
+			page_sections.push(section)
+		#	break
+		end
+		page_sections.each do |s|
+			newSection = CdcApgSection.create!(title: s[:main_header])
+			s[:subheaders].each do |sub|
+				newSub = CdcApgSubheader.create!(title: sub[:name], cdc_apg_section: newSection)
+				sub[:paragraphs].each do |p|
+					newPar = CdcApgParagraph.create!(text: p, cdc_apg_subheader: newSub)
+				end
+				sub[:notes].each do |n|
+					newNote = CdcApgNote.create!(text: n, cdc_apg_subheader: newSub)
+				end
+			end
+		end
 	end
 
 end

@@ -359,6 +359,7 @@ DEPENDENCIES
   net-sftp
   net-ssh
   newrelic_rpm
+  nokogiri
   omniauth-salesforce
   pg (= 0.17.1)
   rails (= 4.2.0.rc1)

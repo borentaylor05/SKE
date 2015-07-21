@@ -45,9 +45,9 @@ class AccessibleController < ApplicationController
 	end
 
 	def temp_util_upload_process
-		arc = RedCross.new('dev')
-		created = arc.upload_check_tracker(params[:file])
-		respond({ good: created[:good], errors: created[:errors] })
+		fx = FX.new('dev')
+		created = fx.upload_se_pricing(params[:file])
+		respond({ created: created[:created], errors: created[:errors] })
 	end
 
 	def gamification_upload		

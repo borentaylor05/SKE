@@ -195,3 +195,18 @@ task test_az: :environment do
 		puts "#{row[0]} --- #{row[8]}"
 	end	
 end
+
+task mlevel_report: :environment do 
+	bb = Bunchball.new('980086')
+	bb.parse_mlevel_report
+end
+
+
+
+
+
+
+
+
+
+

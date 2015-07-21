@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150708164814) do
+ActiveRecord::Schema.define(version: 20150721163701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,6 +126,33 @@ ActiveRecord::Schema.define(version: 20150708164814) do
     t.datetime "expire_date"
     t.integer  "priority"
     t.string   "request_type"
+  end
+
+  create_table "cdc_apg_notes", force: true do |t|
+    t.integer  "cdc_apg_subheader_id"
+    t.text     "text"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  create_table "cdc_apg_paragraphs", force: true do |t|
+    t.integer  "cdc_apg_subheader_id"
+    t.text     "text"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  create_table "cdc_apg_sections", force: true do |t|
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cdc_apg_subheaders", force: true do |t|
+    t.string   "title"
+    t.integer  "cdc_apg_section_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "clients", force: true do |t|
@@ -274,6 +301,17 @@ ActiveRecord::Schema.define(version: 20150708164814) do
   create_table "fx_publications_suburbs", force: true do |t|
     t.integer  "fx_publication_id"
     t.integer  "suburb_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  create_table "fx_se_pricings", force: true do |t|
+    t.integer  "fx_publication_id"
+    t.decimal  "nz_delivery"
+    t.decimal  "au_delivery"
+    t.decimal  "row_delivery"
+    t.decimal  "subscribers"
+    t.decimal  "standard"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end

@@ -26,6 +26,7 @@ gem "font-awesome-rails"
 gem 'jquery-turbolinks'     # to prevent having to refresh to load js 
 gem 'net-sftp'
 gem 'net-ssh'
+gem 'nokogiri'
 
 group :development, :test do
   gem 'byebug',      '3.4.0'

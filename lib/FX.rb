@@ -117,10 +117,69 @@ class FX
 		return count
 	end
 
+	def upload_se_pricing(file)
+		created = []
+		errors = []
+		good = 0
+		CSV.foreach(file.path, headers: true) do |row|
+			pubs = FxPublication.contains(row[1])
+			if pubs.size > 0
+				pub = pubs.first
+				se = create_se(pub, row)
+				if se.valid?
+					se.save					
+					good += 1
+				else
+					errors.push("#{row[1]} SE -- #{se.errors.full_messages}")
+				end
+			else
+				pub = FxPublication.new(name: row[1].strip, parent: row[0].strip, mag: true, se: true, has_se: false)
+				if pub.valid?
+					pub.save
+					created.push(row[1])
+					se = create_se(pub, row)
+					if se.valid?
+						se.save					
+						good += 1
+					else
+						errors.push("#{row[1]} SE -- #{se.errors.full_messages}")
+					end
+				else
+					errors.push("#{row[1]} -- #{pub.errors.full_messages}")
+				end
+			end
+		end
+		return { created: created, errors: errors }
+	end
+
 	private 
 
 		def dollar_to_decimal(num)
-			return number_with_precision(num.gsub!('$', ''), precision: 2)
+			if num
+				return number_with_precision(num.gsub!('$', ''), precision: 2)
+			else
+				return nil
+			end
+		end
+
+		def create_se(pub, row)
+			se = FxSePricing.new(
+				fx_publication: pub, 
+				nz_delivery: dollar_to_decimal(row[2]),
+				au_delivery: dollar_to_decimal(row[3]),
+				row_delivery: dollar_to_decimal(row[4]),
+				subscribers: dollar_to_decimal(row[5]),
+				standard: dollar_to_decimal(row[6])
+			)
 		end
 
 end
+
+
+
+
+
+
+
+
+

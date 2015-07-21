@@ -8,7 +8,14 @@ class AToZController < ApplicationController
 	# gets all topics within range, e.g. a..m, determined by params
 	def get_range
 		if params.has_key?("start") and params.has_key?("end")
-			respond({ status: 0, topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
+			if params["end"] == "Z"
+				# had to do some hackish stuff to include Z
+				first = AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end])
+				second = AToZEntry.select(:topic, :id).where("topic LIKE :prefix", prefix: "#{prefix}%")
+				respond({ status: 0, topics: first+second })
+			else
+				respond({ status: 0, topics: AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end]) })
+			end			
 		else
 			respond({ status: 1, error: "Must supply :start and :end parameter." })
 		end	

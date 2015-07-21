@@ -95,13 +95,58 @@ class Bunchball
 		return HTTParty.get(url).body
 	end
 
-end
+	def parse_mlevel_report
+		jive = Jive2.new('social')
+		total_stars = current_user = max_stars = 0
+		earned_badges = []
+		current_mission = prev_mission = { name: "", stars: 0, user: 0 }
+		count = 0
+		CSV.foreach("mlevel_report.csv", headers: true) do |row|
+			if row[0]
+				current_mission = { name: "", stars: 0, user: 0 }				
+				if row[4] != current_user	
+					if total_stars >= 11
+						earned_badges.push current_user
+					end									
+					total_stars = 0
+					prev_mission = { name: "", stars: 0, user: 0 }
+				end		
 
-# nitroAPI = NitroAPISample.new
-#nitroAPI.login
-#nitroAPI.logAction
-#nitroAPI.getUserPointsBalance
-#nitroAPI.getActionLeaders
+				current_mission[:user] = current_user = row[4]
+				current_mission[:name] = row[10]
+				current_mission[:stars] = row[18]
+
+				if current_mission[:name] != prev_mission[:name]
+					max_stars = 0
+				end
+				
+				if current_mission[:user] == prev_mission[:user] and current_mission[:name] == prev_mission[:name]					
+					if current_mission[:stars].to_i > prev_mission[:stars].to_i and current_mission[:stars].to_i > max_stars										
+						total_stars += current_mission[:stars].to_i
+						total_stars -= max_stars
+						max_stars = current_mission[:stars].to_i							
+					end
+				elsif current_mission[:name] != prev_mission[:name]									
+					total_stars += current_mission[:stars].to_i	
+					max_stars = current_mission[:stars].to_i	
+				end								
+				prev_mission = current_mission										
+			end
+		end
+	#	earned_badges.append(9999999)
+		earned_badges.each do |user|
+			bb.complete_mission(user, 'new zealand geo')			
+		end
+		m = Message.create!(
+			user: User.find_by(jive_id: 9999999),
+			text: "You have completed the mission 'New Zealand Geo' by gaining 11 stars in your mLevel training.",
+			client: Client.find_by(name: 'fairfax'),
+			urgent: false
+		)
+		m.send_message(earned_badges)
+	end
+
+end
 
 
 

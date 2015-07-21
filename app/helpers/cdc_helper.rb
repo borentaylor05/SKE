@@ -1,0 +1,2 @@
+module CdcHelper
+end

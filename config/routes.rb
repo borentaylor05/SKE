@@ -147,6 +147,11 @@ Rails.application.routes.draw do
   match "cdc/address-book", to: "address_book#get_all", via: :get         # 
   match "cdc/address-book/entry", to: "address_book#get_entry", via: :get
 
+  # HRSA APG ROUTES -- screwed up name of models and controllers (should be hrsa not CDC)
+  match "/hrsa/api/apg/categories", to: 'cdc#get_categories_and_topics', via: :get
+  match "/hrsa/api/apg/topics/:id", to: 'cdc#get_topic', via: :get
+  match "/hrsa/api/apg/categories/:id", to: 'cdc#get_category', via: :get
+
   # ----- End CDC Routes ------  
 
   # ----- Fairfax Routes ------  
