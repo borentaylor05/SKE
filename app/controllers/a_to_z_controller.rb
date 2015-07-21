@@ -11,6 +11,7 @@ class AToZController < ApplicationController
 			if params["end"] == "Z"
 				# had to do some hackish stuff to include Z
 				first = AToZEntry.select(:topic, :id).where(topic: params[:start]..params[:end])
+				prefix = 'Z'
 				second = AToZEntry.select(:topic, :id).where("topic LIKE :prefix", prefix: "#{prefix}%")
 				respond({ status: 0, topics: first+second })
 			else
