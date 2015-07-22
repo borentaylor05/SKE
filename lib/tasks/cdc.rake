@@ -7,7 +7,7 @@ end
 
 task parse_apg: :environment do 
 	cdc = CDC.new('dev')
-	cdc.parse_apg
+	cdc.parse_apg("B1001: NURSE Corps LRP (NCLRP) FY 2015 APG", "cdc.html")
 end
 
 task clean_apg: :environment do 

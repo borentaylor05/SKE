@@ -6,11 +6,12 @@ class CdcController < ApplicationController
 
 	# HRSA FUNCTIONS
 
-	def get_categories_and_topics
-		if params.has_key?("topics") and params[:topics]
-			respond({ status: 0, categories: CdcApgSection.all, topics: CdcApgSubheader.all })
+	def apg_init
+		doc = CdcApgDocument.find_by(id: params[:id])
+		if doc
+			respond({ status: 0, categories: doc.cdc_apg_sections, topics: doc.subheaders })
 		else
-			respond({ status: 0, categories: CdcApgSection.all })
+			respond({ status: 1, error: "Doc #{id} not found." })
 		end
 	end
 

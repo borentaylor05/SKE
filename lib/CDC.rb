@@ -83,9 +83,10 @@ class CDC
 		return errors
 	end
 
-	def parse_apg	
+	def parse_apg(title, filename)
+		doc = CdcApgDocument.create(client: Client.find_by(name: "cdc"), title: title)	
 		page_sections = []	
-		page = Nokogiri::HTML(open("cdc.html"))   
+		page = Nokogiri::HTML(open(filename))   
 		page.css('h1').each do |h|
 			section = { main_header: h.text, subheaders: [ ] }
 			next_el_h1 = h.next_element
@@ -100,12 +101,7 @@ class CDC
 					subheader = { name: h2.text, paragraphs: [], notes: [] }
 					next_el_h2 = h2.next_element
 					while next_el_h2 and next_el_h2.name != 'h2'
-						case next_el_h2.name
-						when 'p', 'h3'
-							subheader[:paragraphs].push(next_el_h2.to_s) if next_el_h2.text.length > 1
-						when 'table'
-							subheader[:notes].push(next_el_h2.to_s) if next_el_h2.text.length > 1
-						end
+						subheader[:paragraphs].push(next_el_h2.to_s) if next_el_h2.text.length > 1						
 						next_el_h2 = next_el_h2.next_element
 					end
 					section[:subheaders].push(subheader)					
@@ -116,7 +112,7 @@ class CDC
 		#	break
 		end
 		page_sections.each do |s|
-			newSection = CdcApgSection.create!(title: s[:main_header])
+			newSection = CdcApgSection.create!(title: s[:main_header], cdc_apg_document: doc)
 			s[:subheaders].each do |sub|
 				newSub = CdcApgSubheader.create!(title: sub[:name], cdc_apg_section: newSection)
 				sub[:paragraphs].each do |p|

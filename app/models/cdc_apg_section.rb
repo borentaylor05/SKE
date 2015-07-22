@@ -1,5 +1,6 @@
 class CdcApgSection < ActiveRecord::Base
 
+	belongs_to :cdc_apg_document
 	has_many :cdc_apg_subheaders
 
 	def apify

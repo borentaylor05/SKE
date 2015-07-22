@@ -9,4 +9,5 @@ class Client < ActiveRecord::Base
 	has_many :message_trackers
 	has_many :messages, through: :message_trackers
 	has_many :missions
+	has_many :cdc_apg_documents
 end

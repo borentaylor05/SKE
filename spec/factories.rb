@@ -1,4 +1,8 @@
-FactoryGirl.define do  factory :cdc_apg_subheader do
+FactoryGirl.define do  factory :cdc_apg_document do
+    client_id 1
+title "MyString"
+  end
+  factory :cdc_apg_subheader do
     title "MyString"
 cdc_apg_section_id 1
   end
