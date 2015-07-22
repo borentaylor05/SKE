@@ -9,7 +9,7 @@ class CdcController < ApplicationController
 	def apg_init
 		doc = CdcApgDocument.find_by(id: params[:id])
 		if doc
-			respond({ status: 0, categories: doc.cdc_apg_sections, topics: doc.subheaders })
+			respond({ status: 0, doc: doc, categories: doc.cdc_apg_sections, topics: doc.subheaders })
 		else
 			respond({ status: 1, error: "Doc #{id} not found." })
 		end
