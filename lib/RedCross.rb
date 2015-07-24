@@ -10,10 +10,11 @@ class RedCross
 	def upload_check_tracker(file)
 		good = 0
 		errors = []
+		ArcCheckTracker.destroy_all
 		CSV.foreach(file.path, headers: true) do |row|
 			if row[0]
 				order = row[8] || row[9]
-				check = ArcCheckTracker.new(
+				check = ArcCheckTracker.create!(
 					check_num: row[0].strip,
 					check_amount: row[1].to_s.gsub(/[$,]/,'').to_f,
 					check_date: row[2],
@@ -23,17 +24,12 @@ class RedCross
 					state: row[6],
 					tsc_received: row[7],
 					order_num: row[8],
-					crs: row[10],
-					notes: row[11],
-					sent_back_by: row[12],
+					crs: row[9],
+					notes: row[10],
+					sent_back_by: row[11],
 					agent_name: "OLD DATA"
 				)
-				if check.valid?
-					good += 1
-					check.save
-				else
-					errors.push(check.errors.full_messages)
-				end
+				
 			end
 		end
 		return { good: good, errors: errors }
