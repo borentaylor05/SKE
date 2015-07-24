@@ -27,6 +27,19 @@ class FxController < ApplicationController
 		end
 	end
 
+	def get_publication_pricing
+		pub = FxPublication.find_by(id: params[:publication_id])
+		if pub 
+			if pub.se 
+				respond({ status: 0, pricing: pub.fx_se_pricing })
+			else
+				respond({ status: 0, pricing: pub.fx_mag_pricing })
+			end
+		else
+			respond({ status: 1, error: "Publication #{params[:publication_id]} not found." })
+		end
+	end
+
 	def get_suburbs_for_publication
 		pub = FxPublication.find_by(id: params[:publication_id])
 		if pub 

@@ -201,10 +201,28 @@ task mlevel_report: :environment do
 	bb.parse_mlevel_report
 end
 
-
-
-
-
+task dealer_search: :environment do
+	jive = Jive2.new('social')
+	dealers = ['3188115', '3188114', '3190104', '3191229']
+	(124746..125068).each do |num|
+		resp = jive.grab("/dms/#{num.to_s}")
+		if resp and resp["id"]
+			if dealers.include?(resp["author"]["jive"]["username"])
+				oracle = resp["author"]["jive"]["username"]
+				msg_id = num 
+				body = resp["content"]["text"]
+				puts "MSG: #{msg_id} -- USER: #{oracle} -- BODY: #{body}"
+			end
+			resp["participants"].each do |person|
+				if dealers.include?(resp["author"]["jive"]["username"])
+					puts "PARTICIPANT -- MSG: #{msg_id}"
+				end
+			end
+		else
+			puts "DELETED -- #{num}"
+		end
+	end
+end
 
 
 

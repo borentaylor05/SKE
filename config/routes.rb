@@ -164,10 +164,13 @@ Rails.application.routes.draw do
   match "fx/classifications", to: "fx_classification#get_classifications", via: :get  
   match "fx/classifications/categories", to: "fx_classification#get_categories", via: :get  
 
-  # FX SUBURBS
+  #FX PUBLICATIONS
   match "/fx/api/publications", to: "fx#get_all_publications", via: :get
   match "/fx/api/publication/:publication_id", to: "fx#get_publication", via: :get
   match "/fx/api/publications/:publication_id/suburbs", to: "fx#get_suburbs_for_publication", via: :get
+  match "/fx/api/publications/:publication_id/pricing", to: "fx#get_publication_pricing", via: :get
+  
+  # FX SUBURBS
   match "/fx/api/suburbs/:suburb_id/publications", to: "fx#get_publications_for_suburb", via: :get
   match "/fx/api/suburbs/search", to: "fx#suburb_search", via: :get
 
