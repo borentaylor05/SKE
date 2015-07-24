@@ -14,7 +14,7 @@ class RedCross
 		CSV.foreach(file.path, headers: true) do |row|
 			if row[0]
 				order = row[8] || row[9]
-				check = ArcCheckTracker.create!(
+				check = ArcCheckTracker.new(
 					check_num: row[0].strip,
 					check_amount: row[1].to_s.gsub(/[$,]/,'').to_f,
 					check_date: row[2],
@@ -29,7 +29,7 @@ class RedCross
 					sent_back_by: row[11],
 					agent_name: "OLD DATA"
 				)
-				
+				check.save(validate: false)
 			end
 		end
 		return { good: good, errors: errors }
