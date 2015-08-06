@@ -95,3 +95,15 @@ task replace_ampersands: :environment do
 	end
 end
 
+task check_dups: :environment do 
+	users = []
+	CSV.foreach("fairfax_users_mlevel.csv", headers: true) do |row|
+		if !users.include?(row[2])
+			users.push(row[2])
+		else
+			puts row[2]
+		end
+	end
+	puts "DONE"
+end
+

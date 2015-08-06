@@ -127,6 +127,12 @@ class Jive2
 		puts count
 	end
 
+	def add_to_sec_group(group_id, jive_ids)
+      jive_ids.map! { |id| id = "#{@url}/people/#{id}" }
+      puts jive_ids
+      return self.create("/securityGroups/#{group_id}/members", jive_ids)
+   end
+
    def create_user(u, to_db)
       template = @user_template
       template[:emails][0][:value] = u[:email]

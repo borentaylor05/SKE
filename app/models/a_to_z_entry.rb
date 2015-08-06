@@ -2,7 +2,7 @@ class AToZEntry < ActiveRecord::Base
 
 	default_scope { order('topic ASC') }
 
-	scope :contains, -> (name) { where("topic like ?", "%#{name}%")}
+	scope :contains, -> (name) { where("lower(topic) like ? or lower(aka) like ?", "%#{name.downcase}%", "%#{name.downcase}%")}
 
 	def self.import(file)
 		cdc = CDC.new('social')

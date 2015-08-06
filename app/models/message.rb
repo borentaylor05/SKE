@@ -3,7 +3,7 @@ class Message < ActiveRecord::Base
 	belongs_to :client
 	belongs_to :group #sending to group
 	belongs_to :user # user is sender
-	# many to many b/t user and msg to track read messages
+	# has many through b/t user and msg to track read messages
 	has_many :message_trackers
 	has_many :users, through: :message_trackers	
 	has_many :clients, through: :message_trackers	
@@ -12,10 +12,8 @@ class Message < ActiveRecord::Base
 
 	def send_message(recipients)
 		recipients.each do |r|
-			u = User.find_by(jive_id: r.jive_id)
-			if self.urgent
-				u.update_attributes(pending_urgent: true) # helps avoid continuous scanning of messages
-			end
+			u = User.find_by(jive_id: r.jive_id)			
+			u.update_attributes(pending_urgent: true) if self.urgent # helps avoid continuous scanning of messages	
 			t = MessageTracker.new(
 				message: self,
 				user: u
