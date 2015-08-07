@@ -24,7 +24,7 @@ class CDC
 	def import_a_to_z(file)
 		CSV.foreach(file, headers: true) do |row|
 			row[0] = row[0].strip if row[0] # row[0] is Topic
-			entry = AToZEntry.find_by(topic: row[0])
+			entry = AToZEntry.find_by(topic: row[0].upcase)
 			pr = row[6].strip if row[6]
 			spanish = row[8].strip if row[8]
 			if entry
@@ -40,7 +40,7 @@ class CDC
 				)
 			else
 				AToZEntry.create!(
-					topic: row[0],
+					topic: row[0].upcase,
 					aka: row[1],
 					owner: row[2],
 					scope: row[3],
