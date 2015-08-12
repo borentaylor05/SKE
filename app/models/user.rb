@@ -22,6 +22,9 @@ class User < ActiveRecord::Base
 	has_many :user_missions
 	has_many :missions, through: :user_missions
 
+	has_one :team_lead, class: User
+	belongs_to :team_lead, class: User, foreign_key: :team_lead_id
+
 
 	def leaderboard
 		return User.where(client: self.client, lob: self.lob).where("rank > 0").limit(20).order("rank ASC")
@@ -58,6 +61,8 @@ class User < ActiveRecord::Base
 	def self.import(file)
 		created = []
 		errors = []
+		tl_count = 0
+		tl_error = []
 		jive = Jive2.new('social')
 		CSV.foreach(file.path, headers: true) do |row|
 			user = Util.parse_csv_user(row)
@@ -67,8 +72,18 @@ class User < ActiveRecord::Base
 		 	else
 		 		errors.push(user[:oracle_id])
 		 	end
+		 	if user[:team_lead_oracle]
+		 		u = User.find_by(employee_id: user[:oracle_id])
+		 		tl = User.find_by(employee_id: user[:team_lead_oracle])
+		 		if tl and u
+		 			u.update_attributes(team_lead: tl) 
+		 			tl_count += 1
+		 		else
+		 			tl_error.push(user[:team_lead_oracle])
+		 		end
+		 	end
 		end
-		return { created_count: created.count, error_count: errors.count, created: created, errors: errors }
+		return { created_count: created.count, error_count: errors.count, created: created, errors: errors, tls_added: tl_count, tl_error: tl_error }
 	end
 
 end

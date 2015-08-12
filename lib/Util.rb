@@ -26,7 +26,8 @@ class Util
 			job_title: row[4],
 			client: row[5],
 			lob: row[6],
-			location: row[7]
+			location: row[7],
+			team_lead_oracle: row[8] ? row[8] : nil
 		}
 	end
 
