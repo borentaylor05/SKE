@@ -14,7 +14,8 @@ class ApplicationController < ActionController::Base
       'https://social.teletech.com', 
       'https://lit-inlet-2632.herokuapp.com',
       'https://jivedemo-teletech-gtm-alliances.jiveon.com',
-      'https://app-knowledge.jiveon.com'
+      'https://app-knowledge.jiveon.com',
+      'https://app-social.teletech.com'
     ]
   $wl_domains = [
       'localhost:8080', 
