@@ -36,7 +36,8 @@ class ApplicationController < ActionController::Base
       '10.170.67.43', # node
       '10.170.67.42', # node
       '10.170.67.45',  # node
-      '50.141.113.19'
+      '50.141.113.19',
+      '208.248.33.30'
   ]
 
   $cloud_ip = IPAddr.new ENV['CLOUD_IP']

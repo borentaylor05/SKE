@@ -428,7 +428,9 @@ class AccessibleController < ApplicationController
 				respond({ status: 1, error: "Error updating user." })
 			end
 		elsif (resp["error"] and resp["error"]["status"] == 409)
-			respond({ status: 1, error: "exists" })
+			json = jive.grab("/people/username/#{oracle_id}")
+			json["jive"]["enabled"] = true
+			respond({ status: 1, error: "exists" , update: jive.update("/people/#{json["id"]}", json)})
 		elsif !resp["id"]
 			respond({ status: 1, error: "Error creating user: #{resp} " })	
 		else
