@@ -103,6 +103,7 @@ class Util
 	def self.csv_user_is_valid?(user)
 		user.each do |key,val|
 			if !val 
+				Rails.logger.warn("#{key} is null for #{user[:oracle_id]}")
 				return false
 			end
 		end
