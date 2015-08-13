@@ -430,7 +430,10 @@ class AccessibleController < ApplicationController
 		elsif (resp["error"] and resp["error"]["status"] == 409)
 			json = jive.grab("/people/username/#{oracle_id}")
 			json["jive"]["enabled"] = true
-			respond({ status: 1, error: "exists" , update: jive.update("/people/#{json["id"]}", json)})
+			id = json["id"]
+			u = jive.update("/people/#{id}", json)
+			Rails.logger.info(u)
+			respond({ status: 1, error: "exists" , update: u })
 		elsif !resp["id"]
 			respond({ status: 1, error: "Error creating user: #{resp} " })	
 		else
