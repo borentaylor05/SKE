@@ -119,10 +119,16 @@ class ArcController < ApplicationController
 			cities = params[:cities].split(",")
 			base = cities.size
 			created = 0
-			duplicate = 0
+			duplicate = 0			
 			bo = ArcBlackoutDate.find_by(date: params[:date], notes: params[:notes])
 			if !bo
-				bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes])
+				begin 
+					expires = params[:date] ? Date.strptime(params[:date], '%m/%d/%Y') : nil
+					expires_yellow = params[:notes] ? Date.strptime(params[:notes], '%m/%d/%Y') : nil
+					bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes], expires: expires, expires_yellow: expires_yellow)
+				rescue ArgumentError, TypeError
+					puts "Invalid Date: #{date.date} for #{date.id}"
+				end				
 				if bo.valid?
 					bo.save	
 				else
