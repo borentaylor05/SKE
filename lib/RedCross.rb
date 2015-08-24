@@ -52,9 +52,13 @@ class RedCross
 			end			
 			if row[2] and row[2] != current_date
 				current_date = row[2].strip
+			else
+				current_date = nil if row[2] != current_date
 			end
 			if row[3] and row[3] != current_notes
 				current_notes = row[3].strip
+			else
+				current_notes = nil if row[3] != current_notes
 			end
 			if current_city and current_state and (current_date or current_notes)
 				city = ArcCityState.find_by(city: current_city.downcase, state: current_state)
@@ -68,8 +72,6 @@ class RedCross
 				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
 					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
 				end
-			else
-				puts "ERROR------> #{current_city}, #{current_state} -- #{current_date} ----> #{current_notes} <----ERROR"
 			end
 		end
 		State.all.each do |s|
