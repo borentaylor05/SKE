@@ -40,7 +40,7 @@ class RedCross
 		current_city = ""
 		current_date = ""
 		current_notes = ""
-		CSV.foreach('bo_61115.csv', headers: true) do |row|
+		CSV.foreach('arc_blackout_72415.csv', headers: true) do |row|
 			if row[1] and row[1] != current_city
 				current_city = row[1].strip
 				current_notes = nil
@@ -48,7 +48,7 @@ class RedCross
 				current_state = nil
 			end
 			if row[0] and row[0] != current_state
-				current_state = State.find_by(abbreviation: row[0].strip.upcase)
+				current_state = State.find_or_create_by(abbreviation: row[0].strip.upcase)
 			end			
 			if row[2] and row[2] != current_date
 				current_date = row[2].strip
@@ -56,7 +56,6 @@ class RedCross
 			if row[3] and row[3] != current_notes
 				current_notes = row[3].strip
 			end
-			puts "#{current_city}, #{current_state.name} -- #{current_date} ----> #{current_notes}"
 			if current_city and current_state and (current_date or current_notes)
 				city = ArcCityState.find_by(city: current_city.downcase, state: current_state)
 				if !city 
@@ -70,8 +69,11 @@ class RedCross
 					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
 				end
 			else
-				puts "ERROR------> #{current_city}, #{current_state} -- #{current_date} ----> #{current_notes}"
+				puts "ERROR------> #{current_city}, #{current_state} -- #{current_date} ----> #{current_notes} <----ERROR"
 			end
+		end
+		State.all.each do |s|
+			s.update_attributes(name: "UNKNOWN") if s.name.nil?
 		end
 	end
 
