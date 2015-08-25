@@ -371,7 +371,7 @@ sub_app.factory("suburbs", ['$http', function($http){
 
 	subs.getByLength = function(length){
 		return $http.get("/fx/suburbs/condition?condition=length&length="+length)
-	}
+	};
 
 	return subs;
 }]);
@@ -389,29 +389,52 @@ sub_app.controller("Subs", ['suburbs', function(suburbs){
 				});
 			break;
 		}
-	}
+	};
 	subs.beingEdited = function(sub,pub){
 		if(sub == subs.current && subs.currentPub == pub)
 			return true;
 		else
 			return false;
-	}
+	};
 	subs.edit = function(sub, pub){
 		subs.current = sub;
 		subs.currentPub = pub;
-	}
+	};
 	subs.saveEdit = function(sub, pub){
 		suburbs.save(sub,pub).success(function(resp){
 			console.log(resp);
 		});
-	}
+	};
 	// on page load
 	subs.getByCondition('length', 20);
 
 }]);
 
+var cdc_app = angular.module("CdcApp", []);
 
+cdc_app.controller("CdcApgCtrl", ['$http', function($http){
+	var apg = this;
 
+	apg.deleteApg = function(doc){
+		$http.delete("/cdc/apg/"+doc.id).success(function(resp){
+			if(resp.status === 0)
+				apg.getAll();
+			else
+				alert(resp.error);
+		});
+	}
+
+	apg.getAll = function(){
+		$http.get("/cdc/angular/apgs").success(function(resp){
+			if(resp.status === 0)
+				apg.all = resp.apgs;
+			else
+				alert(resp.error);
+		});
+	}	
+
+	apg.getAll();
+}]);
 
 
 

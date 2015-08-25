@@ -1,0 +1,22 @@
+<div class="container">
+	<h2>Upload APG</h2>
+	<div class="alert alert-warning">
+		<ul>
+			<li>The upload file MUST be the HTML from the APG document</li>
+			<li>Go to the document in SKE</li>
+			<li>Click Edit</li>
+			<li>Click HTML to see the HTML editor</li>
+			<li>Copy that HTML into a file via a text editor (i.e. Notepad)</li>
+			<li>Save that file to your computer</li>
+			<li>Upload the saved file here</li>
+		</ul>
+	</div>
+	<%= form_tag "/cdc/apg/process", multipart: true do %>
+		<label>Document Title</label>
+		<%= text_field_tag :title %>
+		<br/>
+	  	<%= file_field_tag :file %>
+	  	<br/>
+	  	<%= submit_tag "Upload", class: "btn btn-md btn-success" %>
+	<% end %>
+</div>

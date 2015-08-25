@@ -73,6 +73,11 @@ Rails.application.routes.draw do
   match "/cdc/a-to-z/topic", to: "accessible#get_topic", via: :get
   match "/cdc/a-to-z/create", to: "accessible#new_a_to_z", via: :post
   match "/cdc/change/a-to-z", to: "accessible#az_save_changes", via: :post
+  match "/cdc/apgs", to: 'accessible#cdc_view_apgs', via: :get
+  match "/cdc/angular/apgs", to: 'accessible#cdc_get_apgs', via: :get # angular request route
+  match "/cdc/apg/upload", to: 'accessible#cdc_upload_apg', via: :get
+  match "/cdc/apg/process", to: 'accessible#cdc_process_apg', via: :post
+  match "/cdc/apg/:id", to: 'accessible#cdc_delete_apg', via: :delete
   # End A-Z Accessible
 
   # FX Deadlines, classifications suburbs

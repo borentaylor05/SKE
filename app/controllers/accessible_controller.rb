@@ -35,6 +35,28 @@ class AccessibleController < ApplicationController
 	def temp_util_upload		
 	end
 
+	def cdc_view_apgs
+	end
+
+	def cdc_upload_apg		
+	end
+
+	def cdc_process_apg
+		cdc = CDC.new('social')
+		cdc.parse_apg(params[:title], params[:file].path)
+		redirect_to '/cdc/apgs'
+	end
+
+	def cdc_delete_apg
+		apg = CdcApgDocument.find_by(id: params[:id])
+		if apg
+			apg.delete
+			respond({ status: 0, message: "Deleted successfully!" })
+		else
+			respond({ status: 1, error: "Document #{params[:id]} not found." })
+		end
+	end
+
 	def fx_upload_mag_pricing
 	end
 
@@ -556,6 +578,10 @@ class AccessibleController < ApplicationController
 		else
 			respond({ error: "#{a.errors.full_messages}", status: 1 })
 		end
+	end
+
+	def cdc_get_apgs
+		respond({ status: 0, apgs: CdcApgDocument.all })
 	end
 
 	# ----- End Angular Request routes ------

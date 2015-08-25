@@ -109,7 +109,6 @@ class CDC
 				next_el_h1 = next_el_h1.next_element
 			end
 			page_sections.push(section)
-		#	break
 		end
 		page_sections.each do |s|
 			newSection = CdcApgSection.create!(title: s[:main_header], cdc_apg_document: doc)

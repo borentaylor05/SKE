@@ -1,0 +1,14 @@
+<div class="container apgs" ng-app="CdcApp" ng-controller="CdcApgCtrl as apg">
+	<div class="alert alert-warning"> The ID is the number that goes at the bottom of the HTML widget. </div>
+	<div class="row">
+		<div class="col-xs-1"> <strong>ID</strong> </div>
+		<div class="col-xs-5"> <strong>Title</strong> </div>
+	</div>
+	<div class="row" ng-repeat="doc in apg.all">
+		<div class="col-xs-1"> {{ doc.id }} </div>
+		<div class="col-xs-4"> {{ doc.title }} </div>
+		<div class="col-xs-3">
+			<button class="btn btn-xs btn-danger" ng-click="apg.deleteApg(doc)">DELETE</button>
+		</div>
+	</div>
+</div>
