@@ -63,7 +63,11 @@ class User < ActiveRecord::Base
 		errors = []
 		tl_count = 0
 		tl_error = []
-		jive = Jive2.new('dev')
+		if Rails.env.production?
+			jive = Jive2.new('social')
+		else
+			jive = Jive2.new('dev')
+		end	
 		CSV.foreach(file.path, headers: true) do |row|
 			user = Util.parse_csv_user(row)
 			# create_user params -> user: user hash, to_db: boolean (do you want user saved to local db)

@@ -83,8 +83,8 @@ class CDC
 		return errors
 	end
 
-	def parse_apg(title, filename)
-		doc = CdcApgDocument.create(client: Client.find_by(name: "cdc"), title: title)	
+	def parse_apg(title, url, filename)
+		doc = CdcApgDocument.create(client: Client.find_by(name: "cdc"), title: title, url: url)	
 		page_sections = []	
 		page = Nokogiri::HTML(open(filename))   
 		page.css('h1').each do |h|

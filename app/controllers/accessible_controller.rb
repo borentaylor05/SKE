@@ -43,7 +43,7 @@ class AccessibleController < ApplicationController
 
 	def cdc_process_apg
 		cdc = CDC.new('social')
-		cdc.parse_apg(params[:title], params[:file].path)
+		cdc.parse_apg(params[:title], params[:url], params[:file].path)
 		redirect_to '/cdc/apgs'
 	end
 

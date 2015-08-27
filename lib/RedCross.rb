@@ -68,15 +68,15 @@ class RedCross
 				bo = ArcBlackoutDate.find_by(date: current_date, notes: current_notes)
 				if !bo 
 					begin 
-						expires = params[:date] ? Date.strptime(params[:date], '%m/%d/%Y') : nil
-						expires_yellow = params[:notes] ? Date.strptime(params[:notes], '%m/%d/%Y') : nil
+						expires = parse_arc_bo_date(current_date)
+						expires_yellow = parse_arc_bo_date(current_notes)
 						bo = ArcBlackoutDate.create!(date: current_date, 
 														notes: current_notes, 
 														expires: expires, 
 														expires_yellow: expires_yellow
 													)
 					rescue ArgumentError, TypeError
-						puts "Invalid Date: #{date.date} for #{date.id}"
+						puts "Invalid Date: #{bo.date} for #{bo.id}"
 					end
 				end
 				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
@@ -88,5 +88,15 @@ class RedCross
 			s.update_attributes(name: "UNKNOWN") if s.name.nil?
 		end
 	end
+
+	private
+
+		def parse_arc_bo_date(date_string)
+			if date_string.include?("-")
+				start, date_string = date_string.split("-")  
+			end
+			expires = date_string ? Date.strptime(date_string, '%m/%d/%Y') : nil
+			return expires
+		end
 
 end
