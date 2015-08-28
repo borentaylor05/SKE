@@ -41,23 +41,14 @@ module ArcHelper
 			if date_string.include?("-")
 				start, date_string = date_string.split("-")  
 			end
-			return date_string ? Date.strptime(date_string, '%m/%d/%Y') : nil
+			if is_valid_date_string?(date_string)
+				return date_string ? Date.strptime(date_string, '%m/%d/%Y') : nil
+			else
+				return nil 
+			end
 		rescue ArgumentError, TypeError
 			puts "ERROR: Invalid Date #{date_string}"
 			return nil
-		end
-	end
-
-	def new_date(date, type)
-		if date 
-			expires = parse_arc_bo_date(date)
-			if expires
-				bo = ArcBlackoutDate.create!(date: date, notes: nil, expires: expires, date_type: type)
-			else
-				bo = ArcBlackoutDate.new(date: date, notes: nil, expires: nil, date_type: type)
-				bo.save(validate: false)
-				return bo
-			end
 		end
 	end
 

@@ -79,9 +79,9 @@ abbreviation "MyString"
   
   factory :arc_blackout_date do
     date "9/12/2015"
-    notes "9/15/2015"
+    notes "My random note"
     expires Date.today
-    expires_yellow Date.today
+    date_type "black"
   end
 
   factory :arc_city_state do

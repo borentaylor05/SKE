@@ -8,38 +8,26 @@ RSpec.describe ArcBlackoutDate, type: :model do
 	it "should pass with factory arc_blackout_date" do 
 		expect(@date).to be_valid
 	end
-  	
-	it "should not pass with blank black and yellow dates" do 
-		@date.date = nil
+
+	it "should not allow date and notes to be nil" do 
+		@date.date = nil 
 		@date.notes = nil 
 		expect(@date).to_not be_valid
 	end
 
-	it "should allow date or notes to be nil" do 
-		@date.notes = nil
+	it "should pass with blank notes and valid date" do 
+		@date.notes = nil 
 		expect(@date).to be_valid
 	end
 
-	it "should allow date or notes to be nil" do 
-		@date.date = nil
+	it "should pass with notes and no date" do 
+		@date.date = nil 
 		expect(@date).to be_valid
-	end
-
-	it "should not let expires_yellow and expires to be nil" do 
-		@date.expires = nil 
-		@date.expires_yellow = nil
 	end
 
 	it "should not pass with invalid bo date format" do 
 		['asdadasd', '131232132', '1222/2222/2222', '2222/1/2015', '4/444/2015', '12/31/32'].each do |d|
 			@date.date = d
-			expect(@date).to_not be_valid
-		end
-	end
-
-	it "should not pass with invalid yellow date format" do 
-		['asdadasd', '131232132', '1222/2222/2222', '2222/1/2015', '4/444/2015', '12/31/32', '12/2/2021', '3/2/2000', '12/12/2015-kjhkjh', '12/12/2015-02/01/87'].each do |d|
-			@date.notes = d
 			expect(@date).to_not be_valid
 		end
 	end
@@ -56,21 +44,19 @@ RSpec.describe ArcBlackoutDate, type: :model do
 		expect(@date).to_not be_valid
 	end
 
-	it "should not pass with notes (yellow date) and no expires_yellow" do 
-		@date.expires_yellow = nil 
+	it "should not pass with no date type" do 
+		@date.date_type = nil 
 		expect(@date).to_not be_valid
 	end
 
-	it "should allow both date and expires to be nil" do 
-		@date.date = nil 
-		@date.expires = nil 
+	it "should require date_type == black or yellow" do 
+		@date.date_type = "green"
 		expect(@date).to_not be_valid
 	end
 
-	it "should allow both notes (yellow date) and expires_yellow to be nil" do 
-		@date.notes = nil 
-		@date.expires_yellow = nil 
-		expect(@date).to_not be_valid
+	it "should pass with yellow date_type" do 
+		@date.date_type = "yellow"
+		expect(@date).to be_valid
 	end
 
 end

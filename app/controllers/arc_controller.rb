@@ -103,7 +103,7 @@ class ArcController < ApplicationController
 		elsif request.method == "POST"
 			cities = []
 			params[:cities].each do |c|
-				c = c.strip
+				c.strip!
 				city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state].upcase))
 				if city 
 					resp = { name: c, exists: true }
@@ -112,7 +112,6 @@ class ArcController < ApplicationController
 				end
 				cities.push(resp)
 			end
-
 			respond({ status: 0, cities: cities })
 		end		
 	end
@@ -121,61 +120,46 @@ class ArcController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			cities = params[:cities].split(",")
-			base = cities.size
-			errors = []
-			created = 0
-			duplicate = 0			
-			bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black")
-			yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow")
-			if !bo 
-				# new_date function in app/helpers/ApplicationHelper
-				bo = new_date(current_bo, "black")
-				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
-					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
+			if valid_dates(params)
+				cities = params[:cities].split(",")
+				base = cities.size
+				errors = []
+				created = 0
+				bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black")
+				yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow")
+				if !bo and params[:date]
+					# new_date function in app/helpers/ApplicationHelper
+					expires = parse_arc_bo_date(params[:date])
+					bo = ArcBlackoutDate.create!(date: params[:date], notes: params[:date_notes], expires: expires, date_type: "black")
 				end
-			end
-			if !yellow 
-				yellow = new_date(current_yellow, "yellow")
-				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: yellow)
-					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: yellow)
-				end
-			end		
-			cities.each do |c|
-				c = c.strip if c
-				city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
-				if !city 
-					city = ArcCityState.new(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
-					if city.valid?
-						city.save							
-					else
-						Rails.logger.info city.errors.full_messages 
+				if !yellow and params[:yellow] 
+					expires = parse_arc_bo_date(params[:yellow])
+					yellow = ArcBlackoutDate.create!(date: params[:yellow], notes: params[:yellow_notes], expires: expires, date_type: "yellow")
+				end		
+				cities.each do |c|
+					c.strip! if c
+					city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
+					if !city 
+						city = ArcCityState.new(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
+						if city.valid?
+							city.save					
+						else
+							errors.push city.errors.full_messages
+						end
 					end
-				end
-				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
-					tracker = ArcBlackoutTracker.new( arc_city_state: city, arc_blackout_date: bo )
-					if tracker.valid?
-						tracker.save
+					if yellow
+						ArcBlackoutTracker.find_or_create_by(arc_city_state: city, arc_blackout_date: yellow) 
+						created += 1 if !bo
+					end
+					if bo 
+						ArcBlackoutTracker.find_or_create_by(arc_city_state: city, arc_blackout_date: bo)
 						created += 1
-					else
-						Rails.logger.info tracker.errors.full_messages 
 					end
-				else
-					duplicate +=1
 				end
-				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: yellow)
-					tracker = ArcBlackoutTracker.new( arc_city_state: city, arc_blackout_date: yellow )
-					if tracker.valid?
-						tracker.save
-						created += 1
-					else
-						Rails.logger.info tracker.errors.full_messages 
-					end
-				else
-					duplicate +=1
-				end
-			end
-			respond({ status: 0, message: "#{created} of #{base} saved successfully.", duplicate: duplicate, errors: errors })
+				respond({ status: 0, message: "#{created} of #{base} saved successfully.", errors: errors })
+			else
+				respond({ status: 1, error: "Invalid blackout or yellow date.  Make sure they are in mm/dd/yyyy format" })
+			end			
 		end
 	end
 
@@ -222,4 +206,22 @@ class ArcController < ApplicationController
 			return combo
 		end
 
+		def valid_dates(params)
+			if params[:date] or params[:yellow]
+				if params[:date] and params[:yellow]
+					return true if parse_arc_bo_date(params[:date]) and parse_arc_bo_date(params[:yellow])
+				elsif params[:date]
+					return true if parse_arc_bo_date(params[:date])
+				elsif params[:yellow]
+					return true if parse_arc_bo_date(params[:yellow])
+				end							
+				return false
+			else
+				return false
+			end
+		end
+
 end
+
+
+
