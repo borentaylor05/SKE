@@ -69,16 +69,12 @@ class RedCross
 				yellow = ArcBlackoutDate.find_by(date: current_yellow, date_type: "yellow")
 				if !bo 
 					bo = new_date(current_bo, "black")
-					if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
-						ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
-					end
 				end
 				if !yellow 
-					yellow = new_date(current_yellow, "yellow")
-					if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: yellow)
-						ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: yellow)
-					end
+					yellow = new_date(current_yellow, "yellow")					
 				end
+				ArcBlackoutTracker.find_or_create_by(arc_city_state: city, arc_blackout_date: yellow)
+				ArcBlackoutTracker.find_or_create_by(arc_city_state: city, arc_blackout_date: bo)
 			end
 		end
 		State.all.each do |s|
