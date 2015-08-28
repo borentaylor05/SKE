@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825164720) do
+ActiveRecord::Schema.define(version: 20150828151630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,10 +72,11 @@ ActiveRecord::Schema.define(version: 20150825164720) do
   create_table "arc_blackout_dates", force: true do |t|
     t.string   "date"
     t.string   "notes"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.date     "expires"
-    t.date     "expires_yellow"
+    t.string   "date_type"
+    t.integer  "arc_city_state_id"
   end
 
   create_table "arc_blackout_trackers", force: true do |t|

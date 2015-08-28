@@ -38,49 +38,46 @@ class RedCross
 	def bo_dates
 		current_state = ""
 		current_city = ""
-		current_date = ""
-		current_notes = ""
+		current_bo = ""
+		current_yellow = ""
 		CSV.foreach('arc_blackout_72415.csv', headers: true) do |row|
 			if row[1] and row[1] != current_city
 				current_city = row[1].strip
-				current_notes = nil
-				current_date = nil
+				current_yellow = nil
+				current_bo = nil
 				current_state = nil
 			end
 			if row[0] and row[0] != current_state
 				current_state = State.find_or_create_by(abbreviation: row[0].strip.upcase)
 			end			
-			if row[2] and row[2] != current_date
-				current_date = row[2].strip
+			if row[2] and row[2] != current_bo
+				current_bo = row[2].strip
 			else
-				current_date = nil if row[2] != current_date
+				current_bo = nil if row[2] != current_bo
 			end
-			if row[3] and row[3] != current_notes
-				current_notes = row[3].strip
+			if row[3] and row[3] != current_yellow
+				current_yellow = row[3].strip
 			else
-				current_notes = nil if row[3] != current_notes
+				current_yellow = nil if row[3] != current_yellow
 			end
-			if current_city and current_state and (current_date or current_notes)
+			if current_city and current_state and (current_bo or current_yellow)
 				city = ArcCityState.find_by(city: current_city.downcase, state: current_state)
 				if !city 
 					city = ArcCityState.create!(city: current_city.downcase, state: current_state)
 				end
-				bo = ArcBlackoutDate.find_by(date: current_date, notes: current_notes)
+				bo = ArcBlackoutDate.find_by(date: current_bo, date_type: "black")
+				yellow = ArcBlackoutDate.find_by(date: current_yellow, date_type: "yellow")
 				if !bo 
-					begin 
-						expires = parse_arc_bo_date(current_date)
-						expires_yellow = parse_arc_bo_date(current_notes)
-						bo = ArcBlackoutDate.create!(date: current_date, 
-														notes: current_notes, 
-														expires: expires, 
-														expires_yellow: expires_yellow
-													)
-					rescue ArgumentError, TypeError
-						puts "Invalid Date: #{bo.date} for #{bo.id}"
+					bo = new_date(current_bo, "black")
+					if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
+						ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
 					end
 				end
-				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
-					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
+				if !yellow 
+					yellow = new_date(current_yellow, "yellow")
+					if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: yellow)
+						ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: yellow)
+					end
 				end
 			end
 		end
@@ -92,11 +89,28 @@ class RedCross
 	private
 
 		def parse_arc_bo_date(date_string)
-			if date_string.include?("-")
-				start, date_string = date_string.split("-")  
+			begin
+				if date_string.include?("-")
+					start, date_string = date_string.split("-")  
+				end
+				return date_string ? Date.strptime(date_string, '%m/%d/%Y') : nil
+			rescue ArgumentError, TypeError
+				puts "ERROR: Invalid Date #{date_string}"
+				return nil
 			end
-			expires = date_string ? Date.strptime(date_string, '%m/%d/%Y') : nil
-			return expires
+		end
+
+		def new_date(date, type)
+			if date 
+				expires = parse_arc_bo_date(date)
+				if expires
+					bo = ArcBlackoutDate.create!(date: date, notes: nil, expires: expires, date_type: type)
+				else
+					bo = ArcBlackoutDate.new(date: date, notes: nil, expires: nil, date_type: type)
+					bo.save(validate: false)
+					return bo
+				end
+			end
 		end
 
 end

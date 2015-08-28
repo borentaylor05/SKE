@@ -1,4 +1,5 @@
 class ArcBlackoutTracker < ActiveRecord::Base
+	include ArcHelper
 
 	validates :arc_blackout_date_id, presence: true
 	validates :arc_city_state_id, presence: true

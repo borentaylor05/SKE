@@ -1,6 +1,8 @@
 class ArcController < ApplicationController
 
 	include ActionView::Helpers::DateHelper
+	include ArcHelper
+
 	skip_before_action :verify_authenticity_token
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
@@ -82,7 +84,10 @@ class ArcController < ApplicationController
 	def get_blackout_dates
 		city = ArcCityState.find_by(city: params[:city], state: State.find_by(name: params[:state]))
 		if city
-			respond({ status: 0, dates: city.arc_blackout_dates })
+			dates = city.arc_blackout_dates
+			black = dates.select { |d| d.date_type == "black" }
+			yellow = dates.select { |d| d.date_type == "yellow" }
+			respond({ status: 0, black: black, yellow: yellow })
 		else
 			respond({ status: 1, error: "City / State combo not found..." })
 		end
@@ -121,22 +126,21 @@ class ArcController < ApplicationController
 			errors = []
 			created = 0
 			duplicate = 0			
-			bo = ArcBlackoutDate.find_by(date: params[:date], notes: params[:notes])
-			if !bo
-				begin 
-					expires = parse_arc_bo_date(params[:date])
-					expires_yellow = parse_arc_bo_date(params[:notes])
-					bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes], expires: expires, expires_yellow: expires_yellow)
-				rescue ArgumentError, TypeError
-					bo = ArcBlackoutDate.new(date: params[:date], notes: params[:notes])
-					errors.push "Invalid Date: #{params[:date]}"
-				end				
-				if bo.valid?
-					bo.save	
-				else
-					Rails.logger.info bo.errors.full_messages 
-				end	
-			end			
+			bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black")
+			yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow")
+			if !bo 
+				# new_date function in app/helpers/ApplicationHelper
+				bo = new_date(current_bo, "black")
+				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
+					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: bo)
+				end
+			end
+			if !yellow 
+				yellow = new_date(current_yellow, "yellow")
+				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: yellow)
+					ArcBlackoutTracker.create(arc_city_state: city, arc_blackout_date: yellow)
+				end
+			end		
 			cities.each do |c|
 				c = c.strip if c
 				city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
@@ -150,6 +154,17 @@ class ArcController < ApplicationController
 				end
 				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: bo)
 					tracker = ArcBlackoutTracker.new( arc_city_state: city, arc_blackout_date: bo )
+					if tracker.valid?
+						tracker.save
+						created += 1
+					else
+						Rails.logger.info tracker.errors.full_messages 
+					end
+				else
+					duplicate +=1
+				end
+				if !ArcBlackoutTracker.exists?(arc_city_state: city, arc_blackout_date: yellow)
+					tracker = ArcBlackoutTracker.new( arc_city_state: city, arc_blackout_date: yellow )
 					if tracker.valid?
 						tracker.save
 						created += 1
@@ -194,25 +209,5 @@ class ArcController < ApplicationController
 			end
 		end
 	end
-
-	private
-
-		def parse_arc_bo_date(date_string)
-			if date_string.include?("-")
-				start, date_string = date_string.split("-")  
-			end
-			expires = date_string ? Date.strptime(date_string, '%m/%d/%Y') : nil
-			return expires
-		end
-
-		def city_states(cities)
-			combo = []
-			cities.each do |c|
-				hash = c.attributes
-				hash[:state] = c.state.name
-				combo.push(hash)
-			end
-			return combo
-		end
 
 end

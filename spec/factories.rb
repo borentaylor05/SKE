@@ -71,18 +71,24 @@ three_day false
     name "MyString"
 abbreviation "MyString"
   end
+
   factory :arc_blackout_tracker do
     arc_blackout_date_id 1
-arc_city_state_id 1
+    arc_city_state_id 1
   end
+  
   factory :arc_blackout_date do
-    date "MyString"
-notes "MyString"
+    date "9/12/2015"
+    notes "9/15/2015"
+    expires Date.today
+    expires_yellow Date.today
   end
+
   factory :arc_city_state do
     city "MyString"
-state "MyString"
+    state "MyString"
   end
+
   factory :rco_order do
     agent_name "MyString"
 created false
