@@ -210,4 +210,16 @@ class ArcController < ApplicationController
 		end
 	end
 
+	private
+
+		def city_states(cities)
+			combo = []
+			cities.each do |c|
+				hash = c.attributes
+				hash[:state] = c.state.name
+				combo.push(hash)
+			end
+			return combo
+		end
+
 end
