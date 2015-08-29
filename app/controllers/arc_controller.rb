@@ -104,7 +104,7 @@ class ArcController < ApplicationController
 			cities = []
 			params[:cities].each do |c|
 				c.strip!
-				city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state].upcase))
+				city = ArcCityState.find_by(city: c.downcase.strip, state: State.find_by(abbreviation: params[:state].upcase))
 				if city 
 					resp = { name: c, exists: true }
 				else
@@ -138,9 +138,9 @@ class ArcController < ApplicationController
 				end		
 				cities.each do |c|
 					c.strip! if c
-					city = ArcCityState.find_by(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
+					city = ArcCityState.find_by(city: c.downcase.strip, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
 					if !city 
-						city = ArcCityState.new(city: c.downcase, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
+						city = ArcCityState.new(city: c.downcase.strip, state: State.find_by(abbreviation: params[:state][:abbreviation].upcase))
 						if city.valid?
 							city.save					
 						else
@@ -158,9 +158,50 @@ class ArcController < ApplicationController
 				end
 				respond({ status: 0, message: "#{created} of #{base} saved successfully.", errors: errors })
 			else
-				respond({ status: 1, error: "Invalid blackout or yellow date.  Make sure they are in mm/dd/yyyy format" })
+				respond({ status: 1, error: "Invalid blackout or yellow date.  Make sure they are in mm/dd/yyyy format. Valid years are 2015-2020." })
 			end			
 		end
+	end
+
+	def get_groups
+		if params[:state]
+			state = State.find_by(abbreviation: params[:state].upcase)
+			if state 
+				groups = ArcCityStateGroup.where(state: state)
+				respond({ status: 0, groups: groups.map { |g| g.apify } })
+			else
+				respond({ status: 1, error: "State #{params[:state].upcase} not found." })
+			end			
+		else
+			respond({ status: 1, error: "Must send state param." })
+		end
+	end
+
+	def new_group
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			if params[:state] and params[:cities] and params[:name]
+				cities = params[:cities].split(",")
+				if cities.count > 0 and params[:name].length > 0
+					state = State.find_by(abbreviation: params[:state].upcase)
+					if state 
+						group = ArcCityStateGroup.find_or_create_by(name: params[:name].downcase, state: state)
+						cities.each do |c|
+							city = ArcCityState.find_or_create_by(city: c.downcase.strip, state: state)
+							group.arc_city_states << city
+						end
+						respond({ status: 0, group: group })
+					else
+						respond({ status: 1, error: "State #{params[:state].upcase} not found." })
+					end
+				else
+					respond({ status: 1, error: "Need cities and group name." })
+				end
+			else
+				respond({ status: 1, error: "Need state, cities, and name params." })
+			end
+		end		
 	end
 
 	def get_rcos
@@ -204,6 +245,10 @@ class ArcController < ApplicationController
 				combo.push(hash)
 			end
 			return combo
+		end
+
+		def get_cities(groups)
+			groups.map { |g| g.apify }
 		end
 
 		def valid_dates(params)

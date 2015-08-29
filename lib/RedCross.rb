@@ -100,12 +100,12 @@ class RedCross
 			if date 
 				expires = parse_arc_bo_date(date)
 				if expires
-					bo = ArcBlackoutDate.create!(date: date, notes: nil, expires: expires, date_type: type)
+					bo = ArcBlackoutDate.new(date: date, notes: nil, expires: expires, date_type: type)
 				else
 					bo = ArcBlackoutDate.new(date: date, notes: nil, expires: nil, date_type: type)
-					bo.save(validate: false)
-					return bo
 				end
+				bo.save(validate: false)
+				return bo
 			end
 		end
 

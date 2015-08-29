@@ -2,12 +2,13 @@ require 'rails_helper'
 
 describe "ARC API", :type => :request do
 
-	before { @create_params = params = { date: "01/01/2015", date_notes: "Notes", 
+	before { @create_params = { date: "01/01/2015", date_notes: "Notes", 
 										yellow: "01/02/2016", yellow_notes: "YNotes", 
 										state: {name: "New York", abbreviation: "ny"}, 
 										cities: "Suffolk, Nassau, Hornell"
 										} 
 									}
+	before { @group_params = { cities: "Suffolk, Nassau, Hornell", state: "NY", name: "TEST" } }
 
 	# for /arc/api/cities
 	it "/arc/api/cities should return json" do 
@@ -103,6 +104,74 @@ describe "ARC API", :type => :request do
 	it "should send proper success message" do 
 		post "/arc/api/blackout-dates", @create_params
 		expect(json["message"]).to eq("3 of 3 saved successfully.")
+	end
+
+	# Tests for group functionality
+	# params -> { cities: string,string,string,etc. , state: abbreviation, name: string }
+	it "should respond with json after POST (/arc/api/blackout-dates/group)" do 
+		post "/arc/api/blackout-dates/group", @group_params
+		expect(json).to_not be nil
+	end
+
+	it "POST /arc/api/blackout-dates/group - should be one more group after request" do 
+		before = ArcCityStateGroup.count 
+		post "/arc/api/blackout-dates/group", @group_params
+		after = ArcCityStateGroup.count 
+		expect(after).to eq(before+1)
+	end
+
+	it "POST /arc/api/blackout-dates/group - should be x more trackers after request" do 
+		before = ArcGroupTracker.count 
+		cities = @group_params[:cities].split(",").count
+		post "/arc/api/blackout-dates/group", @group_params
+		after = ArcGroupTracker.count 
+		expect(after).to eq(before+cities)
+	end
+
+	it "POST /arc/api/blackout-dates/group - should respond with a group" do 
+		post "/arc/api/blackout-dates/group", @group_params
+		expect(json["group"]).to_not be nil 
+	end
+
+	it "POST /arc/api/blackout-dates/group - should respond with a group" do 
+		post "/arc/api/blackout-dates/group", @group_params
+		expect(json["group"]["name"]).to_not be nil 
+	end
+
+	it "should respond with error when no state" do 
+		@group_params[:state] = nil 
+		post "/arc/api/blackout-dates/group", @group_params
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should respond with error when no cities" do 
+		@group_params[:cities] = nil 
+		post "/arc/api/blackout-dates/group", @group_params
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should respond with error when no name" do 
+		@group_params[:name] = nil 
+		post "/arc/api/blackout-dates/group", @group_params
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should respond with json after GET (/arc/api/blackout-dates/group)" do 
+		get "/arc/api/blackout-dates/group", { state: "NY" }
+		expect(json).to_not be nil
+	end
+
+	it "GET should respond with a 'groups' object (/arc/api/blackout-dates/group)" do 
+		get "/arc/api/blackout-dates/group", { state: "NY" }
+		expect(json["groups"]).to_not be nil
+	end
+
+	it "GET /arc/api/blackout-dates/group - each group should have a name and cities property " do 
+		post "/arc/api/blackout-dates/group", @group_params
+		get "/arc/api/blackout-dates/group", { state: "NY" }
+		puts json
+		expect(json["groups"][0]["name"]).to_not be nil
+		expect(json["groups"][0]["cities"]).to_not be nil
 	end
 
 end

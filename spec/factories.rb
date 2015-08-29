@@ -1,4 +1,6 @@
-FactoryGirl.define do  factory :cdc_apg_document do
+FactoryGirl.define do  
+  
+  factory :cdc_apg_document do
     client_id 1
 title "MyString"
   end
@@ -87,6 +89,16 @@ abbreviation "MyString"
   factory :arc_city_state do
     city "MyString"
     state "MyString"
+  end
+
+  factory :arc_group_tracker do
+    arc_city_state_id 1
+    arc_city_state_group_id 1
+  end
+
+  factory :arc_city_state_group do
+    name "MyString"
+    state_id State.first.id
   end
 
   factory :rco_order do
