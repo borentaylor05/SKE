@@ -189,7 +189,9 @@ class ArcController < ApplicationController
 						group = ArcCityStateGroup.find_or_create_by(name: params[:name].downcase, state: state)
 						cities.each do |c|
 							city = ArcCityState.find_or_create_by(city: c.downcase.strip, state: state)
-							group.arc_city_states << city
+							if !ArcGroupTracker.exists?(arc_city_state: city, arc_city_state_group: group)
+								group.arc_city_states << city
+							end
 						end
 						respond({ status: 0, group: group })
 					else
