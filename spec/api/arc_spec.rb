@@ -192,6 +192,35 @@ describe "ARC API", :type => :request do
 		expect(json["groups"][0]["cities"]).to_not be nil
 	end
 
+	it "DELETE /arc/api/blackout-dates/:id - should respond with json" do 
+		id = ArcBlackoutDate.first.id
+		delete "/arc/api/blackout-dates/#{id}"
+		expect(json).to_not be nil
+	end
+
+	it "DELETE /arc/api/blackout-dates/:id - respond with status 0 if BO date found" do 
+		id = ArcBlackoutDate.first.id
+		delete "/arc/api/blackout-dates/#{id}"
+		expect(json["status"]).to eq(0)
+	end
+
+	it "DELETE /arc/api/blackout-dates/:id - should delete BO Date and associated trackers" do 
+		id = ArcBlackoutDate.first.id
+		bo = ArcBlackoutDate.find_by(id: id)
+		before = ArcBlackoutDate.count
+		all = ArcBlackoutTracker.count
+		before2 = bo.arc_blackout_trackers.count 
+		delete "/arc/api/blackout-dates/#{id}"
+		after = ArcBlackoutDate.count
+		expect(after).to eq(before-1)
+		expect(ArcBlackoutTracker.count).to eq(all-before2)
+	end
+
+	it "DELETE /arc/api/blackout-dates/:id - respond with status 0 if invalid id" do 
+		delete "/arc/api/blackout-dates/adsadsa"
+		expect(json["status"]).to eq(1)
+	end
+
 end
 
 

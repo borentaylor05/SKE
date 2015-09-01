@@ -125,7 +125,7 @@ Rails.application.routes.draw do
   match "/clients/:client/lob-titles", to: "accessible#get_lobs_titles_for_client", via: :get
   match "/clients", to: "accessible#get_clients", via: :get
 
-  match "ske/users", to: "accessible#users", via: :get
+  match "/ske/users", to: "accessible#users", via: :get
   match "/ske/users/bulk-upload", to: "accessible#bulk_upload_users", via: :get
   match "/ske/users/bulk-upload/process", to: "accessible#bulk_upload_users_process", via: :post
 
@@ -219,6 +219,7 @@ Rails.application.routes.draw do
   match "/arc/api/rcos", to: "arc#get_rcos", via: :get
   match "/arc/api/blackout-dates", to: "arc#create_blackout_dates", via: [:post, :options]
   match "/arc/api/blackout-dates/check", to: "arc#check_cities", via: [:post, :options]
+  match "/arc/api/blackout-dates/:id", to: "arc#delete_bo_date", via: [:delete, :options]
   match "/arc/api/blackout-dates/:city/:state", to: "arc#get_blackout_dates", via: :get
   match "/arc/api/blackout-dates/group", to: "arc#get_groups", via: :get
   match "/arc/api/blackout-dates/group", to: "arc#new_group", via: [:post, :options]
