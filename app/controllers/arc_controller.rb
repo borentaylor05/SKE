@@ -264,7 +264,11 @@ class ArcController < ApplicationController
 				end							
 				return false
 			else
-				return false
+				if params[:yellow_notes] or params[:date_notes]
+					return true
+				else
+					return false
+				end				
 			end
 		end
 

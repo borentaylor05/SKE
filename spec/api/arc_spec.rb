@@ -66,6 +66,23 @@ describe "ARC API", :type => :request do
 
 	# for "/arc/api/blackout-dates", to: "arc#create_blackout_dates"
 	# params -> { date: string, date_notes: string, yellow: string, yellow_notes: string }
+	
+	it "should pass if yellow date is nil but notes are not" do 
+		@create_params[:date] = nil 
+		@create_params[:date_notes] = nil 
+		@create_params[:yellow] = nil 
+		post "/arc/api/blackout-dates", @create_params
+		expect(json["status"]).to eq(0)
+	end
+
+	it "should pass if bo date is nil but notes are not" do 
+		@create_params[:date] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:yellow] = nil 
+		post "/arc/api/blackout-dates", @create_params
+		expect(json["status"]).to eq(0)
+	end
+
 	it "should return json (/arc/api/blackout-dates)" do 
 		post "/arc/api/blackout-dates", @create_params
 		expect(json).to_not be nil
@@ -92,11 +109,13 @@ describe "ARC API", :type => :request do
 			post "/arc/api/blackout-dates", @create_params 
 			expect(json["status"]).to eq(1)
 		end
-	end
+	end	
 
-	it "should not pass if date and yellow are nil" do 
+	it "should not pass if date and yellow are nil (and all notes are nil)" do 
 		@create_params[:date] = nil 
 		@create_params[:yellow] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:date_notes] = nil
 		post "/arc/api/blackout-dates", @create_params
 		expect(json["status"]).to eq(1) 
 	end
@@ -169,7 +188,6 @@ describe "ARC API", :type => :request do
 	it "GET /arc/api/blackout-dates/group - each group should have a name and cities property " do 
 		post "/arc/api/blackout-dates/group", @group_params
 		get "/arc/api/blackout-dates/group", { state: "NY" }
-		puts json
 		expect(json["groups"][0]["name"]).to_not be nil
 		expect(json["groups"][0]["cities"]).to_not be nil
 	end

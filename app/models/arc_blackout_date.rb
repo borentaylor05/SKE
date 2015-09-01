@@ -8,6 +8,8 @@ class ArcBlackoutDate < ActiveRecord::Base
 	has_many :arc_blackout_trackers
 	has_many :arc_city_states, through: :arc_blackout_trackers
 
+	default_scope { order('expires ASC') }
+
 	def date_or_notes?
 		if !date and !notes
 			errors.add(:arc_blackout_date, "date and notes cannot be nil")
