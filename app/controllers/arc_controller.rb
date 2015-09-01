@@ -238,13 +238,17 @@ class ArcController < ApplicationController
 	end
 
 	def delete_bo_date
-		bo = ArcBlackoutDate.find_by(id: params[:id])
-		if bo
-			bo.arc_blackout_trackers.destroy_all
-			bo.destroy
-			respond({ status: 0, message: "Date deleted." })
-		else
-			respond({ status: 1, error: "Blackout Date #{params[:id]} not found." })
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			bo = ArcBlackoutDate.find_by(id: params[:id])
+			if bo
+				bo.arc_blackout_trackers.destroy_all
+				bo.destroy
+				respond({ status: 0, message: "Date deleted." })
+			else
+				respond({ status: 1, error: "Blackout Date #{params[:id]} not found." })
+			end
 		end
 	end
 
