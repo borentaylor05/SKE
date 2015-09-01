@@ -240,7 +240,7 @@ class ArcController < ApplicationController
 	def delete_bo_date
 		if(request.method == "OPTIONS")
 			respond({status: 0})
-		elsif request.method == "POST"
+		elsif request.method == "DELETE"
 			bo = ArcBlackoutDate.find_by(id: params[:id])
 			if bo
 				bo.arc_blackout_trackers.destroy_all
