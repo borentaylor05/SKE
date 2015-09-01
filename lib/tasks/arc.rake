@@ -22,3 +22,10 @@ task clean_bo_dates: :environment do
 	ArcBlackoutDate.destroy_all
 	ArcCityState.destroy_all
 end
+
+task remove_old_blackout_dates: :environment do 
+	ArcBlackoutDate.where("expires < now() - INTERVAL '1 Day'").each do |d| 
+		d.arc_blackout_trackers.destroy_all
+		d.destroy 
+	end
+end

@@ -249,6 +249,8 @@ class ArcController < ApplicationController
 			else
 				respond({ status: 1, error: "Blackout Date #{params[:id]} not found." })
 			end
+		else
+			respond({ status: 1, error: "Endpoint does not support method: #{request.method}" })
 		end
 	end
 
