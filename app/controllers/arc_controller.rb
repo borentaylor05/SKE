@@ -271,17 +271,16 @@ class ArcController < ApplicationController
 		end
 
 		def valid_dates(params)
-			if (params[:date] and !params[:date].blank?) or (params[:yellow] and !params[:yellow].blank?)
-				if params[:date] and params[:yellow]
+			if black_valid? or yellow_valid?
+				if black_valid? and yellow_valid?
 					return true if parse_arc_bo_date(params[:date]) and parse_arc_bo_date(params[:yellow])
-				elsif params[:date]
+				elsif black_valid?
 					return true if parse_arc_bo_date(params[:date])
-				elsif params[:yellow]
-					return true if parse_arc_bo_date(params[:yellow])
-				else
-					Rails.logger.info "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
-					return false
+				elsif yellow_valid?
+					return true if parse_arc_bo_date(params[:yellow])					
 				end											
+				Rails.logger.info "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
+				return false
 			else
 				if params[:yellow_notes] or params[:date_notes]
 					return true
@@ -290,6 +289,14 @@ class ArcController < ApplicationController
 					return false
 				end				
 			end
+		end
+
+		def black_valid?
+			params[:date] and !params[:date].blank?
+		end
+
+		def yellow_valid?
+			params[:yellow] and !params[:yellow].blank?
 		end
 
 end
