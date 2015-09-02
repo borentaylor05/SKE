@@ -158,7 +158,7 @@ class ArcController < ApplicationController
 				end
 				respond({ status: 0, message: "#{created} of #{base} saved successfully.", errors: errors })
 			else
-				respond({ status: 1, error: "Invalid blackout or yellow date.  Make sure they are in mm/dd/yyyy format. Valid years are 2015-2020." })
+				respond({ status: 1, error: "Invalid blackout or yellow date (Black: #{params[:date]} - Yellow: #{params[:yellow]}) .  Make sure they are in mm/dd/yyyy format. Valid years are 2015-2020." })
 			end			
 		end
 	end

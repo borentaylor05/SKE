@@ -47,16 +47,8 @@ class FxController < ApplicationController
 			if subs.count > 0
 				respond({ status: 0, suburbs: subs })
 			else
-				suburbs = []
 				pubs = FxPublication.where(parent: pub.name)
-				pubs.each do |p|
-					p.suburbs.each do |burb|
-						b = burb.attributes
-						b[:paper] = p.name
-						suburbs.push(b)
-					end
-				end
-				respond({ status: 0, suburbs: suburbs, publication: pub })
+				respond({ status: 0, suburbs: pubs.apfy, publication: pub })
 			end
 		else
 			respond({ status: 1, error: "Publication not found." })

@@ -8,4 +8,12 @@ class FxPublication < ActiveRecord::Base
 	has_and_belongs_to_many :cost_per_thousands
 	default_scope { order('name ASC') }
 	scope :contains, -> (search) { where("lower(name) like ?", "%#{search.downcase}%")}
+
+	def apify
+		self.suburbs.map do |burb|
+			b = burb.attributes
+			b[:paper] = self.name
+		end
+	end
+
 end
