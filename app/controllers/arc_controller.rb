@@ -279,14 +279,14 @@ class ArcController < ApplicationController
 				elsif params[:yellow]
 					return true if parse_arc_bo_date(params[:yellow])
 				else
-					Rails.logger.debug "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
+					Rails.logger.info "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
 					return false
 				end											
 			else
 				if params[:yellow_notes] or params[:date_notes]
 					return true
 				else
-					Rails.logger.debug "DATEERROR: Failure on blank / nil check. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
+					Rails.logger.info "DATEERROR: Failure on blank / nil check. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
 					return false
 				end				
 			end

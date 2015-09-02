@@ -48,7 +48,8 @@ class FxController < ApplicationController
 				respond({ status: 0, suburbs: subs })
 			else
 				pubs = FxPublication.where(parent: pub.name)
-				respond({ status: 0, suburbs: pubs.apfy, publication: pub })
+				puts "ASDSADASD 3 - #{pubs.apify}"
+				respond({ status: 0, suburbs: pubs.apify, publication: pub })
 			end
 		else
 			respond({ status: 1, error: "Publication not found." })

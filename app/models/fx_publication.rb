@@ -13,7 +13,7 @@ class FxPublication < ActiveRecord::Base
 		self.suburbs.map do |burb|
 			b = burb.attributes
 			b[:paper] = self.name
-		end
+		end		
 	end
 
 end
