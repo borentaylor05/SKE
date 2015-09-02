@@ -158,7 +158,7 @@ class ArcController < ApplicationController
 				end
 				respond({ status: 0, message: "#{created} of #{base} saved successfully.", errors: errors })
 			else
-				respond({ status: 1, error: "Invalid blackout or yellow date (Black: #{params[:date]} - Yellow: #{params[:yellow]}) .  Make sure they are in mm/dd/yyyy format. Valid years are 2015-2020." })
+				respond({ status: 1, error: "Invalid blackout or yellow date (Black: #{params[:date]} - Yellow: #{params[:yellow]}).  Make sure they are in mm/dd/yyyy format. Valid years are 2015-2020." })
 			end			
 		end
 	end
@@ -279,12 +279,14 @@ class ArcController < ApplicationController
 				elsif params[:yellow]
 					return true if parse_arc_bo_date(params[:yellow])
 				else
+					Rails.logger.debug "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
 					return false
 				end											
 			else
 				if params[:yellow_notes] or params[:date_notes]
 					return true
 				else
+					Rails.logger.debug "DATEERROR: Failure on blank / nil check. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
 					return false
 				end				
 			end
