@@ -182,7 +182,7 @@ class ArcController < ApplicationController
 			respond({status: 0})
 		elsif request.method == "POST"
 			if params[:state] and params[:cities] and params[:name]
-				cities = params[:cities].split(",")
+				cities = params[:cities].split(",").map { |d| d.strip }
 				if cities.count > 0 and params[:name].length > 0
 					state = State.find_by(abbreviation: params[:state].upcase)
 					if state 
@@ -271,15 +271,16 @@ class ArcController < ApplicationController
 		end
 
 		def valid_dates(params)
-			if params[:date] or params[:yellow]
+			if (params[:date] and !params[:date].blank?) or (params[:yellow] and !params[:yellow].blank?)
 				if params[:date] and params[:yellow]
 					return true if parse_arc_bo_date(params[:date]) and parse_arc_bo_date(params[:yellow])
 				elsif params[:date]
 					return true if parse_arc_bo_date(params[:date])
 				elsif params[:yellow]
 					return true if parse_arc_bo_date(params[:yellow])
-				end							
-				return false
+				else
+					return false
+				end											
 			else
 				if params[:yellow_notes] or params[:date_notes]
 					return true
