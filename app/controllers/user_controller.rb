@@ -10,12 +10,14 @@ class UserController < ApplicationController
 		u = User.find_by(jive_id: params[:user])
 		if u and u.jive_id > 0
 			respond({ status: 0, message: "User exists", user: u, client: u.client })
-		else
+		elsif u
 			if u.jive_id > 0
 				respond({ status: 1, error: "User is not in DB." })
 			else
 				respond({ status: 1, error: "User needs a Jive ID." })
 			end
+		else
+			respond({ status: 1, error: "User not found." })
 		end
 	end
 
