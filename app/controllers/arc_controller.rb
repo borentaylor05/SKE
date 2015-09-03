@@ -127,11 +127,11 @@ class ArcController < ApplicationController
 				created = 0
 				bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black")
 				yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow")
-				if !bo and params[:date]
+				if !bo and !params[:date].blank?
 					expires = parse_arc_bo_date(params[:date])
 					bo = ArcBlackoutDate.create!(date: params[:date], notes: params[:date_notes], expires: expires, date_type: "black")
 				end
-				if !yellow and params[:yellow] 
+				if !yellow and !params[:yellow].blank?
 					expires = parse_arc_bo_date(params[:yellow])
 					yellow = ArcBlackoutDate.create!(date: params[:yellow], notes: params[:yellow_notes], expires: expires, date_type: "yellow")
 				end		

@@ -11,7 +11,7 @@ class ArcBlackoutDate < ActiveRecord::Base
 	default_scope { order('expires ASC') }
 
 	def date_or_notes?
-		if !date and !notes
+		if date.blank? and !notes
 			errors.add(:arc_blackout_date, "date and notes cannot be nil")
 		end
 	end
