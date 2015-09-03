@@ -10,10 +10,8 @@ class FxPublication < ActiveRecord::Base
 	scope :contains, -> (search) { where("lower(name) like ?", "%#{search.downcase}%")}
 
 	def apify
-		self.suburbs.map do |burb|
-			b = burb.attributes
-			b[:paper] = self.name
-		end		
+		hash = self.attributes
+		hash[:suburbs] = self.suburbs.map { |burb| burb.paper = self.name and burb.apify }
 	end
 
 end

@@ -47,9 +47,15 @@ class FxController < ApplicationController
 			if subs.count > 0
 				respond({ status: 0, suburbs: subs })
 			else
+				suburbs = []
 				pubs = FxPublication.where(parent: pub.name)
-				puts "ASDSADASD 3 - #{pubs.apify}"
-				respond({ status: 0, suburbs: pubs.apify, publication: pub })
+				pubs.each do |p|
+					p.suburbs.map do |burb| 
+						burb.paper = p.name
+						suburbs.push(burb.apify)
+					end
+				end
+				respond({ status: 0, suburbs: suburbs, publication: pub })
 			end
 		else
 			respond({ status: 1, error: "Publication not found." })
@@ -117,13 +123,7 @@ class FxController < ApplicationController
 
 	def redelivery_search
 		reds = Redelivery.search(params[:term]).limit(30)
-		all = []
-		reds.each do |r|
-			hash = r.attributes
-			hash[:publication] = r.fx_publication.name
-			all.push(hash)
-		end
-		respond({ status: 0, matches: all })
+		respond({ status: 0, matches: reds.apify })
 	end
 
 	def get_code_rates

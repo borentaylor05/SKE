@@ -1,2 +1,2 @@
-class FxPublicationsSuburb < ActiveRecord::Base
+class FxPublicationsSuburb < ActiveRecord::Base	
 end

@@ -14,4 +14,10 @@ class Redelivery < ActiveRecord::Base
 		fx.upload_redelivery(file)
 	end
 
+	def apify
+		hash = self.attributes
+		hash[:publication] = self.fx_publication.name
+		return hash
+	end
+
 end
