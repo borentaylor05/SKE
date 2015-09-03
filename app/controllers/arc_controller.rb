@@ -125,8 +125,10 @@ class ArcController < ApplicationController
 				base = cities.size
 				errors = []
 				created = 0
-				bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black")
-				yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow")
+				bo = nil 
+				yellow = nil
+				bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black") if !params[:date].blank?
+				yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow") if !params[:yellow].blank?
 				if !bo and !params[:date].blank?
 					expires = parse_arc_bo_date(params[:date])
 					bo = ArcBlackoutDate.create!(date: params[:date], notes: params[:date_notes], expires: expires, date_type: "black")

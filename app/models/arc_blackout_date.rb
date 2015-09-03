@@ -12,7 +12,13 @@ class ArcBlackoutDate < ActiveRecord::Base
 
 	def date_or_notes?
 		if date.blank? and !notes
-			errors.add(:arc_blackout_date, "date and notes cannot be nil")
+			errors.add(:arc_blackout_date, "date and notes cannot be nil or blank")
+		end
+	end
+
+	def date_blank?
+		if date == ""
+			errors.add(:arc_blackout_date, "date cannot be blank")
 		end
 	end
 

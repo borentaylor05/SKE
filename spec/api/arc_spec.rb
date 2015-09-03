@@ -167,7 +167,37 @@ describe "ARC API", :type => :request do
 		@create_params[:date] = "09/23/2015"
 		@create_params[:yellow] = ""
 		post "/arc/api/blackout-dates", @create_params
+		puts json
 		expect(json["status"]).to eq(0)
+	end
+
+	it "POST /arc/api/blackout-dates/group - pass with blank yellow date and date range" do 
+		@create_params[:date_notes] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:date] = "09/23/2015-09/30/2015"
+		@create_params[:yellow] = ""
+		post "/arc/api/blackout-dates", @create_params
+		puts json
+		expect(json["status"]).to eq(0)
+	end
+
+	it "POST /arc/api/blackout-dates/group - pass with blank black date and yellow range" do 
+		@create_params[:date_notes] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:date] = ""
+		@create_params[:yellow] = "09/23/2015-09/30/2015"
+		post "/arc/api/blackout-dates", @create_params
+		puts json
+		expect(json["status"]).to eq(0)
+	end
+
+	it "POST /arc/api/blackout-dates/group - should not pass if all are nil or blank" do 
+		@create_params[:date_notes] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:date] = ""
+		@create_params[:yellow] = ""
+		post "/arc/api/blackout-dates", @create_params
+		expect(json["status"]).to eq(1)
 	end
 
 	it "POST /arc/api/blackout-dates/group - should respond with a group" do 
