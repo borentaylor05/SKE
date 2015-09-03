@@ -276,7 +276,7 @@ class ArcController < ApplicationController
 					return true if parse_arc_bo_date(params[:date]) and parse_arc_bo_date(params[:yellow])
 				elsif date_valid?(params[:date])
 					return true if parse_arc_bo_date(params[:date])
-				elsif date_valid?(params[:date])
+				elsif date_valid?(params[:yellow])
 					return true if parse_arc_bo_date(params[:yellow])					
 				end											
 				Rails.logger.info "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
