@@ -152,17 +152,21 @@ describe "ARC API", :type => :request do
 		expect(json["group"]).to_not be nil 
 	end
 
-	it "POST /arc/api/blackout-dates/group - pass with blank backout date" do 
-		@group_params[:date] = ""
-		@group_params[:yellow] = "09/23/2015"
-		post "/arc/api/blackout-dates/group", @group_params
+	it "POST /arc/api/blackout-dates/group - pass with blank yellow date" do 
+		@create_params[:date_notes] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:date] = ""
+		@create_params[:yellow] = "09/23/2015"
+		post "/arc/api/blackout-dates", @create_params
 		expect(json["status"]).to eq(0)
 	end
 
-	it "POST /arc/api/blackout-dates/group - pass with blank yellow date" do 
-		@group_params[:date] = "09/23/2015"
-		@group_params[:yellow] = ""
-		post "/arc/api/blackout-dates/group", @group_params
+	it "POST /arc/api/blackout-dates/group - pass with blank backout date" do 
+		@create_params[:date_notes] = nil 
+		@create_params[:yellow_notes] = nil 
+		@create_params[:date] = "09/23/2015"
+		@create_params[:yellow] = ""
+		post "/arc/api/blackout-dates", @create_params
 		expect(json["status"]).to eq(0)
 	end
 

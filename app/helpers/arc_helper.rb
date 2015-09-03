@@ -1,6 +1,6 @@
 module ArcHelper
 	def is_valid_date_string?(string)
-		if string
+		if string and !string.blank?
 			if string.include?("-")
 				parts = string.split("-").map { |d| d.strip }
 				string = parts[parts.length - 1]

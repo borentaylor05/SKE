@@ -17,7 +17,7 @@ class ArcBlackoutDate < ActiveRecord::Base
 	end
 
 	def if_date_then_expires?
-		if date and !expires 
+		if date and !date.blank? and !expires 
 			errors.add(:arc_blackout_date, "valid date requires expires field")
 		end
 	end

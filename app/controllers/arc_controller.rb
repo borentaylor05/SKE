@@ -128,7 +128,6 @@ class ArcController < ApplicationController
 				bo = ArcBlackoutDate.find_by(date: params[:date], date_type: "black")
 				yellow = ArcBlackoutDate.find_by(date: params[:yellow], date_type: "yellow")
 				if !bo and params[:date]
-					# new_date function in app/helpers/ApplicationHelper
 					expires = parse_arc_bo_date(params[:date])
 					bo = ArcBlackoutDate.create!(date: params[:date], notes: params[:date_notes], expires: expires, date_type: "black")
 				end
@@ -272,13 +271,13 @@ class ArcController < ApplicationController
 
 		def valid_dates(params)
 			if date_valid?(params[:date]) or date_valid?(params[:yellow])
-				if date_valid?(params[:date]) and date_valid?(params[:date])
+				if date_valid?(params[:date]) and date_valid?(params[:yellow])
 					return true if parse_arc_bo_date(params[:date]) and parse_arc_bo_date(params[:yellow])
 				elsif date_valid?(params[:date])
 					return true if parse_arc_bo_date(params[:date])
 				elsif date_valid?(params[:yellow])
 					return true if parse_arc_bo_date(params[:yellow])					
-				end											
+				end				
 				Rails.logger.info "DATEERROR: Failure in date parse. (Black: #{params[:date]} - Yellow: #{params[:yellow]})"
 				return false
 			else
