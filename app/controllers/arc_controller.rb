@@ -271,7 +271,7 @@ class ArcController < ApplicationController
 		end
 
 		def valid_dates(params)
-			if date_valid?(params[:date]) or date_valid?(params[:date])
+			if date_valid?(params[:date]) or date_valid?(params[:yellow])
 				if date_valid?(params[:date]) and date_valid?(params[:date])
 					return true if parse_arc_bo_date(params[:date]) and parse_arc_bo_date(params[:yellow])
 				elsif date_valid?(params[:date])
@@ -292,7 +292,7 @@ class ArcController < ApplicationController
 		end
 
 		def date_valid?(date)
-			date and !date.blank?
+			return true if date and !date.blank?
 		end
 
 end
