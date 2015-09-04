@@ -35,9 +35,8 @@ class ArcBlackoutDate < ActiveRecord::Base
 			new_type = "black"
 		end
 		switching_bo = ArcBlackoutDate.find_or_create_by(date: self.date, notes: self.notes, date_type: new_type)
-		tracker = ArcBlackoutTracker.find_by(arc_blackout_date: self, arc_city_state: city)
-		tracker.update_attributes(arc_blackout_date: switching_bo)
-		return tracker
+		tracker = ArcBlackoutTracker.find_by(arc_blackout_date: self, arc_city_state: city).destroy
+		return ArcBlackoutTracker.find_or_create_by(arc_blackout_date: switching_bo, arc_city_state: city)
 	end
 	
 end
