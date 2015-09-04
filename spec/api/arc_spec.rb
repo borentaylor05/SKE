@@ -167,7 +167,6 @@ describe "ARC API", :type => :request do
 		@create_params[:date] = "09/23/2015"
 		@create_params[:yellow] = ""
 		post "/arc/api/blackout-dates", @create_params
-		puts json
 		expect(json["status"]).to eq(0)
 	end
 
@@ -177,7 +176,6 @@ describe "ARC API", :type => :request do
 		@create_params[:date] = "09/23/2015-09/30/2015"
 		@create_params[:yellow] = ""
 		post "/arc/api/blackout-dates", @create_params
-		puts json
 		expect(json["status"]).to eq(0)
 	end
 
@@ -187,7 +185,6 @@ describe "ARC API", :type => :request do
 		@create_params[:date] = ""
 		@create_params[:yellow] = "09/23/2015-09/30/2015"
 		post "/arc/api/blackout-dates", @create_params
-		puts json
 		expect(json["status"]).to eq(0)
 	end
 
@@ -247,26 +244,75 @@ describe "ARC API", :type => :request do
 	end
 
 	it "DELETE /arc/api/blackout-dates/:id - respond with status 0 if BO date found" do 
-		id = ArcBlackoutDate.first.id
-		delete "/arc/api/blackout-dates/#{id}"
+		bo = ArcBlackoutDate.first
+		city = bo.arc_city_states.first
+		delete "/arc/api/blackout-dates/#{bo.id}?city_id=#{city.id}"
 		expect(json["status"]).to eq(0)
 	end
 
-	it "DELETE /arc/api/blackout-dates/:id - should delete BO Date and associated trackers" do 
+	it "DELETE /arc/api/blackout-dates/:id?all=true - should delete BO Date and associated trackers" do 
 		id = ArcBlackoutDate.first.id
 		bo = ArcBlackoutDate.find_by(id: id)
 		before = ArcBlackoutDate.count
 		all = ArcBlackoutTracker.count
 		before2 = bo.arc_blackout_trackers.count 
-		delete "/arc/api/blackout-dates/#{id}"
+		delete "/arc/api/blackout-dates/#{id}?all=true"
 		after = ArcBlackoutDate.count
 		expect(after).to eq(before-1)
 		expect(ArcBlackoutTracker.count).to eq(all-before2)
 	end
 
+	it "DELETE /arc/api/blackout-dates/:id?all=false - should delete BO Date and associated trackers" do 
+		bo = ArcBlackoutDate.first
+		city = bo.arc_city_states.first
+		all = ArcBlackoutTracker.count
+		before = ArcBlackoutDate.count
+		before2 = bo.arc_blackout_trackers.count 
+		delete "/arc/api/blackout-dates/#{bo.id}?all=false&city_id=#{city.id}"
+		after = ArcBlackoutDate.count
+		expect(after).to eq(before)
+		expect(ArcBlackoutTracker.count).to eq(all-1)
+	end
+
+	it "DELETE /arc/api/blackout-dates/:id?all=false - should require city ID parameter" do 
+		bo = ArcBlackoutDate.first
+		city = bo.arc_city_states.first
+		delete "/arc/api/blackout-dates/#{bo.id}?all=false"
+		expect(json["status"]).to eq(1)
+	end
+
 	it "DELETE /arc/api/blackout-dates/:id - respond with status 0 if invalid id" do 
 		delete "/arc/api/blackout-dates/adsadsa"
 		expect(json["status"]).to eq(1)
+	end
+
+	it "should return JSON (/arc/api/blackout-dates/bo_id/switch)" do 
+		bo = ArcBlackoutDate.first
+		post "/arc/api/blackout-dates/#{bo.id}/switch"
+		expect(json).to_not be nil
+	end
+
+	it "should allow switching from black to yellow (/arc/api/blackout-dates/bo_id/switch)" do 
+		bo = ArcBlackoutDate.first
+		type = bo.date_type
+		post "/arc/api/blackout-dates/#{bo.id}/switch"
+		expect(json["status"]).to eq(0)
+		nt = type == "yellow" ? "black" : "yellow"
+		expect(json["date"]["date_type"]).to eq(nt)
+	end
+
+	it "should return JSON (delete all)" do
+		bo = ArcBlackoutDate.first
+		delete "/arc/api/blackout-dates/#{bo.id}?all=true"
+		expect(json).to_not be nil
+	end
+
+	it "should remove all associations between this date and cities" do 
+		bo = ArcBlackoutDate.first
+		before = bo.arc_blackout_trackers.count
+		delete "/arc/api/blackout-dates/#{bo.id}?all=true"
+		after = bo.arc_blackout_trackers.count
+		expect(json["removed"]).to eq(before-after)
 	end
 
 end

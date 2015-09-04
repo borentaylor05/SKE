@@ -27,5 +27,10 @@ class ArcBlackoutDate < ActiveRecord::Base
 			errors.add(:arc_blackout_date, "valid date requires expires field")
 		end
 	end
+
+	def toggle_type
+		new_type = self.date_type == "yellow" ? "black" : "yellow"
+		self.update_attributes(date_type: new_type)
+	end
 	
 end

@@ -91,7 +91,7 @@ class ArcController < ApplicationController
 		else
 			respond({ status: 1, error: "City / State combo not found..." })
 		end
-	end
+	end	
 
 	def get_all_cities
 		respond({ status: 0, cities: city_states(ArcCityState.all) })
@@ -238,15 +238,44 @@ class ArcController < ApplicationController
 		end
 	end
 
+	def bo_switch
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			bo = ArcBlackoutDate.find_by(id: params[:id])
+			if bo 
+				bo.toggle_type
+				respond({ status: 0, date: bo })
+			else
+				respond({ status: 1, error: "City #{params[:id]} not found." })
+			end
+		end
+	end
+
 	def delete_bo_date
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "DELETE"
 			bo = ArcBlackoutDate.find_by(id: params[:id])
 			if bo
-				bo.arc_blackout_trackers.destroy_all
-				bo.destroy
-				respond({ status: 0, message: "Date deleted." })
+				if params[:all] == "true"
+					removed = bo.arc_blackout_trackers.count
+					bo.arc_blackout_trackers.destroy_all
+					bo.destroy
+					respond({ status: 0, message: "All dates deleted.", removed: removed })
+				else
+					if !params[:city_id].blank?
+						city = ArcCityState.find_by(id: params[:city_id])
+						if city
+							ArcBlackoutTracker.find_by(arc_city_state: city, arc_blackout_date: bo).destroy
+							respond({ status: 0, message: "Date deleted." })
+						else
+							respond({ status: 1, message: "City #{params[:city_id]} not found." })
+						end
+					else
+						respond({ status: 1, error: "Need city ID"})
+					end
+				end				
 			else
 				respond({ status: 1, error: "Blackout Date #{params[:id]} not found." })
 			end
