@@ -28,9 +28,16 @@ class ArcBlackoutDate < ActiveRecord::Base
 		end
 	end
 
-	def toggle_type
-		new_type = self.date_type == "yellow" ? "black" : "yellow"
-		self.update_attributes(date_type: new_type)
+	def toggle_type(city)
+		if self.date_type == "black"
+			new_type = "yellow"
+		elsif self.date_type == "yellow"
+			new_type = "black"
+		end
+		switching_bo = ArcBlackoutDate.find_or_create_by(date: self.date, notes: self.notes, date_type: new_type)
+		tracker = ArcBlackoutTracker.find_by(arc_blackout_date: self, arc_city_state: city)
+		tracker.update_attributes(arc_blackout_date: switching_bo)
+		return tracker
 	end
 	
 end

@@ -294,11 +294,20 @@ describe "ARC API", :type => :request do
 
 	it "should allow switching from black to yellow (/arc/api/blackout-dates/bo_id/switch)" do 
 		bo = ArcBlackoutDate.first
-		type = bo.date_type
-		post "/arc/api/blackout-dates/#{bo.id}/switch"
+		city = bo.arc_city_states.first
+		bo.update_attributes(date_type: "black")
+		post "/arc/api/blackout-dates/#{bo.id}/switch?city_id=#{city.id}"
 		expect(json["status"]).to eq(0)
-		nt = type == "yellow" ? "black" : "yellow"
-		expect(json["date"]["date_type"]).to eq(nt)
+		expect(json["date"]["date_type"]).to eq("yellow")
+	end
+
+	it "should allow switching from yellow to black (/arc/api/blackout-dates/bo_id/switch)" do 
+		bo = ArcBlackoutDate.first
+		city = bo.arc_city_states.first
+		bo.update_attributes(date_type: "yellow")
+		post "/arc/api/blackout-dates/#{bo.id}/switch?city_id=#{city.id}"
+		expect(json["status"]).to eq(0)
+		expect(json["date"]["date_type"]).to eq("black")
 	end
 
 	it "should return JSON (delete all)" do

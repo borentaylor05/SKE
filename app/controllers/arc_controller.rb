@@ -242,12 +242,17 @@ class ArcController < ApplicationController
 		if(request.method == "OPTIONS")
 			respond({status: 0})
 		elsif request.method == "POST"
-			bo = ArcBlackoutDate.find_by(id: params[:id])
-			if bo 
-				bo.toggle_type
-				respond({ status: 0, date: bo })
+			if !params[:city_id].blank?
+				bo = ArcBlackoutDate.find_by(id: params[:id])
+				city = ArcCityState.find_by(id: params[:city_id])
+				if bo 
+					new_tracker = bo.toggle_type(city)
+					respond({ status: 0, date: new_tracker.arc_blackout_date })
+				else
+					respond({ status: 1, error: "BO #{params[:id]} not found. Or city #{params[:city_id]} not found." })
+				end
 			else
-				respond({ status: 1, error: "City #{params[:id]} not found." })
+				respond({ status: 1, error: "Needs city_id parameter" })
 			end
 		end
 	end
