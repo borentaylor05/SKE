@@ -247,7 +247,7 @@ class ArcController < ApplicationController
 				city = ArcCityState.find_by(id: params[:city_id])
 				if bo 
 					new_tracker = bo.toggle_type(city)
-					respond({ status: 0, date: new_tracker.arc_blackout_date })
+					respond({ status: 0, date: new_tracker.arc_blackout_date, tracker: new_tracker })
 				else
 					respond({ status: 1, error: "BO #{params[:id]} not found. Or city #{params[:city_id]} not found." })
 				end
