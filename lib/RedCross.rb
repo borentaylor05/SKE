@@ -82,6 +82,16 @@ class RedCross
 		end
 	end
 
+	def remove_city(city, state)
+		cs = ArcCityState.find_by(city: city.downcase, state: state)
+		if cs
+			cs.arc_blackout_trackers.destroy_all
+			cs.destroy 			
+		else
+			puts "City not found: #{city}, #{state.name}"
+		end
+	end
+
 	private
 
 		def parse_arc_bo_date(date_string)

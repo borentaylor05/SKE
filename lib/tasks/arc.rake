@@ -29,3 +29,13 @@ task remove_old_blackout_dates: :environment do
 		d.destroy 
 	end
 end
+
+task remove_cities: :environment do 
+	arc = RedCross.new("social")
+	cities = "Arlington, Alexandria, Fairfax, Falls Church, Woodbridge, Manassas, Manassas Park, Haymarket, Occoquan, Independent Hill, Rixiew, Greenwich, Groveton, Quantico, Buckhall, Canova, Aden, Hickory Ridge, Dumfries, Brentsville, Buckland, Antioch, Bristow, Carharpin, Minnieville, Cornwell, Joplin, Thoroughfare, Kopp, Leesburg, Aldie, Ashburn, Lovettsville, Brambleton, Purcellville, Middleburg, South Riding, Round Hill, Waterford, Bluemont, Hamilton, Dulles, Hillsboro, Lucketts, Arcola, Broadlands, Stone Ridge, Sterling Park, Philoment, Oatlands, Paeonian Springs, Taylorstown, Loudoun Heights, Gilberts Corner, Unison, Waxpool, Lenah, Neersville, Lincoln, Sycolin, Wheatland, Clifton, Dranesville, Vienna, Fair Lakes, Occoquan, Herndon, Langley, Fairfax Station, Oak Hill, Greenbriar, Accotink, Culmore, Pohick Mason Neck, Colchester, Jermantown, Cooktown, Rutherford, Butts Corner, Odricks Corner, Comptons Corner, Arcturus, Five Forks, Hollindale, Blevinstown, Westhampton, Barkers Crossroads, Colchester, Cobbs Corner, Browns Mill, Shady Oak, Hayfield, Ft. Belvoir, Cape Charles, Exmore, Cherton, Cherrystone, Eastville, Nassaswadox, Belle Haven, Birdsnest, Accomac, Parksley, Tangler, Belle Haven, Keller, Onancock, Onley, Wachapreague, Bloxom, Hailwood, Chincotegue, Melfa, Painter, Saxis, Assawoman"
+	state = State.find_by(abbreviation: "MD")
+	cities = cities.split(",").map(&:strip)
+	cities.each do |c|
+		arc.remove_city(c,state)
+	end
+end
