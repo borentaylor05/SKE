@@ -10,7 +10,7 @@ class Util
 
 	# make sure the hash is in the same order as headers (@@required_fields)
 	def self.order_hash(hash)
-		return [ hash[:first_name], hash[:last_name], hash[:email], hash[:oracle_id], hash[:job_title], hash[:client], hash[:location], hash[:lob] ]
+		return [ hash[:first_name], hash[:last_name], hash[:email], hash[:employee_id], hash[:title], hash[:client], hash[:location], hash[:lob] ]
 	end
 
 	def self.user_csv_valid?(row)
@@ -22,8 +22,8 @@ class Util
 			first_name: row[0],
 			last_name: row[1],
 			email: row[2],
-			oracle_id: row[3],
-			job_title: row[4],
+			employee_id: row[3],
+			title: row[4],
 			client: row[5],
 			lob: row[6],
 			location: row[7],
@@ -93,9 +93,9 @@ class Util
 			end
 		end
 		if self.is_oracle?(json["jive"]["username"])
-			hash[:oracle_id] = json["jive"]["username"]
+			hash[:employee_id] = json["jive"]["username"]
 		else
-			hash[:oracle_id] = self.look_for_oracle(json)
+			hash[:employee_id] = self.look_for_oracle(json)
 		end	
 		return hash		
 	end
@@ -103,7 +103,7 @@ class Util
 	def self.csv_user_is_valid?(user)
 		user.each do |key,val|
 			if !val and key.to_s != "team_lead_oracle"
-				Rails.logger.warn("#{key} is null for #{user[:oracle_id]}")
+				Rails.logger.warn("#{key} is null for #{user[:employee_id]}")
 				return false
 			end
 		end
@@ -118,8 +118,6 @@ class Util
 		# if user is being updated from /ske/user/new
 		Rails.logger.info(user)
 		if(user.has_key?("client_id") and self.is_number?(user[:client_id]))
-			user[:oracle_id] = user[:employee_id]
-			user[:job_title] = user[:title]
 			client = Client.find_by(id: user[:client_id])
 		else 
 			client = Client.find_by(name: user[:client].downcase.strip)
@@ -128,12 +126,12 @@ class Util
 			client = Client.find_by(name: self.check_client_map(user[:client].downcase.strip))
 		end
 		if client and self.csv_user_is_valid?(user)
-			u = User.find_by(employee_id: user[:oracle_id].strip)
+			u = User.find_by(employee_id: user[:employee_id].strip)
 			if u 
 				u.update_attributes(
 					client: client,
-					employee_id: user[:oracle_id].strip,
-					title: user[:job_title].strip,
+					employee_id: user[:employee_id].strip,
+					title: user[:title].strip,
 					location: user[:location].strip,
 					lob: user[:lob].strip,
 					first_name: user[:first_name],
@@ -145,9 +143,9 @@ class Util
 				user[:jive_id] = 0 if !user[:jive_id]
 				u = User.new(
 					jive_id: user[:jive_id].strip,
-					employee_id: user[:oracle_id].strip,
+					employee_id: user[:employee_id].strip,
 					client: client,
-					title: user[:job_title].strip,
+					title: user[:title].strip,
 					location: user[:location].strip,
 					lob: user[:lob].strip,
 					first_name: user[:first_name],
@@ -169,8 +167,8 @@ class Util
 
 	def self.parse_profile(json, user)
 		if user.has_key?("client_id")
-			user[:oracle_id] = user[:employee_id]
-			user[:job_title] = user[:title]
+			user[:employee_id] = user[:employee_id]
+			user[:title] = user[:title]
 			user[:client] = Client.find_by(id: user[:client_id]).name
 		end
 		title_exists = department_exists = location_exists = company_exists = oid_exists = false
@@ -180,7 +178,7 @@ class Util
 		json["jive"]["profile"].each do |p|
 			if p["jive_label"] == "Title"
 			   title_exists = true
-			   p["value"] = "#{user[:job_title]}"
+			   p["value"] = "#{user[:title]}"
 			end
 			if p["jive_label"] == "LOB"
 			   department_exists = true
@@ -196,14 +194,14 @@ class Util
 			end
 			if p["jive_label"] == "Oracle ID"
 				oid_exists = true
-				p["value"] = user[:oracle_id]
+				p["value"] = user[:employee_id]
 			end
 		end
 		if !title_exists 
-			json["jive"]["profile"].push({ jive_label: "Title", value: user[:job_title] })
+			json["jive"]["profile"].push({ jive_label: "Title", value: user[:title] })
 		end
 		if !oid_exists 
-			json["jive"]["profile"].push({ jive_label: "Oracle ID", value: user[:oracle_id] })
+			json["jive"]["profile"].push({ jive_label: "Oracle ID", value: user[:employee_id] })
 		end
 		if !department_exists
 			json["jive"]["profile"].push({ jive_label: "LOB", value: user[:lob] })
@@ -273,7 +271,7 @@ class Util
 		if client 
 			CSV.open("tmp/#{client}_mlevel_users.csv", 'w') do |users|
 				User.where(client: client) do |u|
-					users << [ user[:first_name], user[:last_name], user[:email], user[:oracle_id], user[:job_title], user[:client], user[:location], user[:lob], user[:password]  ]
+					users << [ user[:first_name], user[:last_name], user[:email], user[:employee_id], user[:title], user[:client], user[:location], user[:lob], user[:password]  ]
 				end
 			end
 		else

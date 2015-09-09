@@ -50,10 +50,11 @@ class Jive2
 
 	def grab(resource)
 	    json = HTTParty.get("#{@url}#{resource}", @options).body
-	    if json 
+	    if json and !json.blank?
 	      clean(json)
 	    else
 	      puts json
+	      return nil
 	    end
 	end
 
@@ -74,7 +75,7 @@ class Jive2
 		json = HTTParty.delete("#{@url}#{resource}", @options)
 	end
 
-	def clean(json)
+	def clean(json)		
 		if json 
         	return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
         else
@@ -92,26 +93,6 @@ class Jive2
       	return self.create("/securityGroups/#{group_id}/members", jive_ids)
   	end
 
-  	def update_user_everywhere(json, user)
-	     json = Util.parse_profile(json, user)
-	     json["emails"][0] = { value: user[:email], type: "work", jive_label: "Email", primary: true }
-	     json["name"]['familyName'] = user[:last_name]
-	     json["name"]["givenName"] = user[:first_name]
-	     resp = update("/people/#{json["id"]}", json)
-	     if resp["error"]
-	      puts(resp)
-	      return false
-	    else
-	      user[:jive_id] = json["id"]
-	      if Util.create_or_update_from_csv(user)
-	        return true
-	      else
-	        puts(resp)
-	        return false
-	      end
-	    end
-   end
-
    def get_all_users
    		si = 0
    		count = 0
@@ -126,69 +107,5 @@ class Jive2
 		end
 		puts count
 	end
-
-	def add_to_sec_group(group_id, jive_ids)
-      jive_ids.map! { |id| id = "#{@url}/people/#{id}" }
-      puts jive_ids
-      return self.create("/securityGroups/#{group_id}/members", jive_ids)
-   end
-
-   def create_user(u, to_db)
-      template = @user_template
-      template[:emails][0][:value] = u[:email]
-      template[:jive][:password] = "Welcome1"
-      template[:jive][:username] = u[:oracle_id]
-      template[:name][:givenName] = u[:first_name]
-      template[:name][:familyName] = u[:last_name]
-      resp = create("/people", template)
-      if resp and resp["error"]
-        eUser = User.find_by(employee_id: u[:oracle_id])
-        if eUser
-          json = grab("/people/username/#{u[:oracle_id]}")
-          if json["id"] 
-            if eUser.jive_id == 0
-              eUser.update_attributes(jive_id: json["id"])
-            end
-            u[:jive_id] = eUser.jive_id
-            if update_user_everywhere(json, u)
-              return true
-            else
-              Rails.logger.info "ERROR - user #{u[:oracle_id]} could not be saved in db."
-              return false
-            end
-          else
-            Rails.logger.info("NOJIVEUSER -- #{u[:oracle_id]}")
-          end
-        else
-        	json = grab("/people/username/#{u[:oracle_id]}")
-        	u[:jive_id] = json["id"]
-        	if Util.create_or_update_from_csv(u)
-        		Rails.logger.info "ERROR (#{u[:oracle_id]}) created in DB but not Jive"
-          		return false
-        	else
-        		Rails.logger.info "ERROR (#{u[:oracle_id]}) --------------> #{resp["error"]}"
-          		return false
-        	end                     
-        end
-      elsif resp and resp["id"]
-        u[:jive_id] = resp["id"]
-        if to_db
-          if Util.create_or_update_from_csv(u)
-            Rails.logger.info "Created in Both:  #{resp["id"]}"
-            return true
-          else
-            Rails.logger.info "Error: #{u[:first_name]} #{u[:last_name]}"
-            return false
-          end
-        else
-          Rails.logger.info Rails.logger.info "Created in Jive:  #{u[:oracle_id]}"
-          return false
-        end
-        # if to_bb_group
-        #   bb = Bunchball.new('98086')
-        #   Rails.logger.info bb.add_user_to_group(to_bb_group, u[:jive_id])
-        # end
-      end
-    end
 
 end
