@@ -221,6 +221,7 @@ Rails.application.routes.draw do
   match "/arc/api/blackout-dates/check", to: "arc#check_cities", via: [:post, :options]
   match "/arc/api/blackout-dates/:id/switch",  to: "arc#bo_switch", via: [:post, :options]
   match "/arc/api/blackout-dates/:id", to: "arc#delete_bo_date", via: [:delete, :options]
+  match "/arc/api/cities/:id", to: "arc#delete_city", via: [:delete, :options]
   match "/arc/api/blackout-dates/:city/:state", to: "arc#get_blackout_dates", via: :get
   match "/arc/api/blackout-dates/group", to: "arc#get_groups", via: :get
   match "/arc/api/blackout-dates/group", to: "arc#new_group", via: [:post, :options]

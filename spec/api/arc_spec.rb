@@ -324,6 +324,26 @@ describe "ARC API", :type => :request do
 		expect(json["removed"]).to eq(before-after)
 	end
 
+	it "should return json for DELETE arc/api/:id/" do 
+		city = ArcCityState.first 
+		delete "/arc/api/cities/#{city.id}/"
+		expect(json).to_not be nil 
+	end
+
+	it "should return error if city not found" do 
+		delete "/arc/api/cities/blah/"
+		expect(json["status"]).to eq(1)
+	end
+
+	it "should remove one city-state" do 
+		city = ArcCityState.first
+		before = ArcCityState.count 
+		delete "/arc/api/cities/#{city.id}/"
+		after = ArcCityState.count
+		expect(json["status"]).to eq(0)
+		expect(after).to eq(before-1)
+	end
+
 end
 
 

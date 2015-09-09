@@ -289,6 +289,21 @@ class ArcController < ApplicationController
 		end
 	end
 
+	def delete_city
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "DELETE"
+			city = ArcCityState.find_by(id: params[:id])
+			if city 
+				city.arc_blackout_trackers.destroy_all
+				city.destroy
+				respond({ status: 0, message: "City and trackers removed." })
+			else
+				respond({ status: 1, error: "City #{params[:id]} not found." })
+			end
+		end
+	end
+
 	private
 
 		def city_states(cities)
