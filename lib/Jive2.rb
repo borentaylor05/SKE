@@ -77,7 +77,12 @@ class Jive2
 
 	def clean(json)		
 		if json 
-        	return JSON.parse(json.gsub!(/throw [^;]*;/, ''))
+			sub = json.gsub!(/throw [^;]*;/, '')
+			if sub 
+        		return JSON.parse(sub)
+        	else
+        		return false
+        	end
         else
         	return false
         end

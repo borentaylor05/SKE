@@ -174,7 +174,6 @@ class User < ActiveRecord::Base
 
 	def jive_create
 		template = @@jive_template
-		puts "TEMPLATE --> #{@@jive_template}"
 		template[:emails][0][:value] = "#{self.employee_id}@nomail.com"
 		template[:jive][:password] = "Welcome1"
 		template[:jive][:username] = self.employee_id
