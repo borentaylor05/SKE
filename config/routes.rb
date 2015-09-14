@@ -153,21 +153,21 @@ Rails.application.routes.draw do
   match "cdc/address-book/entry", to: "address_book#get_entry", via: :get
 
   # HRSA APG ROUTES -- screwed up name of models and controllers (should be hrsa not CDC)
-  match "/hrsa/api/apg/documents/:id", to: "cdc#apg_init", via: :get
-  match "/hrsa/api/apg/topics/:id", to: 'cdc#get_topic', via: :get
-  match "/hrsa/api/apg/categories/:id", to: 'cdc#get_category', via: :get
+  match "/hrsa/api/apg/documents/:id", to: "hrsa#apg_init", via: :get         # tested
+  match "/hrsa/api/apg/topics/:id", to: 'hrsa#get_topic', via: :get           # tested
+  match "/hrsa/api/apg/categories/:id", to: 'hrsa#get_category', via: :get    # tested
 
   # ----- End CDC Routes ------  
 
   # ----- Fairfax Routes ------  
 
   # FX DEADLINES
-  match "fairfax/deadlines/publication", to: "deadline#get_deadlines_by_pub", via: :get
-  match "fairfax/publications", to: "deadline#get_pubs", via: :get
+  match "/fairfax/deadlines/publication", to: "fx#get_deadlines_by_pub", via: :get  # tested
+  match "/fairfax/publications", to: "fx#get_pubs", via: :get                       # tested
 
   # FX CLASSIFICATION ROUTES
-  match "fx/classifications", to: "fx_classification#get_classifications", via: :get  
-  match "fx/classifications/categories", to: "fx_classification#get_categories", via: :get  
+  match "/fx/classifications", to: "fx_classification#get_classifications", via: :get  
+  match "/fx/classifications/categories", to: "fx_classification#get_categories", via: :get  
 
   #FX PUBLICATIONS
   match "/fx/api/publications", to: "fx#get_all_publications", via: :get

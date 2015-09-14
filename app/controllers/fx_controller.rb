@@ -3,7 +3,46 @@ class FxController < ApplicationController
 	after_filter :cors_set_access_control_headers
 	after_action :allow_iframe
 
-	# Contains Fx Publications, Suburbs and Redelivery
+	# Contains Fx Deadlines, Publications, Suburbs and redelivery
+	
+	# Begin Deadlines
+
+	def get_deadlines_by_pub
+		unless params[:pub].blank?
+			if Deadline.contains(params[:pub]).count > 0
+				days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+				deadlines = days.map do |day|
+					hash = { day: day, deadlines: Deadline.day(day).contains(params[:pub]) }
+				end
+				respond({ status: 0, deadlines: deadlines })
+			else
+				respond({ status: 1, error: "No publication found with name: #{params[:pub]}." })	
+			end
+		else
+			respond({ status: 1, error: "Must supply `pub` param." })
+		end
+	end
+
+	def get_pubs
+		pubs = []
+		Deadline.uniq.pluck(:publication).each do |p|
+			name = p.match('^[^\(]*').to_s.strip
+			name = name.match('^[^\-]*').to_s.strip
+			if name[0] == "*"
+				name[0] = ''
+			end
+			if !pubs.include?(name)
+				pubs.push(name)
+			end
+		end
+		if pubs.count > 0
+			respond({ status: 0, pubs: pubs })
+		else
+			respond({ status: 1, error: "No deadline publications in the database." })
+		end
+	end
+
+	# End Deadlines
 
 	def get_all_publications
 		pubs = FxPublication.select(:name, :id)

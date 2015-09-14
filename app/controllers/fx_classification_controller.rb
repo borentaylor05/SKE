@@ -6,8 +6,12 @@ class FxClassificationController < ApplicationController
 
 	def get_classifications
 		if params.has_key?("cat")
-			cur = FxClassCat.find(params[:cat])
-			respond({ status: 0, c: [{ cat: cur.name, all: FxClassification.where(fx_class_cat: cur) }] })
+			cur = FxClassCat.find_by(id: params[:cat])
+			if cur 
+				respond({ status: 0, c: [{ cat: cur.name, all: FxClassification.where(fx_class_cat: cur) }] })
+			else
+				respond({ status: 1, error: "Category #{params[:cat]} not found." })
+			end
 		elsif params.has_key?("search")
 			respond({ status: 0, c: get_matches(params[:search]) })	
 		else
