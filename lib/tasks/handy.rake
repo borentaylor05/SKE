@@ -224,6 +224,11 @@ task dealer_search: :environment do
 	end
 end
 
+task jive_api_test: :environment do 
+	jive = Jive2.new('social')
+	puts jive.grab("/people/98086")
+end
+
 
 
 
