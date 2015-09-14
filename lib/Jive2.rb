@@ -5,6 +5,7 @@ class Jive2
 
 	include HTTParty
 	attr_reader :url
+	attr_reader :proxy
 
 	def initialize(instance)
 		@proxy = URI(ENV["QUOTAGUARDSTATIC_URL"]) if ENV["QUOTAGUARDSTATIC_URL"]
@@ -49,7 +50,7 @@ class Jive2
 	end
 
 	def grab(resource)
-		puts "JIVEURL --> #{@url}#{resource}"
+		puts "JIVEURL --> #{@url}#{resource} -- #{@proxy}"
 	    json = HTTParty.get("#{@url}#{resource}", @options).body
 	    if json and !json.blank?
 	      cleansed = clean(json)
