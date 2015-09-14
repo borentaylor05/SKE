@@ -180,6 +180,7 @@ class User < ActiveRecord::Base
 		template[:name][:givenName] = self.first_name
 		template[:name][:familyName] = self.last_name
 		resp = @@jive.grab("/people/username/#{self.employee_id}")
+		puts "JIVERESPONSE"
 		if resp and resp["id"]
 			update_response = @@jive.update("/people", template)
 			if update_response["id"]
@@ -189,7 +190,7 @@ class User < ActiveRecord::Base
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
 				return false
 			end			
-		else
+		elsif resp
 			create_response = @@jive.create("/people", template)
 			if create_response["id"]
 				self.update_attributes(jive_id: create_response["id"])
@@ -198,6 +199,8 @@ class User < ActiveRecord::Base
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
 				return false
 			end
+		else
+			return false
 		end
 	end
 

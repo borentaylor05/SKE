@@ -52,9 +52,15 @@ class Jive2
 		puts "JIVEURL --> #{@url}#{resource}"
 	    json = HTTParty.get("#{@url}#{resource}", @options).body
 	    if json and !json.blank?
-	      clean(json)
+	      cleansed = clean(json)
+	      if cleansed 
+	      	return cleansed
+	      else
+	      	Rails.logger.error "JIVERESPONSE ERROR: #{json}"
+	      	return nil
+	      end
 	    else
-	      puts json
+	      Rails.logger.error "JIVERESPONSE ERROR: #{json}"
 	      return nil
 	    end
 	end
