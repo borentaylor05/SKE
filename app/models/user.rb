@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
 
 	def self.make_new(user)
 		puts user
-		client = Client.find_by(name: user[:client].downcase) || Util.check_client_map(user[:client].downcase)
+		client = Client.find_by(name: user[:client].downcase) || Client.find_by(name: Util.check_client_map(user[:client].downcase))
 		User.new(
 				employee_id: user[:employee_id],
 				client: client,
