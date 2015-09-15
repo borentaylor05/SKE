@@ -198,7 +198,7 @@ class User < ActiveRecord::Base
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
 				return false
 			end	
-		elsif (resp["error"] and [409,403].include?(resp["error"]["status"])											
+		elsif (resp["error"] and [409,403].include?(resp["error"]["status"]))											
 			juser = @@jive.grab("/people/username/#{self.employee_id}")
 			if juser["id"]
 				template[:jive][:enabled] = true
