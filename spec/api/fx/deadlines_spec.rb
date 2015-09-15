@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "Fairfax API", :type => :request do
+describe "Fairfax Deadlines API", :type => :request do
 	
 	# BEGIN Deadlines Tests
 	# For  "/fairfax/deadlines/publication", to: "deadline#get_deadlines_by_pub", via: :get
@@ -127,11 +127,3 @@ describe "Fairfax API", :type => :request do
 	# END Classifications Tests
 
 end
-
-
-
-
-
-
-
-

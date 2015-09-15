@@ -162,7 +162,8 @@ class User < ActiveRecord::Base
 	end
 
 	def update(user)
-		client = Client.find_by(name: user[:client].downcase) || Util.check_client_map(user[:client].downcase)
+
+		client = Client.find_by(name: user[:client].downcase) || Client.find_by(name: Util.check_client_map(user[:client].downcase))
 		if client 
 			self.update_attributes(
 				employee_id: user[:employee_id],

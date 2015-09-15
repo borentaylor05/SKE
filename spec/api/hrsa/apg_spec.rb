@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "HRSA API", :type => :request do
+describe "HRSA APG API", :type => :request do
 
 	# for /hrsa/api/apg/documents/:id
 	

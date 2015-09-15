@@ -33,17 +33,18 @@ standard "9.99"
   end
   factory :arc_check_tracker do
     check_num 1
-check_amount "9.99"
-check_date "MyString"
-org "MyString"
-check_name "MyString"
-state "MyString"
-tsc_received "MyString"
-order_num "MyString"
-crs "MyString"
-notes "MyString"
-sent_back_by "MyString"
-agent_name "MyString"
+    check_amount "9.99"
+    check_date "MyString"
+    org "MyString"
+    check_name "MyString"
+    state "MyString"
+    tsc_received "MyString"
+    order_num "MyString"
+    crs "MyString"
+    notes "MyString"
+    sent_back_by "MyString"
+    agent_name "MyString"
+    case_id 1234
   end
   
   factory :fx_news_agent do

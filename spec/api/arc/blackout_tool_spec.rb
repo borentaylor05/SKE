@@ -345,7 +345,3 @@ describe "ARC API", :type => :request do
 	end
 
 end
-
-
-
-

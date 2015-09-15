@@ -97,9 +97,3 @@ describe "Suburbs API", :type => :request do
 	end
 
 end
-
-
-
-
-
-

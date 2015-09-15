@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "CDC API", :type => :request do
+describe "CDC A to Z List", :type => :request do
 
 	# for /cdc/api/search -> { search: searchTerm }
 	it "should return json" do 
@@ -53,19 +53,6 @@ describe "CDC API", :type => :request do
 		get "/cdc/api/topic", { id: id } 
 		expect(json["status"]).to eq(0)
 		expect(json["topic"]["topic"]).to_not be nil
-	end
-
-	# Address Book
-	# for cdc/address-book, -> {}, via address_book#get_all
-	it "should have json response" do 
-		get "/cdc/address-book"
-		expect(json).to_not be nil
-	end
-
-	it "should return valid results" do 
-		get "/cdc/address-book"
-		expect(json["status"]).to eq(0)
-		expect(json[""])
 	end
 
 end
