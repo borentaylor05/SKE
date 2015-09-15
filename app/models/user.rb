@@ -197,7 +197,15 @@ class User < ActiveRecord::Base
 			else
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
 				return false
-			end												
+			end	
+		elsif (resp["error"] and [409,403].include?(resp["error"]["status"])											
+			juser = @@jive.grab("/people/username/#{self.employee_id}")
+			if juser["id"]
+				template[:jive][:enabled] = true
+				@@jive.update("/people/#{juser["id"]}", template)
+			else
+				ails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{juser} -- Original response: #{resp}"
+			end
 		elsif resp
 			create_response = @@jive.create("/people", template)
 			if create_response["id"]
