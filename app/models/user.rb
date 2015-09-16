@@ -28,7 +28,6 @@ class User < ActiveRecord::Base
 	has_one :team_lead, class: User
 	belongs_to :team_lead, class: User, foreign_key: :team_lead_id
 
-	@@jive = Rails.env.production? ? Jive2.new('social') : Jive2.new('dev')
 	@@jive_template = {
 	    emails: [ {
 	      	value: "",
@@ -181,16 +180,17 @@ class User < ActiveRecord::Base
 	end
 
 	def jive_create
+		jive = Rails.env.production? ? Jive2.new('social') : Jive2.new('dev')
 		template = @@jive_template
 		template[:emails][0][:value] = "#{self.employee_id}@nomail.com"
 		template[:jive][:password] = "Welcome1"
 		template[:jive][:username] = self.employee_id
 		template[:name][:givenName] = self.first_name
 		template[:name][:familyName] = self.last_name
-		resp = @@jive.grab("/people/username/#{self.employee_id}")
+		resp = jive.grab("/people/username/#{self.employee_id}")
 		puts "JIVERESPONSE #{resp}"
 		if resp and resp["id"]
-			update_response = @@jive.update("/people", template)
+			update_response = jive.update("/people", template)
 			if update_response["id"]
 				self.update_attributes(jive_id: update_response["id"])
 				return true
@@ -199,15 +199,15 @@ class User < ActiveRecord::Base
 				return false
 			end	
 		elsif (resp["error"] and [409,403].include?(resp["error"]["status"]))											
-			juser = @@jive.grab("/people/username/#{self.employee_id}")
+			juser = jive.grab("/people/username/#{self.employee_id}")
 			if juser["id"]
 				template[:jive][:enabled] = true
-				@@jive.update("/people/#{juser["id"]}", template)
+				jive.update("/people/#{juser["id"]}", template)
 			else
 				ails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{juser} -- Original response: #{resp}"
 			end
 		elsif resp
-			create_response = @@jive.create("/people", template)
+			create_response = jive.create("/people", template)
 			if create_response["id"]
 				self.update_attributes(jive_id: create_response["id"])
 				return true
@@ -221,11 +221,12 @@ class User < ActiveRecord::Base
 	end
 
 	def jive_delete 
+		jive = Rails.env.production? ? Jive2.new('social') : Jive2.new('dev')
 		if self.jive_id
-			@@jive.remove("/people/#{self.jive_id}")
+			jive.remove("/people/#{self.jive_id}")
 		else
-			resp = @@jive.grab("/people/username/#{self.employee_id}")
-			@@jive.remove("/people/#{resp["id"]}")
+			resp = jive.grab("/people/username/#{self.employee_id}")
+			jive.remove("/people/#{resp["id"]}")
 		end
 	end
 
