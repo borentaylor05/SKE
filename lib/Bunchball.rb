@@ -84,6 +84,10 @@ class Bunchball
 		return get("group.getUsers&groupName=#{group}&returnCount=100")
 	end
 
+	def set_preference(pref)
+		return get("user.setPreference&userId=#{@user}&name=#{pref[:name]}&value=#{pref[:value]}")
+	end
+
 	def complete_mission(oracle_id, challenge)
 		jive = Jive2.new('social')
 		resp = jive.grab("/people/username/#{oracle_id}")

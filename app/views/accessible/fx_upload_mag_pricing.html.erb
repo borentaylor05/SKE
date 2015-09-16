@@ -1,6 +1,6 @@
 <div class="container">
 	<h2>Import Redelivery Info</h2>
-	<div class="alert alert-warning">This will remove all previous pricing info before imserting new data so make sure the spreadsheet is complete!</div>
+	<div class="alert alert-warning">This will remove all previous pricing info before inserting new data so make sure the spreadsheet is complete!</div>
 	<%= form_tag "/fx/process/pricing", multipart: true do %>
 	  <%= file_field_tag :file %>
 	  <br/>

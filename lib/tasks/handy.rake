@@ -223,6 +223,17 @@ task jive_api_test: :environment do
 	puts jive.grab("/people/98086")
 end
 
+task set_user_preference: :environment do 
+	user = User.find_by(jive_id: 98086)
+	bb = Bunchball.new(user.jive_id)
+	puts bb.set_preference({ name: "client", value: "blah" })
+end
+
+task update_all_bb_user_preferences: :environment do 
+	User.all.each do |user|
+		user.set_bunchball_user_preference
+	end
+end
 
 
 

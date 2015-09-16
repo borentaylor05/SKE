@@ -61,8 +61,7 @@ class AccessibleController < ApplicationController
 	end
 
 	def fx_upload_mag_pricing_process
-		fx = FX.new('dev')
-		results = fx.upload_mag_pricing(params[:file])
+		results = FxMagPricing.import(params[:file])
 		respond({ results: results })
 	end
 

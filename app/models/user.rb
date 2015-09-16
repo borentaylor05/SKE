@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
 	require 'Jive'
 	require 'Jive2'
 	require 'Util'
+	require 'Bunchball'
 
 	scope :contains, -> (name) { where("lower(employee_id) like ? or lower(name) like ? or CAST(jive_id AS TEXT) like ?", "%#{name.downcase}%", "%#{name.downcase}%", "%#{name.downcase}%")}
 	
@@ -193,6 +194,7 @@ class User < ActiveRecord::Base
 			update_response = jive.update("/people", template)
 			if update_response["id"]
 				self.update_attributes(jive_id: update_response["id"])
+				self.set_bunchball_user_preference
 				return true
 			else
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
@@ -210,6 +212,7 @@ class User < ActiveRecord::Base
 			create_response = jive.create("/people", template)
 			if create_response["id"]
 				self.update_attributes(jive_id: create_response["id"])
+				self.set_bunchball_user_preference
 				return true
 			else
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
@@ -227,6 +230,13 @@ class User < ActiveRecord::Base
 		else
 			resp = jive.grab("/people/username/#{self.employee_id}")
 			jive.remove("/people/#{resp["id"]}")
+		end
+	end
+
+	def set_bunchball_user_preference
+		if self.jive_id and self.jive_id > 0
+			bb = Bunchball.new(self.jive_id)
+			bb.set_preference({ name: "client", value: self.client.name })
 		end
 	end
 
