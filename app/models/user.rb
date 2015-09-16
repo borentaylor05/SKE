@@ -235,8 +235,12 @@ class User < ActiveRecord::Base
 
 	def set_bunchball_user_preference
 		if self.jive_id and self.jive_id > 0
-			bb = Bunchball.new(self.jive_id)
-			bb.set_preference({ name: "client", value: self.client.name })
+			begin
+				bb = Bunchball.new(self.jive_id)
+				bb.set_preference({ name: "client", value: self.client.name })
+			rescue NoMethodError
+				Rails.logger.error "BB Error for #{self.inspect} - probably missing a client."
+			end
 		end
 	end
 
