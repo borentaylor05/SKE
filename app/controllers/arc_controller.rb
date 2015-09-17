@@ -132,10 +132,14 @@ class ArcController < ApplicationController
 				if !bo and !params[:date].blank?
 					expires = parse_arc_bo_date(params[:date])
 					bo = ArcBlackoutDate.create!(date: params[:date], notes: params[:date_notes], expires: expires, date_type: "black")
+				elsif !bo and !params[:date_notes].blank?
+					bo = ArcBlackoutDate.create!(notes: params[:date_notes], date_type: "black")	
 				end
 				if !yellow and !params[:yellow].blank?
 					expires = parse_arc_bo_date(params[:yellow])
 					yellow = ArcBlackoutDate.create!(date: params[:yellow], notes: params[:yellow_notes], expires: expires, date_type: "yellow")
+				elsif !yellow and !params[:yellow_notes].blank?
+					yellow = ArcBlackoutDate.create!(notes: params[:yellow_notes], date_type: "yellow")
 				end		
 				cities.each do |c|
 					c.strip! if c

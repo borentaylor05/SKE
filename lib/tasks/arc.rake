@@ -39,3 +39,9 @@ task remove_cities: :environment do
 		arc.remove_city(c,state)
 	end
 end
+
+task remove_dots_from_cities: :environment do 
+	ArcCityState.all.each do |c|
+		c.update_attributes(city: c.city.gsub('.', ''))
+	end
+end

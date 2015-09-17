@@ -104,20 +104,18 @@ abbreviation "MyString"
 
   factory :rco_order do
     agent_name "MyString"
-created false
-acct_with_password false
-acct_forgot_password false
-no_share false
-order_id "MyString"
-lms_num 1
-num_registrations 1
-coupon "MyString"
-paypal false
-knows_lms false
-need_dir false
-attch_sent false
-comments "MyText"
+    created false
+    acct_with_password false
+    acct_forgot_password false
+    no_share false
+    order_id "MyString"
+    lms_num 1
+    num_registrations 1
+    coupon "MyString"
+    paypal false
+    comments "MyText"
   end
+
   factory :fx_mag_pricing do
     six_month "MyString"
     one_year_renewal "MyString"
