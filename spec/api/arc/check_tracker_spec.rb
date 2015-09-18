@@ -1,3 +1,36 @@
+# Purpose: 
+# ARC needed a way to track check information, look it up by fields and edit specific info
+# They also have the ability to search for checks by the agent that created the entry
+
+# URLs:
+# Form: https://social.teletech.com/community/clients/american_red_cross/american-red-cross-information-station/american-red-cross-rdc-team
+# Tracker: same URL, below form
+
+# Models (database entities)
+# ArcCheckTracker: app/models/arc_check_tracker.rb
+# 
+# ArcCheckTracker Fields:
+# t.string   "check_num"  ---> REQUIRED
+# t.decimal  "check_amount", precision: 10, scale: 2  ---> REQUIRED
+# t.string   "check_date"  ---> REQUIRED
+# t.string   "org"
+# t.string   "check_name"  ---> REQUIRED
+# t.string   "state"       ---> REQUIRED
+# t.string   "tsc_received"  ---> REQUIRED
+# t.string   "order_num"
+# t.string   "crs"
+# t.string   "notes"
+# t.string   "sent_back_by"
+# t.string   "agent_name"	---> REQUIRED
+# t.datetime "created_at",                            null: false
+# t.datetime "updated_at",                            null: false
+# t.integer  "case_id"   ---> REQUIRED
+
+# Tests routes:
+#  match "/arc/api/checks", to: "arc#create_check", via: [:post, :options] 
+#  match "/arc/api/checks/:check_id", to: "arc#update_check", via: [:post, :options]
+#  match "/arc/api/checks", to: "arc#get_checks", via: :get                            
+#  match "/arc/api/checks/agents", to: "arc#get_check_agents", via: :get
 
 require 'rails_helper'
 

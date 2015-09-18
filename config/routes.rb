@@ -215,7 +215,7 @@ Rails.application.routes.draw do
 
   # ----- Begin ARC Routes (ALL HAVE BEEN TESTED in spec/api/arc/*) ------ 
 
-  match "/arc/api/rco", to: "arc#create_rco", via: [:post, :options]
+  match "/arc/api/rco", to: "arc#create_rco", via: [:post, :options] 
   match "/arc/api/rcos", to: "arc#get_rcos", via: :get
   match "/arc/api/blackout-dates", to: "arc#create_blackout_dates", via: [:post, :options]
   match "/arc/api/blackout-dates/check", to: "arc#check_cities", via: [:post, :options]

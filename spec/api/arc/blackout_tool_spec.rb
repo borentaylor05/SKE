@@ -1,3 +1,110 @@
+# Purpose: 
+# Nicole was spending many hours a day updating a massive SKE document that contained
+# all cities and states as well as those city's blackout and yellow out dates.
+# To save her time, I built this tool, and it is very complex.
+# It comes in 2 parts:
+# 	1) The form to add blackout dates
+# 		- This form allows you to select a state, input comma-separated cities for the
+# 			selected state (e.g. Dallas, Houston) and then to input blackout or
+# 			yellow out dates and associated notes.  This form also has a group function
+# 			that allows you to create groups by state and use them in the future.
+# 			It also has a 'Check Cities' function that is meant to prevent typos in 
+# 			city names.
+# 	2) The agent-facing page that allows agents to look up dates by city
+# 		- This part allows filtering by city names and clicking that city's button
+# 			shows all dates for that city. Certain users (now just Nicole and myself)
+# 			have the options to: 
+# 				1) Delete one specific date 
+# 				2) Delete that date for all cities
+# 				3) Switch the date from black to yellow.	
+# 				4) Delete a city
+# 	
+
+# URLs:
+# Agent Facing (below ARC Links): https://social.teletech.com/community/clients/american_red_cross/american-red-cross-information-station/american-red-cross--bgst-knowledgebase
+# CS (Nicole) Facing: https://social.teletech.com/community/clients/american_red_cross/american-red-cross-information-station/american-red-cross--bgst-knowledgebase/american-red-cross-community-specialist-reporting-space
+
+# Models (database entities)
+# ArcBlackoutDate: app/models/arc_blackout_date.rb
+# ArcCityState: app/models/arc_city_state.rb
+# ArcBlackoutTracker: app/models/arc_blackout_tracker.rb
+# ArcCityStateGroup: app/models/arc_city_state_group.rb
+# ArcGroupTracker: app/models/arc_group_tracker.rb
+# 
+# Relationships:
+# 
+# NOTE: Think of ArcBlackoutTracker as a table that tracks which cities have which dates
+# 
+# ArcBlackoutTracker belongs_to ArcBlackoutDate
+# ArcBlackoutTracker belongs_to ArcCityState
+# ArcCityState has_many ArcBlackoutTrackers
+# ArcCityState has_many ArcBlackoutDates through ArcBlackoutTrackers (see description below)
+# ArcCityState belongs_to State
+# ArcBlackoutDate has_many ArcBlackoutTrackers
+# ArcBlackoutDate has_many ArcCityStates through ArcBlackoutTrackers (see description below)
+# ArcGroupTracker belongs_to ArcCityState
+# ArcGroupTracker belongs_to ArcCityStateGroup
+# ArcCityState has_many ArcGroupTrackers
+# ArcCityState has_many ArcCityStateGroups through ArcGroupTrackers
+# ArcCityStateGroup has_many ArcGroupTrackers
+# ArcCityStateGroup has_many ArcCityStateGroups through ArcGroupTrackers
+#
+# 
+# Has Many through: how it works: Go to http://guides.rubyonrails.org/association_basics.html#the-has-many-through-association
+# It allows you to have many to many relationships and access those relationships like:
+# ArcCityStates.first.arc_blackout_dates - that gives you all dates for the first city in the DB 
+# 
+# ArcBlackoutTracker Fields:
+# t.integer  "arc_blackout_date_id" --> REQUIRED
+# t.integer  "arc_city_state_id"   --> REQUIRED
+# t.datetime "created_at",           null: false
+# t.datetime "updated_at",           null: false
+# 
+# ArcCityState Fields:
+# t.string   "name" --> REQUIRED
+# t.datetime "created_at", null: false
+# t.datetime "updated_at", null: false
+# t.integer  "state_id"  --> REQUIRED
+# 
+# ArcBlackoutDate Fields: 
+# t.string   "date"
+# t.string   "notes"
+# t.datetime "created_at", null: false
+# t.datetime "updated_at", null: false
+# t.date     "expires"
+# t.string   "date_type"
+# 
+# NOTES on ArcBlackoutDate: 
+# 	- if date then date must be of format 09/03/2015 (9/3/2015 works too)
+# 	- each date must have a type of 'black' or 'yellow'
+# 	- Date or notes must be present
+# 	- expires is set based on the date format above
+# 	- there is a scheduled task that runs every night to delete past dates
+# 		- located in app/lib/tasks/arc.rake#remove_old_blackout_dates
+# 		
+# ArcCityStateGroup Fields:
+# t.string   "name"  --> REQUIRED
+# t.datetime "created_at", null: false
+# t.datetime "updated_at", null: false
+# t.integer  "state_id" --> REQUIRED
+# 
+# ArcGroupTracker Fields: 
+# t.integer  "arc_city_state_id"   --> REQUIRED
+# t.integer  "arc_city_state_group_id" --> REQUIRED
+# t.datetime "created_at",              null: false
+# t.datetime "updated_at",              null: false
+
+# Tests routes:
+# match "/arc/api/blackout-dates", to: "arc#create_blackout_dates", via: [:post, :options]
+# match "/arc/api/blackout-dates/check", to: "arc#check_cities", via: [:post, :options]
+# match "/arc/api/blackout-dates/:id/switch",  to: "arc#bo_switch", via: [:post, :options]
+# match "/arc/api/blackout-dates/:id", to: "arc#delete_bo_date", via: [:delete, :options]
+# match "/arc/api/cities/:id", to: "arc#delete_city", via: [:delete, :options]
+# match "/arc/api/blackout-dates/:city/:state", to: "arc#get_blackout_dates", via: :get
+# match "/arc/api/blackout-dates/group", to: "arc#get_groups", via: :get
+# match "/arc/api/blackout-dates/group", to: "arc#new_group", via: [:post, :options]
+# match "/arc/api/cities", to: "arc#get_all_cities", via: :get
+
 require 'rails_helper'
 
 describe "ARC API", :type => :request do
@@ -8,7 +115,7 @@ describe "ARC API", :type => :request do
 										cities: "Suffolk, Nassau, Hornell"
 										} 
 									}
-	before { @group_params = { cities: "Suffolk, Nassau, Hornell", state: "NY", name: "TEST" } }
+	before { @group_params = { cities: "Suffolk, Nassau, Hornell, New York", state: "NY", name: "TEST" } }
 
 	# for /arc/api/cities
 	it "/arc/api/cities should return json" do 

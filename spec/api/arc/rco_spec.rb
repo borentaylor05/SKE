@@ -1,3 +1,28 @@
+# Purpose: 
+# ARC needed a better way to track RCO Orders.
+
+# URLs:
+# Form: https://social.teletech.com/community/clients/american_red_cross/american-red-cross-information-station/rsg-space/
+# Tracker: https://social.teletech.com/community/clients/american_red_cross/american-red-cross-information-station/american-red-cross-ga-only-job-aids
+
+# Models (database entities)
+# RcoOrder: app/models/rco_order.rb
+# 
+# RcoOrder Fields:
+# t.string   "agent_name" 		---> required field 
+# t.boolean  "created"				 
+# t.boolean  "acct_with_password"
+# t.boolean  "acct_forgot_password"
+# t.boolean  "no_share"
+# t.string   "order_id"
+# t.integer  "lms_num"
+# t.integer  "num_registrations"
+# t.string   "coupon"
+# t.boolean  "paypal"
+# t.text     "comments"
+# t.datetime "created_at",           null: false
+# t.datetime "updated_at",           null: false
+
 # Tests routes:
 # 	match "/arc/api/rco", to: "arc#create_rco", via: [:post, :options] 
 # 	match "/arc/api/rcos", to: "arc#get_rcos", via: :get
