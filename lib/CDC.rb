@@ -25,6 +25,7 @@ class CDC
 	end
 
 	def import_a_to_z(file)
+		AToZEntry.destroy_all
 		CSV.foreach(file, headers: true) do |row|
 			row[0] = row[0].strip if row[0] # row[0] is Topic
 			entry = AToZEntry.find_by(topic: row[0].upcase)
