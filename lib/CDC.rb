@@ -10,14 +10,18 @@ class CDC
 	end
 
 	def import_address_book(file)
+		AddressBookEntry.destroy_all
 		CSV.foreach(file, headers: true) do |row|
-			row[0] = row[0].strip if row[0] # row[0] is Program Description
-			row = row.map { |col| col = "-" if col.nil? }
-			entry = AddressBookEntry.find_by(ProgramDescription: row[0])
-			if entry
-				entry.update_attributes(row.to_hash)
-			else
-				ab = AddressBookEntry.create! row.to_hash
+			if row[0]
+				row[0] = row[0].strip if row[0] # row[0] is Program Description
+				row = row.map { |col| col = "-" if col.nil? }
+				logger.info row
+				entry = AddressBookEntry.find_by(ProgramDescription: row[0])
+				if entry
+					entry.update_attributes(row.to_hash)
+				else
+					ab = AddressBookEntry.create! row.to_hash
+				end
 			end
 		end
 	end
