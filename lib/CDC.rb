@@ -14,7 +14,6 @@ class CDC
 		CSV.foreach(file, headers: true) do |row|
 			if row[0]
 				row[0] = row[0].strip if row[0] # row[0] is Program Description
-				logger.info row
 				entry = AddressBookEntry.find_by(ProgramDescription: row[0])
 				if entry
 					entry.update_attributes(row.to_hash)
