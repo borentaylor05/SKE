@@ -7,7 +7,7 @@
 # If you are in this group you should see an extra tab called 'Knowledge Base' in every space
 # Clicking that tab will open a page with this and many other tools for CDC
  
-# URLs: you can access through any space, but if you don't want to do that use this:
+# URLs: you can access through any space, but if you don't want to do that, use this:
 # https://social.teletech.com/community/clients/verizon-networkx/cdc-centers-for-disease-control/cdc-knowledge-base/apps/4ed8a357e2ba52799893425ee1733717/cdc
 
 # Models (database entities)

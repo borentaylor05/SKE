@@ -15,17 +15,7 @@ describe "WW Promotions API", :type => :request do
 
 	it "should reject duplicate member_num" do 
 		promo = FactoryGirl.create(:ww_promotion)
-		post "/ww/api/promotions", { ww_promotion: { first_name: promo.first_name,
-													 last_name: promo.last_name,
-													 member_num: promo.member_num,
-													 gender: promo.gender,
-													 billing: promo.billing,
-													 state: promo.state,
-													 first_name: promo.city,
-													 zip: promo.zip,
-													 agent_name: promo.agent_name,
-													 signup_date: '1259218800000'
-													 } 
+		post "/ww/api/promotions", { ww_promotion: { promo } 
 									}
 		expect(json["status"]).to eq(1)
 	end
@@ -35,7 +25,6 @@ describe "WW Promotions API", :type => :request do
 		post "/ww/api/promotions", { ww_promotion: { first_name: promo.first_name,
 													 last_name: promo.last_name,
 													 member_num: 1239087,
-													 gender: promo.gender,
 													 billing: promo.billing,
 													 state: promo.state,
 													 first_name: promo.city,

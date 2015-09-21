@@ -571,8 +571,12 @@ class AccessibleController < ApplicationController
 	end
 
 	def create_admin
-		a = Admin.create(admin_params) 
+		a = Admin.new(email: params[:admin][:email],
+					password: params[:admin][:password],
+					client: Client.find_by(name: params[:admin][:client])	
+			)
 		if a.valid?
+			a.save
 			respond({ status: 0, message: "Admin created!" })
 		else
 			respond({ error: "#{a.errors.full_messages}", status: 1 })
@@ -632,7 +636,7 @@ class AccessibleController < ApplicationController
 		end
 
 		def admin_params
-			params.require(:admin).permit(:email, :password, :client_id)
+			params.require(:admin).permit(:email, :password, :client, :client_id)
 		end
 
 		def maintainer_update_params

@@ -152,7 +152,6 @@ abbreviation "MyString"
       member_num Random.new(1234).rand(100000)
       first_name "MyString"
       last_name "MyString"
-      gender "M"
       billing "MyString"
       city "MyString"
       state "MyString"
