@@ -66,7 +66,7 @@ class UserController < ApplicationController
 				end
 			else
 				if !params[:client].blank?
-					update_user_client(params)
+					u = update_user_client(params)[:user]
 				end
 				response = { status: 0, message: "User Exists.", user: u }
 			end

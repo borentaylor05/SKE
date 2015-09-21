@@ -51,11 +51,7 @@ describe "Users API", :type => :request do
 		expect(json['user']['jive_id']).not_to eq(@user.jive_id)
 	end
 
-	it "should respond with error (user needs jive_id and employee_id)" do 	
-		post "/user", { employee_id: "randomemplyee", name: "Test", client: "ww"}
-		expect(response).to be_success
-		expect(json['status']).to eq(1)
-		expect(json['error']).not_to be_nil
+	it "should respond with error (user needs employee_id)" do 	
 		post "/user", { jive_id: 234324, name: "Test", client: "ww"}
 		expect(response).to be_success
 		expect(json['status']).to eq(1)
@@ -63,11 +59,11 @@ describe "Users API", :type => :request do
 	end
 
 	it "should update client if jive_id is valid" do 	
-		post "/user", { jive_id: @user.jive_id, employee_id: @user.employee_id, name: @user.name, client: "ww"}
+		post "/user", { jive_id: @user.jive_id, employee_id: @user.employee_id, name: @user.name, client: "all"}
 		expect(response).to be_success
 		expect(json['status']).to eq(0)
 		expect(json['user']['client_id']).not_to eq(@user.client_id)
-		expect(json['user']['client_id']).to eq(Client.find_by(name: "ww").id)
+		expect(json['user']['client_id']).to eq(Client.find_by(name: "all").id)
 	end
 
 	it "should return same user/client if no client param" do 

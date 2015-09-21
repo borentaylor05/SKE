@@ -155,6 +155,10 @@ abbreviation "MyString"
       billing "MyString"
       city "MyString"
       state "MyString"
+      meet_city "MyString"
+      meet_state "MyString"
+      description "A description"
+      member_phone "9922223"
       zip 1
       agent_name "MyString"
   end
