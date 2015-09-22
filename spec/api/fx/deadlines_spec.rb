@@ -1,3 +1,33 @@
+# Fairfax Deadline Tool
+# Purpose: FX agents launch the tool from the NZ Sales app. The overlay contains
+# a list of all of Fairfax's publications. Those publications can be filtered 
+# by using the text input. Clicking 'Get Deadlines' gets all deadlines for all days 
+# for that specific publication its child publications (if it has any). 
+# 
+# Upload Url: "/fx/upload/deadlines"
+
+# This tool is accessed via the Fairfax App in the NZ Sales tab
+# To get here, click the app dropdown from the nav menu then click SKE and
+# navigate to NZ Sales.
+ 
+# App URL: https://social.teletech.com/apps/2732319e12895194af8d024e7ef623fb
+
+# Models (database entities)
+# Deadline: app/models/deadline.rb
+# 
+# Deadline Fields:
+# t.string   "publication"
+# t.string   "nz_time"
+# t.string   "mla_time"
+# t.string   "run_day"
+# t.string   "close_day"
+# t.datetime "created_at",  null: false
+# t.datetime "updated_at",  null: false
+
+# Tests routes:
+# 	match "/fx/classifications", to: "fx_classification#get_classifications", via: :get  
+# 	match "/fx/classifications/categories", to: "fx_classification#get_categories", via: :get 
+
 require 'rails_helper'
 
 describe "Fairfax Deadlines API", :type => :request do
