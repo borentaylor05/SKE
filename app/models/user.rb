@@ -188,7 +188,7 @@ class User < ActiveRecord::Base
 		template[:jive][:username] = self.employee_id
 		template[:name][:givenName] = self.first_name
 		template[:name][:familyName] = self.last_name
-		resp = jive.grab("/people/username/#{self.employee_id}")
+		resp = jive.grab("/people/username/#{self.employee_id.strip}")
 		puts "JIVERESPONSE #{resp}"
 		if resp and resp["id"]
 			update_response = jive.update("/people", template)
@@ -201,10 +201,10 @@ class User < ActiveRecord::Base
 				return false
 			end	
 		elsif (resp["error"] and [409,403].include?(resp["error"]["status"]))											
-			juser = jive.grab("/people/username/#{self.employee_id}")
+			juser = jive.grab("/people/username/#{self.employee_id.strip}")
 			if juser["id"]
 				template[:jive][:enabled] = true
-				jive.update("/people/#{juser["id"]}", template)
+				jive.update("/people/#{juser["id"].strip}", template)
 			else
 				ails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{juser} -- Original response: #{resp}"
 			end
@@ -226,10 +226,10 @@ class User < ActiveRecord::Base
 	def jive_delete 
 		jive = Rails.env.production? ? Jive2.new('social') : Jive2.new('dev')
 		if self.jive_id
-			jive.remove("/people/#{self.jive_id}")
+			jive.remove("/people/#{self.jive_id.strip}")
 		else
-			resp = jive.grab("/people/username/#{self.employee_id}")
-			jive.remove("/people/#{resp["id"]}")
+			resp = jive.grab("/people/username/#{self.employee_id.strip}")
+			jive.remove("/people/#{resp["id"].strip}")
 		end
 	end
 
