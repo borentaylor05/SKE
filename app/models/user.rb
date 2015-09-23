@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
 		puts user
 		client = Client.find_by(name: user[:client].downcase) || Client.find_by(name: Util.check_client_map(user[:client].downcase))
 		User.new(
-				employee_id: user[:employee_id],
+				employee_id: user[:employee_id].strip,
 				client: client,
 				title: user[:title],
 				location: user[:location],
@@ -166,7 +166,7 @@ class User < ActiveRecord::Base
 		client = Client.find_by(name: user[:client].downcase) || Client.find_by(name: Util.check_client_map(user[:client].downcase))
 		if client 
 			self.update_attributes(
-				employee_id: user[:employee_id],
+				employee_id: user[:employee_id].strip,
 				client: client,
 				title: user[:title],
 				location: user[:location],
