@@ -202,11 +202,12 @@ class User < ActiveRecord::Base
 			end	
 		elsif (resp["error"] and [409,403].include?(resp["error"]["status"]))											
 			juser = jive.grab("/people/username/#{self.employee_id.strip}")
-			if juser["id"]
+			if juser and juser["id"]
 				template[:jive][:enabled] = true
 				jive.update("/people/#{juser["id"].strip}", template)
 			else
-				ails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{juser} -- Original response: #{resp}"
+				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> '#{self.employee_id}' -- Error -> #{juser} -- Original response: #{resp}"
+				return false
 			end
 		elsif resp
 			create_response = jive.create("/people", template)
