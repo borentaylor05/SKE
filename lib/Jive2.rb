@@ -50,8 +50,12 @@ class Jive2
 	end
 
 	def grab(resource)
+		begin
 		puts "JIVEURL --> #{@url}#{resource} -- #{@proxy}"
 	    json = HTTParty.get("#{@url}#{resource.strip}", @options).body
+		rescue URI::InvalidURIError
+			return nil
+		end
 	    if json and !json.blank?
 	      cleansed = clean(json)
 	      if cleansed 
