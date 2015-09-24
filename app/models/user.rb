@@ -38,7 +38,8 @@ class User < ActiveRecord::Base
 	    } ],
 	    jive: {
 	      	password: "",
-	      	username: ""
+	      	username: "",
+	      	profile: nil
 	    },
 	    name: {
 	      	familyName: "",
@@ -181,22 +182,18 @@ class User < ActiveRecord::Base
 	end
 
 	def jive_create
-		jive = Rails.env.production? ? Jive2.new('social') : Jive2.new('dev')
-		template = @@jive_template
-		template[:emails][0][:value] = "#{self.employee_id}@nomail.com"
-		template[:jive][:password] = "Welcome1"
-		template[:jive][:username] = self.employee_id
-		template[:name][:givenName] = self.first_name
-		template[:name][:familyName] = self.last_name
+		jive = Jive2.new('social')
+		template = self.new_jive_person_hash
+		puts template
 		resp = jive.grab("/people/username/#{self.employee_id.strip}")
 		if resp and resp["id"]
-			update_response = jive.update("/people", template)
+			update_response = jive.update("/people/#{self.jive_id}", template)
 			if update_response["id"]
 				self.update_attributes(jive_id: update_response["id"])
 				self.set_bunchball_user_preference
 				return true
 			else
-				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
+				Rails.logger.error "USER CREATE ERROR (Jive line 203): Employee -> #{self.employee_id} -- Error -> #{update_response}"
 				return false
 			end	
 		elsif resp and (resp["error"] and [409,403].include?(resp["error"]["status"]))											
@@ -205,7 +202,7 @@ class User < ActiveRecord::Base
 				template[:jive][:enabled] = true
 				jive.update("/people/#{juser["id"].strip}", template)
 			else
-				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> '#{self.employee_id}' -- Error -> #{juser} -- Original response: #{resp}"
+				Rails.logger.error "USER CREATE ERROR (Jive line 212): Employee -> '#{self.employee_id}' -- Error -> #{juser} -- Original response: #{resp}"
 				return false
 			end
 		elsif resp
@@ -215,11 +212,27 @@ class User < ActiveRecord::Base
 				self.set_bunchball_user_preference
 				return true
 			else
-				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{update_response}"
+				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{create_response}"
 				return false
 			end
 		else
 			return false
+		end
+	end
+
+	def jive_update
+		jive = Rails.env.production? ? Jive2.new('social') : Jive2.new('dev')
+		user = jive.grab("/people/#{self.jive_id}")
+		puts user
+		if user and user["id"]
+			user["emails"][0]["value"] = "#{self.employee_id}@nomail.com"
+			user["jive"]["password"] = "Welcome1"
+			user["jive"]["username"] = self.employee_id
+			user["name"]["givenName"] = self.first_name
+			user["name"]["familyName"] = self.last_name
+			puts jive.update("/people/#{self.jive_id}", user)
+		else
+			puts "User #{self.jive_id} not found."
 		end
 	end
 
@@ -243,5 +256,47 @@ class User < ActiveRecord::Base
 			end
 		end
 	end
+
+	def new_jive_person_hash
+        return {
+            emails: [ {
+                value: "#{self.employee_id}@nomail.com",
+                type: "work",
+                primary: true,
+                jive_label: "Email"
+            } ],
+            jive: {
+                password: ENV['FP_PASSWORD'],
+                username: self.employee_id,
+                profile: [
+                  {
+                    jive_label: "Title",
+                    value: self.title
+                  },
+                  {
+                    jive_label: "Client",
+                    value: self.client.name.titleize
+                  },
+                  {
+                    jive_label: "TeleTech Location",
+                    value: self.location
+                  },
+                  {
+                    jive_label: "LOB",
+                    value: self.lob
+                  },
+                  {
+                    jive_label: "Oracle ID",
+                    value: self.employee_id
+                  }
+                ]
+                 
+            },
+            name: {
+                familyName: self.last_name,
+                givenName: self.first_name
+            }
+        }
+    end
 
 end

@@ -71,10 +71,10 @@ class Jive2
 	end
 
 	def update(resource, params)
-		#  puts url
 		@options[:body] = params.to_json
 		@options = { body: params.to_json, basic_auth: @auth }
-		return HTTParty.put("#{@url}#{@resource}", @options)
+		puts "#{@url}#{resource}"
+		return HTTParty.put("#{@url}#{resource}", @options)
 	end
 
 	def create(resource, params)
