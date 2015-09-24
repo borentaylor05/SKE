@@ -48,30 +48,34 @@ class MessageController < ApplicationController
 	# needs Jive ID of sender and array of Jive IDs for recipients
 	# for /message -> { sender: :jive_id, body: text, groups: [lobs or title for a client] }
 	def send_message
-		puts "MESSAGE PARAMS - #{params}"
-		u = User.find_by(jive_id: params[:sender])
-		if u and !params[:body].blank? and params[:groups] and params[:groups].count > 0
-			m = Message.new(
-				user: u,
-				text: params[:body],
-				client: u.client,
-				urgent: params[:urgent]
-			)
-			if m.valid?
-				m.save
-				recipients = get_people_from_groups(params[:groups])
-				m.send_message(recipients)
-				respond({ status: 0, message: "Message Sent to #{recipients.count} people.", users: recipients })
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			logger.info "MESSAGE PARAMS - #{params}"
+			u = User.find_by(jive_id: params[:sender])
+			if u and !params[:body].blank? and params[:groups] and params[:groups].count > 0
+				m = Message.new(
+					user: u,
+					text: params[:body],
+					client: u.client,
+					urgent: params[:urgent]
+				)
+				if m.valid?
+					m.save
+					recipients = get_people_from_groups(params[:groups])
+					m.send_message(recipients)
+					respond({ status: 0, message: "Message Sent to #{recipients.count} people.", users: recipients })
+				else
+					respond({ status: 1, error: "#{m.errors.full_messages}" })
+				end
 			else
-				respond({ status: 1, error: "#{m.errors.full_messages}" })
-			end
-		else
-			if !u 
-				respond({ status: 1, error: "Sender #{params[:sender]} doesn't exist, creating now." })
-			elsif params[:body].length == 0
-				respond({ status: 1, error: "Body cannot be empty." })
-			elsif !params[:groups] or params[:groups].count == 0
-				respond({ status: 1, error: "There must be at least one recipient." })
+				if !u 
+					respond({ status: 1, error: "Sender #{params[:sender]} doesn't exist, creating now." })
+				elsif params[:body].blank?
+					respond({ status: 1, error: "Body cannot be empty." })
+				elsif !params[:groups] or params[:groups].count == 0
+					respond({ status: 1, error: "There must be at least one recipient." })
+				end
 			end
 		end
 	end
