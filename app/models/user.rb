@@ -95,7 +95,7 @@ class User < ActiveRecord::Base
 				user = Util.parse_csv_user(row)
 				user[:team_lead_oracle] = row[8]
 				u = User.find_by(employee_id: user[:employee_id])
-				if u 
+				if u
 					if u.update(user)
 						if u.jive_create
 					 		created.push u.employee_id
@@ -189,7 +189,6 @@ class User < ActiveRecord::Base
 		template[:name][:givenName] = self.first_name
 		template[:name][:familyName] = self.last_name
 		resp = jive.grab("/people/username/#{self.employee_id.strip}")
-		puts "JIVERESPONSE #{resp}"
 		if resp and resp["id"]
 			update_response = jive.update("/people", template)
 			if update_response["id"]

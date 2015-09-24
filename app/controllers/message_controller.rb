@@ -48,9 +48,9 @@ class MessageController < ApplicationController
 	# needs Jive ID of sender and array of Jive IDs for recipients
 	# for /message -> { sender: :jive_id, body: text, groups: [lobs or title for a client] }
 	def send_message
+		puts "MESSAGE PARAMS - #{params}"
 		u = User.find_by(jive_id: params[:sender])
-		if u and params[:body].length > 0 and params[:groups] and params[:groups].count > 0
-			Rails.logger.info("URGENT ----> #{params[:urgent]}")
+		if u and !params[:body].blank? and params[:groups] and params[:groups].count > 0
 			m = Message.new(
 				user: u,
 				text: params[:body],
