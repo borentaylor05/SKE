@@ -273,4 +273,9 @@ task :gamify, [:filename, :kill_on_missing] => :environment do |t,args|
 	end
 end
 
+task test_me: :environment do
+	jive = Jive2.new('social')
+	puts jive.grab("/people/username/3151232")
+end
+
 
