@@ -26,7 +26,6 @@ class Bunchball
 
 	def get(method, json = false)
 		url = URI.encode("#{@url1}#{method}#{@url2}")
-		puts url
 		if json 
 			return HTTParty.get(url).body
 		else
@@ -74,6 +73,12 @@ class Bunchball
 
 	def get_mission(name)
 		return get("user.getChallengeProgress&challengeName=#{name}&showOnlyTrophies=false")
+	end
+
+	def mission_exists?(name)
+		# for some reason the API returns challenges == true when the challenge does not exist
+		# it returns challenges[:Challeng] otherwise 
+		return get_mission(name)[:Nitro][:challenges] != true
 	end
 
 	def add_user_to_group(group, user_id)
