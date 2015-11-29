@@ -53,7 +53,7 @@ class Jive2
 		begin
 		puts "JIVEURL --> #{@url}#{resource} -- #{@proxy}"
 	  json = HTTParty.get("#{@url}#{resource.strip}", @options).body
-		rescue URI::InvalidURIError => e
+		rescue URI::InvalidURIError, ArgumentError => e
 			puts "ERROR --- #{@url}#{resource.strip}"
 			puts e
 			return nil
