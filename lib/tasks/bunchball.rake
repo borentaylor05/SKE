@@ -250,7 +250,7 @@ task :gamify, [:filename, :kill_on_missing] => :environment do |t,args|
 							mission = missions[i]
 							if mission && mission[:exists] && grade.to_i >= bbh.get_goal(mission[:name], goals)
 							#	puts "WOULD COMPLETE -- #{mission}"
-								bb.complete_mission(current_oracle, mission[:name])
+								puts bb.complete_mission(current_oracle, mission[:name])
 							elsif !mission
 								# means script added missions for columns that do not exist
 								break								
