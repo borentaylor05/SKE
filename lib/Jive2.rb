@@ -82,6 +82,7 @@ class Jive2
 	def create(resource, params)
         @options[:body] = params.to_json
         json = HTTParty.post("#{@url}#{resource}", @options).parsed_response
+        puts "JIVERESPONSE [CREATE] --> #{json}"
         return json
     end
 
