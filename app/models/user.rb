@@ -191,8 +191,8 @@ class User < ActiveRecord::Base
 	def jive_create
 		jive = Jive2.new('social')
 		template = self.new_jive_person_hash
-		puts template
 		resp = jive.grab("/people/username/#{self.employee_id.strip}")
+		puts "JIVECREATE RESPONSE --> #{resp}"
 		if resp and resp["id"]
 			update_response = jive.update("/people/#{self.jive_id}", template)
 			if update_response["id"]
