@@ -257,5 +257,6 @@ Rails.application.routes.draw do
   match "/maintainers/comment/new", to: "maintainers#new_comment_maintainer", via: [:options, :post]
   match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:post, :options]
 
-
+  # taylor test
+  match "/ske/taylortest/users/:jive", to: "user#taylortest", via: :get
  end

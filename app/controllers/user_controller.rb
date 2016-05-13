@@ -1,4 +1,5 @@
 class UserController < ApplicationController
+	require 'Jive2'
 	include ActionView::Helpers::DateHelper
 	 skip_before_action :verify_authenticity_token
 	 before_action :cors_set_access_control_headers
@@ -113,6 +114,12 @@ class UserController < ApplicationController
 			users.push(hash)
 		end
 		respond({ status: 0, users: users, start: params[:start] })
+	end
+
+	def taylortest
+		jive = Jive2.new('social')
+		user = jive.grab("/people/username/#{params[:jive]}")
+		respond({ status: 0, user: user })
 	end
 
 	private
