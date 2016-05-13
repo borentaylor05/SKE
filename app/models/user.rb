@@ -1,3 +1,5 @@
+require 'rubyXL'
+
 class User < ActiveRecord::Base
 	require 'Jive'
 	require 'Jive2'
@@ -90,8 +92,13 @@ class User < ActiveRecord::Base
 		created = []
 		errors = []
 		tl_count = 0
-		tl_error = []		
-		CSV.foreach(file.path, headers: true) do |row|
+		tl_error = []
+		file = RubyXL::Parser.parse(file.path)
+		sheet = file[0]
+		sheet.each_with_index do |row, i|
+			next if i == 0
+			row = row.cells
+			row = row.map { |r| r.value.to_s.encode('UTF-8', :invalid => :replace, :undef => :replace) if r }
 			if row[0]
 				user = Util.parse_csv_user(row)
 				user[:team_lead_oracle] = row[8]
