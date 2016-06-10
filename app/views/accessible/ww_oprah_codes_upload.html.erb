@@ -1,0 +1,8 @@
+<div class="container">
+  <h2>Import Oprah Codes</h2>
+
+  <%= form_tag "/ww/oprah/codes/process", multipart: true do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag "Import", class: "btn btn-md btn-success" %>
+  <% end %>
+</div>

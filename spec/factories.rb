@@ -1,4 +1,16 @@
-FactoryGirl.define do  
+FactoryGirl.define do  factory :ww_oprah_tracker do
+    caller_issue "MyString"
+referral_type "MyString"
+member_sub "MyString"
+non_working_code "MyString"
+signup_date "2016-06-10 10:51:33"
+referral_location "MyString"
+  end
+  factory :ww_oprah_code do
+    code "MyString"
+used false
+  end
+  
   
   factory :cdc_apg_document do
     client_id 1

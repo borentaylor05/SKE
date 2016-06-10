@@ -35,6 +35,33 @@ class WwController < ApplicationController
 		end
 	end
 
+	def get_oprah_code
+		logger.info request
+		if(request.method == "OPTIONS")
+			respond({status: 0})
+		elsif request.method == "POST"
+			tracker = WwOprahTracker.new({
+					caller_issue: params[:caller_issue],
+					referral_type: params[:referral_type],
+					member_sub: params[:member_sub],
+					non_working_code: params[:non_working_code],
+					signup_date: params[:signup_date],
+					referral_location: params[:referral_location]
+				})
+			if tracker.valid?
+				code = WwOprahCode.find_by(used: false)
+				if code
+					code.update_attributes(used: true)
+					respond({ status: 0, message: 'Success', code: code.code })
+				else
+					respond({ status: 1, message: 'All codes have been used', error: tracker.errors.full_messages })
+				end
+			else
+				respond({ status: 1, message: 'Invalid tracker info', error: tracker.errors.full_messages })
+			end	
+		end
+	end
+
 	private
 
 		def promo_params

@@ -147,6 +147,9 @@ class AccessibleController < ApplicationController
 	def bulk_upload_users
 	end
 
+	def ww_oprah_codes_upload
+	end
+
 	#PROCESSES
 
 	def bulk_upload_users_process
@@ -186,6 +189,11 @@ class AccessibleController < ApplicationController
 
 	def process_deadlines
 		Deadline.import(params[:file])
+		respond({ status: 0, message: "Upload Successful" })
+	end
+
+	def ww_oprah_codes_process
+		WwOprahCode.import(params[:file])
 		respond({ status: 0, message: "Upload Successful" })
 	end
 

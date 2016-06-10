@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150829041823) do
+ActiveRecord::Schema.define(version: 20160610165133) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -624,6 +624,24 @@ ActiveRecord::Schema.define(version: 20150829041823) do
 
   add_index "ww_codes", ["assigned_by_name"], name: "index_ww_codes_on_assigned_by_name", using: :btree
   add_index "ww_codes", ["code_num"], name: "index_ww_codes_on_code_num", using: :btree
+
+  create_table "ww_oprah_codes", force: true do |t|
+    t.string   "code"
+    t.boolean  "used",       default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "ww_oprah_trackers", force: true do |t|
+    t.string   "caller_issue"
+    t.string   "referral_type"
+    t.string   "member_sub"
+    t.string   "non_working_code"
+    t.datetime "signup_date"
+    t.string   "referral_location"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
 
   create_table "ww_promotions", force: true do |t|
     t.string   "member_num"

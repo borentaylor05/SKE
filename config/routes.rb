@@ -257,6 +257,11 @@ Rails.application.routes.draw do
   match "/maintainers/comment/new", to: "maintainers#new_comment_maintainer", via: [:options, :post]
   match "/maintainers/article-request/new", to: "maintainers#new_article_request", via: [:post, :options]
 
+  # WW Oprah Tool
+  match "/ww/oprah/codes/upload", to: "accessible#ww_oprah_codes_upload", via: :get
+  match "/ww/oprah/codes/process", to: "accessible#ww_oprah_codes_process", via: :post
+  match "/ww/oprah/code", to: "ww#get_oprah_code", via: [:post, :options]
+
   # taylor test
   match "/ske/taylortest/users/:jive", to: "user#taylortest", via: :get
  end
