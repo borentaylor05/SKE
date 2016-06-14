@@ -46,7 +46,8 @@ class WwController < ApplicationController
 					member_sub: params[:member_sub],
 					non_working_code: params[:non_working_code],
 					signup_date: params[:signup_date],
-					referral_location: params[:referral_location]
+					referral_location: params[:referral_location],
+					jive_username: params[:jive_username]
 				})
 			if tracker.valid?
 				tracker.save

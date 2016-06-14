@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160610165133) do
+ActiveRecord::Schema.define(version: 20160614160050) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -627,9 +627,10 @@ ActiveRecord::Schema.define(version: 20160610165133) do
 
   create_table "ww_oprah_codes", force: true do |t|
     t.string   "code"
-    t.boolean  "used",       default: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "used",          default: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "jive_username"
   end
 
   create_table "ww_oprah_trackers", force: true do |t|
