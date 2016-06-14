@@ -627,10 +627,9 @@ ActiveRecord::Schema.define(version: 20160614160050) do
 
   create_table "ww_oprah_codes", force: true do |t|
     t.string   "code"
-    t.boolean  "used",          default: false
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-    t.string   "jive_username"
+    t.boolean  "used",       default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "ww_oprah_trackers", force: true do |t|
@@ -642,6 +641,7 @@ ActiveRecord::Schema.define(version: 20160614160050) do
     t.string   "referral_location"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.string   "jive_username"
   end
 
   create_table "ww_promotions", force: true do |t|
