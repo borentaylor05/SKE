@@ -49,12 +49,19 @@ class WwController < ApplicationController
 					referral_location: params[:referral_location]
 				})
 			if tracker.valid?
-				code = WwOprahCode.find_by(used: false)
-				if code
-					code.update_attributes(used: true)
-					respond({ status: 0, message: 'Success', code: code.code })
+				tracker.save
+				if params[:get_code] === 'false'
+					respond({ status: 1, message: 'No code needed'})
+				elsif params[:get_code] === 'true'
+					code = WwOprahCode.find_by(used: false)
+					if code
+						code.update_attributes(used: true)
+						respond({ status: 0, message: 'Success', code: code.code })
+					else	
+						respond({ status: 1, message: 'Error getting code. It is possible that all codes have been used.', override: true })
+					end
 				else
-					respond({ status: 1, message: 'All codes have been used', error: tracker.errors.full_messages })
+					respond({ status: 1, message: 'An error has occurred' })
 				end
 			else
 				respond({ status: 1, message: 'Invalid tracker info', error: tracker.errors.full_messages })
