@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160614162523) do
+ActiveRecord::Schema.define(version: 20160615205217) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -642,6 +642,7 @@ ActiveRecord::Schema.define(version: 20160614162523) do
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.string   "jive_username"
+    t.string   "code_used"
   end
 
   create_table "ww_promotions", force: true do |t|
