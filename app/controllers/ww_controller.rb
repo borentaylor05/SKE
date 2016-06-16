@@ -55,8 +55,8 @@ class WwController < ApplicationController
 					respond({ status: 1, message: 'No code needed'})
 				elsif params[:get_code] === 'true'
 					code = WwOprahCode.find_by(used: false)
-					tracker.code_used = code.code
 					if code
+						tracker.code_used = code.code
 						tracker.save
 						code.update_attributes(used: true)
 						respond({ status: 0, message: 'Success', code: code.code })
