@@ -22,7 +22,7 @@ class Util
 			first_name: row[0],
 			last_name: row[1],
 			email: row[2],
-			employee_id: row[3],
+			employee_id: row[3].to_i.to_s, # prevents ids like 980070.0,
 			title: row[4],
 			client: row[5],
 			lob: row[6],

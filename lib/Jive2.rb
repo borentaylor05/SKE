@@ -94,13 +94,13 @@ class Jive2
 		if json 
 			sub = json.gsub!(/throw [^;]*;/, '')
 			if sub 
-        		return JSON.parse(sub)
-        	else
-        		return false
-        	end
-        else
-        	return false
-        end
+    		return JSON.parse(sub)
+    	else
+    		return false
+    	end
+      else
+      	return false
+      end
     end
 
 	def people_search(name)

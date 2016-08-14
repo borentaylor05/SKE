@@ -99,16 +99,16 @@ class User < ActiveRecord::Base
 			next if i == 0
 			row = row.cells
 			row = row.map { |r| r.value.to_s.encode('UTF-8', :invalid => :replace, :undef => :replace) if r }
-			if row[0]
+			if row[0] and row[0].length > 0
 				user = Util.parse_csv_user(row)
 				user[:team_lead_oracle] = row[8]
 				u = User.find_by(employee_id: user[:employee_id])
-				if u
+				if u and u.valid?
 					if u.update(user)
 						if u.jive_create
 					 		created.push u.employee_id
 					 	else
-					 		errors.push "Jive Error (check logs): #{u.employee_id}"
+					 		errors.push "Jive Error (check logs 111): #{u.employee_id}"
 					 	end
 					else
 						Rails.logger.error "USER CREATE ERROR: Bad client: #{user[:client]}"
@@ -121,7 +121,7 @@ class User < ActiveRecord::Base
 					 	if u.jive_create
 					 		created.push u.employee_id
 					 	else
-					 		errors.push "Jive Error (check logs): #{u.employee_id}"
+					 		errors.push "Jive Error (check logs 124): #{u.employee_id}"
 					 	end
 					else
 						Rails.logger.error "USER CREATE ERROR: #{u.errors.full_messages} -- Client: #{user[:client]} - User: #{user[:employee_id]}"
@@ -203,7 +203,7 @@ class User < ActiveRecord::Base
 				Rails.logger.error "USER CREATE ERROR (Jive line 203): Employee -> #{self.employee_id} -- Error -> #{update_response}"
 				return false
 			end	
-		elsif resp and (resp["error"] and [409,403].include?(resp["error"]["status"]))											
+		elsif resp and (resp["error"] and [409,403].include?(resp["error"]["status"]))
 			juser = jive.grab("/people/username/#{self.employee_id.strip}")
 			if juser and juser["id"]
 				template[:jive][:enabled] = true
@@ -212,7 +212,7 @@ class User < ActiveRecord::Base
 				Rails.logger.error "USER CREATE ERROR (Jive line 212): Employee -> '#{self.employee_id}' -- Error -> #{juser} -- Original response: #{resp}"
 				return false
 			end
-		elsif resp
+		else
 			create_response = jive.create("/people", template)
 			if create_response["id"]
 				self.update_attributes(jive_id: create_response["id"])
@@ -222,8 +222,6 @@ class User < ActiveRecord::Base
 				Rails.logger.error "USER CREATE ERROR (Jive): Employee -> #{self.employee_id} -- Error -> #{create_response}"
 				return false
 			end
-		else
-			return false
 		end
 	end
 
