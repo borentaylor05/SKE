@@ -137,7 +137,7 @@ class User < ActiveRecord::Base
 				end
 			end
 		end
-		User.jive_check_all
+		#User.jive_check_all
 		return { created_count: created.count, error_count: errors.count, created: created, errors: errors, tls_added: tl_count, tl_error: tl_error }
 	end
 
