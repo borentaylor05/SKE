@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160615205217) do
+ActiveRecord::Schema.define(version: 20160925225350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -357,6 +357,13 @@ ActiveRecord::Schema.define(version: 20160615205217) do
   end
 
   create_table "jive_missions", force: true do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lighthouse_htmls", force: true do |t|
+    t.string   "client"
+    t.text     "html"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

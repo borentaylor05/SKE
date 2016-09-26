@@ -51,7 +51,6 @@ class Jive2
 
 	def grab(resource)
 		begin
-		puts "JIVEURL --> #{@url}#{resource} -- #{@proxy}"
 	  json = HTTParty.get("#{@url}#{resource.strip}", @options).body
 		rescue URI::InvalidURIError, ArgumentError => e
 			puts "ERROR --- #{@url}#{resource.strip}"
@@ -92,9 +91,8 @@ class Jive2
 
 	def clean(json)		
 		if json 
-			sub = json.gsub!(/throw [^;]*;/, '')
-			if sub 
-    		return JSON.parse(sub)
+			if json
+    		return JSON.parse(json)
     	else
     		return false
     	end

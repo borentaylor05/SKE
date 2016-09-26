@@ -1,4 +1,8 @@
-FactoryGirl.define do  factory :ww_oprah_tracker do
+FactoryGirl.define do  factory :lighthouse_html do
+    client "MyString"
+html "MyText"
+  end
+  factory :ww_oprah_tracker do
     caller_issue "MyString"
 referral_type "MyString"
 member_sub "MyString"
